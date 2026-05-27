@@ -1,31 +1,32 @@
 from source.models.Models import CHID, User, Authority, Identity, Block
 from source.utils.ledger import Ledger
-from source.utils.ledger import Ledger
+from source.services.BlockchainNetwork import BlockchainNetworkHandler
+
+import time
 
 if __name__ == "__main__":
     user = User("Bashar", 2312311, 444, 24, "", "")
     issuer = Authority("JPU", 3423)
     doc = Identity(user, issuer, "", 333)
     chid = CHID(user=user, credential=doc, issuer=issuer)
-    block = Block(0, chid, 0)
-
-    user1 = User("Bilal", 2312311, 544, 24, "", "")
-    issuer1 = Authority("JPU", 3423)
-    doc1 = Identity(user1, issuer1, "", 333)
-    chid1 = CHID(user=user1, credential=doc1, issuer=issuer1)
-    block1 = Block(1, chid1)
+    block = Block(0, chid)
 
 
-ledger = Ledger()
+    Blockchain = BlockchainNetworkHandler("localhost", 8281)
+    client = BlockchainNetworkHandler("localhost", 8282)
 
-ledger.insertBlock(block) # type: ignore
-# Inserting 10 blocks
-for i in range(10):
-    user = User(f"User{i}", 1000000 + i, 500000 + i, 20 + (i % 30), f"user{i}@example.com", "")
-    issuer = Authority(f"Issuer{i}", 2000 + i)
-    doc = Identity(user, issuer, f"image{i}.png", 3000 + i)
-    chid = CHID(user=user, credential=doc, issuer=issuer)
-    block = Block(i, chid)
-    ledger.insertBlock(block)
+    Blockchain.start()
+    client.start()
 
-print(f"Total blocks in ledger: {len(ledger.allBlocks())}")
+    time.sleep(0.5)
+
+    client.connect_with_node("localhost", 8281)
+
+    time.sleep(0.5)
+
+    client.registerBlock(block)
+
+    time.sleep(2)
+
+    Blockchain.stop()
+    client.stop()

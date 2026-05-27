@@ -82,8 +82,13 @@ class Ledger:
         except Exception:
             return zero_hash
 
-            
-
 
     def allBlocks(self) -> list:
         return self.blocks
+
+    def blockExists(self, targetBlock):
+        targetBlockHash = targetBlock.hash
+        for block in self.blocks:
+            if targetBlockHash == block["hash"]:
+                return True
+        return False

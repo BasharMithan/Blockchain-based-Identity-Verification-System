@@ -50,9 +50,10 @@ class CHID:
     user: User
     credential: Identity
     issuer: Authority
+    chid: str = ""
 
-    def __repr__(self) -> str:
-        return IDGenerator.generateCHID(
+    def __post_init__(self) -> None:
+        self.chid = IDGenerator.generateCHID(
             self.user.HID,
             self.credential.CID, 
             self.issuer.AUTHID
@@ -95,3 +96,12 @@ class Response(Enum):
 #     initalIssuer = Authority("", 0)
 #     initalDoc = Identity(initalUser, initalIssuer, "", 0)
 #     initalBlock = Block(0, CHID(initalUser, initalDoc, initalIssuer), "0"*64)
+
+class Action(Enum):
+    registeration = "REGISTERATION"
+
+
+@dataclass
+class Payload:
+    action: Action | str
+    block: Block | dict
