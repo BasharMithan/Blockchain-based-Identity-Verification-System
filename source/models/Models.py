@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
-from source.utils.generators import IDGenerator 
-from source.utils.ledger import Ledger
+from source.services.ledger import Ledger
+from source.utils.generators import IDGenerator
 
 @dataclass
 class HashedValue:
@@ -99,9 +99,11 @@ class Response(Enum):
 
 class Action(Enum):
     registeration = "REGISTERATION"
+    query = "QWERY"
 
 
 @dataclass
-class Payload:
-    action: Action | str
-    block: Block | dict
+class Qwery:
+    user: User
+    credential: Identity
+       

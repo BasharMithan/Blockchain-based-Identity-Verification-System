@@ -1,10 +1,19 @@
 
-from p2pnetwork.node import Node
+import logging
+from copy import deepcopy
 from dataclasses import asdict
-import pprint
+from p2pnetwork.node import Node
 
-from source.models.Models import Block, Response, Action, Response, Payload
-from source.utils.ledger import Ledger
+
+from source.models.Models import Action, Block, Qwery, Response
+from source.services.ledger import Ledger
+from source.services.verifier import Verifier
+
+
+qwery_copy: Qwery | None = None
+block_copy: Block | None = None
+action: str
+
 
 class BlockchainNetworkHandler(Node):
     def __init__(self, host, port: int) -> None:
@@ -14,33 +23,43 @@ class BlockchainNetworkHandler(Node):
         self.blocks: list[Block] = self.ledgerHandler.blocks
         # self.connect_with_node(self.host, self.port)
 
+
+    def processQwery(self, qwery: Qwery) -> None:
+        global qwery_copy
+        global action
+
+        action = Action.query.value
+
+        qwery_copy = deepcopy(qwery)
+        self.send_to_nodes(asdict(qwery))
+
     def registerBlock(self, block: Block) -> None:
-        self.ledgerHandler.insertBlock(block)
-        payload = asdict(Payload(action=Action.registeration.value,
-                          block=asdict(block)))
-        
+        global action
+        global block_copy
 
-        self.send_to_nodes(payload)
+        action = Action.registeration.value
 
-    def node_message(self, connected_node, data): # pyright: ignore[reportIncompatibleMethodOverride]
-        print(f"Traffic detected! Received data from: {data}")
-        
-        # You just sort the traffic based on your protocol keys
-        if data.get("action") == "NEW_BLOCK":
-            print("Successfully processed a new block entry automatically.")
-    
-    def DSCOwnershipCheck(self, node, data: dict) -> Response:
+        block_copy = deepcopy(block)
+        self.send_to_nodes(asdict(block))
         ...
 
 
+    def node_message(self, connected_node, data: dict): # pyright: ignore[reportIncompatibleMethodOverride]
+        global block_copy
+        global qwery_copy
+        global action
 
+        if (action == Action.registeration.value):
+            if (block_copy is None): return
 
+            print("Registering a block")
+            self.ledgerHandler.insertBlock(asdict(block_copy)) # type: ignore
 
-class __Verifier:
-    def __int__(self) -> None:
-        pass
+        elif (action == Action.query.value):
+            if (qwery_copy is None): return
 
-    def DECOwnershipCheck(self, credentialID: str, userID: str) -> bool:
-        ...
-        
+            print("Processing a qwery")
+            response = Verifier.check(qwery_copy)
+            print(response)
+
 

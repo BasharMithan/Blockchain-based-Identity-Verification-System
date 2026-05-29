@@ -1,11 +1,14 @@
-from source.models.Models import CHID, User, Authority, Identity, Block
-from source.utils.ledger import Ledger
+import time
+import pprint
+from dataclasses import asdict
+
+from source.models.Models import Action, Authority, Block, CHID, Identity, User, Qwery
 from source.services.BlockchainNetwork import BlockchainNetworkHandler
 
-import time
-
 if __name__ == "__main__":
-    user = User("Bashar", 2312311, 444, 24, "", "")
+    fake_user = User("", 0, 0, 0, "", "")
+
+    user = User("Testing the Block Registeration - 2", 2312311, 444, 24, "", "")
     issuer = Authority("JPU", 3423)
     doc = Identity(user, issuer, "", 333)
     chid = CHID(user=user, credential=doc, issuer=issuer)
@@ -24,7 +27,14 @@ if __name__ == "__main__":
 
     time.sleep(0.5)
 
-    client.registerBlock(block)
+
+
+    ownershipQwery = Qwery(fake_user, doc)
+
+    client.processQwery(ownershipQwery)
+
+    # client.registerBlock(block=block)
+
 
     time.sleep(2)
 

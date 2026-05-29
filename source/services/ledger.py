@@ -4,12 +4,11 @@ from dataclasses import asdict
 from typing import Any
 
 
-
 class Ledger:
 
     def __init__(self) -> None:
         # store Block instances (or loaded dicts); start empty
-        self.blocks: list = []
+        self.blocks: list = [dict]
         self.filePath: Path = Path("source/.ledger.json")
         self.__createFileIfnotExist()
         self.__loadLedger()
@@ -42,8 +41,7 @@ class Ledger:
             self.filePath.write_text('', encoding='utf-8')
 
     def insertBlock(self, block) -> None:
-        block_data = asdict(block)
-        self.blocks.append(block_data)
+        self.blocks.append(block)
 
         with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
             json.dump(self.blocks, ledgerFile, indent=4)
@@ -86,9 +84,15 @@ class Ledger:
     def allBlocks(self) -> list:
         return self.blocks
 
-    def blockExists(self, targetBlock):
-        targetBlockHash = targetBlock.hash
+
+    def chidExists(self, target_chid: str) -> bool:
         for block in self.blocks:
-            if targetBlockHash == block["hash"]:
-                return True
+            if isinstance(block, dict):
+                data = block.get("data")
+                if isinstance(data, dict) and data.get("chid") == target_chid:
+                    return True
+            else:
+                chid_value = getattr(getattr(block, "data", None), "chid", None)
+                if chid_value == target_chid:
+                    return True
         return False
