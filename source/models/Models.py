@@ -1,67 +1,75 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from pydantic import BaseModel, model_validator
+from typing import Any
 
 from source.services.ledger import Ledger
 from source.utils.generators import IDGenerator
 
-@dataclass
-class HashedValue:
-    # id: str = field(init=False)
 
-    def generateID(self) -> str:
-        return IDGenerator.generateID(str(self.__dict__))
 
-@dataclass
-class User(HashedValue):
+class User(BaseModel):
     name: str
     nationalNumber: int
     phone: int
     age: int
     email: str
     birth: str
+    HID: str = ""
 
-    def __post_init__(self):
-            self.HID = self.generateID()
+    @model_validator(mode="after")
+    def __post_init__(self) -> "User":
+        if (self.HID == ""):
+            self.HID = IDGenerator.generateID(str(self.__dict__))
+        return self
 
 
 
-@dataclass
-class Authority(HashedValue):
+
+class Authority(BaseModel):
     name: str
     businessID: int
+    AUTHID: str = ""
 
-    def __post_init__(self) -> None:
-            self.AUTHID = self.generateID()
+    @model_validator(mode="after")
+    def __post_init__(self) -> "Authority":
+        if (self.AUTHID == ""):
+            self.AUTHID = IDGenerator.generateID(str(self.__dict__))
+        return self
 
-@dataclass
-class Identity(HashedValue):
+
+class Identity(BaseModel):
     user: User
     issuer: Authority
     image: str
     credentialID: int
+    CID: str = ""
 
-    def __post_init__(self):
-        self.CID = self.generateID() 
+    @model_validator(mode="after")
+    def __post_init__(self) -> "Identity":
+        if (self.CID == ""):
+            self.CID = IDGenerator.generateID(str(self.__dict__)) 
+        return self
 
 
-@dataclass
-class CHID:
+class CHID(BaseModel):
     user: User
     credential: Identity
     issuer: Authority
     chid: str = ""
 
-    def __post_init__(self) -> None:
+    @model_validator(mode="after")
+    def __post_init__(self) -> "CHID":
         self.chid = IDGenerator.generateCHID(
             self.user.HID,
             self.credential.CID, 
             self.issuer.AUTHID
             )
+        return self
 
 
-@dataclass
-class Block:
+class Block(BaseModel):
     """The standard schema that the user will fill,
     and go in the Blockchain network."""
     index: int
@@ -72,7 +80,8 @@ class Block:
     date: str = str(datetime.now())
     hash: str = ""
 
-    def __post_init__(self):
+    @model_validator(mode="after")
+    def __post_init__(self) -> "Block":
         # Automatically fill previousHash using Ledger if not provided
         try:
             if not self.previousHash:
@@ -84,6 +93,7 @@ class Block:
         # Generate hash after previousHash is set so it's included in the hash input
         if self.hash == "":
             self.hash = IDGenerator.generateID(str(self.__dict__))
+        return self
 
 
 
@@ -91,19 +101,18 @@ class Response(Enum):
     appove = "APPROVED"
     decline = "DECLINED"
 
-# class InitalBlock(Enum):
-#     initalUser = User("", 0, 0, 0, "", "")
-#     initalIssuer = Authority("", 0)
-#     initalDoc = Identity(initalUser, initalIssuer, "", 0)
-#     initalBlock = Block(0, CHID(initalUser, initalDoc, initalIssuer), "0"*64)
 
 class Action(Enum):
     registeration = "REGISTERATION"
     query = "QWERY"
+    hold = "HOLD"
 
 
-@dataclass
-class Qwery:
+class Qwery(BaseModel):
     user: User
     credential: Identity
        
+
+action: Action = Action.registeration
+
+print(action == Action.registeration)
