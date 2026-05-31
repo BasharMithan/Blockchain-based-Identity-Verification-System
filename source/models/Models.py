@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, model_validator
-from typing import Any
+from datetime import datetime, timezone
+from pydantic import BaseModel, model_validator, Field
 
 from source.services.ledger import Ledger
 from source.utils.generators import IDGenerator
@@ -71,7 +70,7 @@ class CHID(BaseModel):
 
 class Block(BaseModel):
     """The standard schema that the user will fill,
-    and go in the Blockchain network."""
+    and prcessed and inserted to the ledger."""
     index: int
     data: CHID
     nonce: int = 0
@@ -82,6 +81,7 @@ class Block(BaseModel):
 
     @model_validator(mode="after")
     def __post_init__(self) -> "Block":
+
         # Automatically fill previousHash using Ledger if not provided
         try:
             if not self.previousHash:
@@ -113,6 +113,13 @@ class Qwery(BaseModel):
     credential: Identity
        
 
-action: Action = Action.registeration
+class NodeConnectionType(Enum):
+    inbound = "INBOUND"
+    outbound = "OUTBOUND"
 
-print(action == Action.registeration)
+class NodeMetadata(BaseModel):
+    nodeID: str
+    host: str
+    port: int
+    connectionType: NodeConnectionType
+    discoverDate: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
