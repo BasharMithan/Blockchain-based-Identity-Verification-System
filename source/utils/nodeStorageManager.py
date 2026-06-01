@@ -1,14 +1,15 @@
 
-import json, os
+import json
 from pathlib import Path
 
 from source.models.Models import NodeMetadata, NodeConnectionType
+from source.utils.logger import Logger
 
 
 
 class NodeStorageManager:
     def __init__(self, nodeID: str):
-        self.filePath: Path = Path(f"source/.Storage - {nodeID}.json")
+        self.filePath: Path = Path(f"storage/.known-nodes-{nodeID}.json")
         # Active connections (actual P2P Node objects)
         self.nodes = []
         
@@ -25,7 +26,7 @@ class NodeStorageManager:
             # ensure parent exists
             self.filePath.parent.mkdir(parents=True, exist_ok=True)
             # create an empty JSON array so json.load() works
-            self.filePath.write_text('[]', encoding='utf-8')
+            # self.filePath.write_text('[]', encoding='utf-8')
 
     def __loadNodes(self) -> None:
         """Loads discovered nodes from disk."""
@@ -86,8 +87,16 @@ class NodeStorageManager:
     def registerNode(self, node: NodeMetadata):
         """Adds a node address to the persistent list if it isn't already there."""
 
+        self.__loadNodes()
+
+        # Checking if a node is discovered. If so, we don't store it again.
+        for n in self.nodes:
+            if (node.host == n.host and node.port == n.port):
+                Logger.info(f"[Node-storage] Node: {(node.host, node.port)} is already discovered.")
+                return 
+
         self.__saveNodes(node)
-        print(f"[Storage] Discovered and saved new peer: {node.host}:{node.port}")
+        Logger.info(f"[Node-storage] Discovered and saved new peer: {node.host}:{node.port}")
 
     def get_all_discovered_nodes(self):
         """Returns a list of all known node addresses for bootstrapping."""
@@ -105,3 +114,11 @@ if __name__ == "__main__":
                          )
 
     print(storage_manager.nodes)
+
+"""
+Refactor blockchain network handling and storage management;
+- Enhance logging functionality.
+- Changing the name of the node class from `BlockchainNetworkHandler` -> `Peer`.
+- Adding duplication check logic for the ledger and the node storage.
+"""
+

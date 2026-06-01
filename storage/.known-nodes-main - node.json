@@ -1,0 +1,51 @@
+[
+    {
+        "nodeID": "dda654dd29f7238bab7a5dc25908f023b476698cff770307f984fb318974c1896d4548dda3b389112434b339c5db2e371ad6f9a0fcb27c925c871afa31a6c922",
+        "host": "127.0.0.1",
+        "port": 8282,
+        "connectionType": "INBOUND",
+        "discoverDate": "2026-06-01 15:47:01.691503+00:00"
+    },
+    {
+        "nodeID": "78cc342587e868a2af3f376e599a8d8199574049577e6e6a3eb233f8fec99b418a7641be44ba7873ccf3c1647321baa8066886c8d27ea5266eec267eb984361d",
+        "host": "localhost",
+        "port": 8281,
+        "connectionType": "OUTBOUND",
+        "discoverDate": "2026-06-01 15:47:01.691503+00:00"
+    },
+    {
+        "nodeID": "7f6086a3e6da554ff11701544c6e676d1d7aa4cf17d7202ff97a96f07ccde4d2c37e94a26607f7f5319cd9eacee2f5faa6ce89c39b2bea83cf005063b94ea610",
+        "host": "localhost",
+        "port": 8281,
+        "connectionType": "OUTBOUND",
+        "discoverDate": "2026-06-01 15:47:15.342642+00:00"
+    },
+    {
+        "nodeID": "b2d947218c3f7b4ba6ef57a08b7ad26303d6120e26df6847bc3b6d814fd31c1dc35ab04ddf0796daba492a4e58995625341021ce0890a180cbc42d58aa0369a4",
+        "host": "127.0.0.1",
+        "port": 8282,
+        "connectionType": "INBOUND",
+        "discoverDate": "2026-06-01 15:48:20.578678+00:00"
+    },
+    {
+        "nodeID": "b43ff214541746fb9f6df87b3edb6528399e4456bf3a0f7991bbcf256effd0b854436484fb973a9a6ed5f9159ef335a1a324bc481e7e4d22c6008b7631e5000d",
+        "host": "localhost",
+        "port": 8281,
+        "connectionType": "OUTBOUND",
+        "discoverDate": "2026-06-01 15:48:20.578678+00:00"
+    },
+    {
+        "nodeID": "d3e5c091c62f60e06dafd3d0f172c898b86124087ee2877159c2448c1e34eda0b5b6c1f3b0aeb4d7a7e6670ea8b846332417a8c590665e6a26646ed138abe5d5",
+        "host": "localhost",
+        "port": 8281,
+        "connectionType": "OUTBOUND",
+        "discoverDate": "2026-06-01 15:48:36.080255+00:00"
+    },
+    {
+        "nodeID": "050509239099d725441c8c3adc7b5fb959eddc500806c9504194d063b390066424e559f3f17272a04a22834b4b5ac1703adef1418d569db17df7398ea9c643ca",
+        "host": "127.0.0.1",
+        "port": 8282,
+        "connectionType": "INBOUND",
+        "discoverDate": "2026-06-01 15:48:36.080255+00:00"
+    }
+]

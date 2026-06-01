@@ -1,14 +1,15 @@
 
 from p2pnetwork.node import Node
 
-from source.models.Models import Action, Block, Qwery, Response
+from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType
 from source.services.ledger import Ledger
 from source.services.verifier import Verifier
 from source.utils.logger import Logger
+from source.utils.nodeStorageManager import NodeStorageManager
 
 
 
-class BlockchainNetworkHandler(Node):
+class Peer(Node):
     """The class that inherits the `Node` logic and meets the requirements of the projects,
     hence it contains the two primary paths of the project:
     - **Registering a block**: Done the the `registerBlock(block: Block)` function.
@@ -22,8 +23,10 @@ class BlockchainNetworkHandler(Node):
 
         # Had to import the ledger to insert blocks
         self.ledgerHandler: Ledger = Ledger()
+
+        self.storageManager = NodeStorageManager("main - node")
         
-        super(BlockchainNetworkHandler, self).__init__(self.host, self.port, callback=None)
+        super(Peer, self).__init__(self.host, self.port, callback=None)
 
 
     def processQwery(self, qwery: Qwery) -> None:
@@ -69,11 +72,20 @@ class BlockchainNetworkHandler(Node):
 
     def inbound_node_connected(self, node):
         Logger.info(f"Got a connection from: {node.id}") 
+        self.storageManager.registerNode(
+            node=NodeMetadata(nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.inbound)
+            )
+        
         return super().inbound_node_connected(node)
     
     def outbound_node_connected(self, node):
         Logger.info(f"Connected to node: {node.id}")
+        self.storageManager.registerNode(
+            node=NodeMetadata(nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.outbound)
+            )
+
         return super().outbound_node_connected(node)
+
     
     def inbound_node_disconnected(self, node):
         return super().inbound_node_disconnected(node)
@@ -81,4 +93,8 @@ class BlockchainNetworkHandler(Node):
     def outbound_node_disconnected(self, node):
         return super().outbound_node_disconnected(node)
 
+    
 
+
+if __name__ == "__main__":
+    pass

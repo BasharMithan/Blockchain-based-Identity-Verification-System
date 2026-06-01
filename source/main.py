@@ -1,9 +1,8 @@
 import time
-import pprint
 from dataclasses import asdict
 
-from source.models.Models import Action, Authority, Block, CHID, Identity, User, Qwery
-from source.services.BlockchainNetwork import BlockchainNetworkHandler
+from source.models.Models import Authority, Block, CHID, Identity, User, Qwery
+from source.services.peer import Peer
 
 if __name__ == "__main__":
     fake_user = User(name="", nationalNumber=0, phone=0, age=0, email="", birth="")
@@ -12,7 +11,7 @@ if __name__ == "__main__":
                 phone=444, age=24, email="", birth="")
 
 
-    issuer = Authority(name="JPU", businessID=3423)
+    issuer = Authority(name="JPUF", businessID=3423)
 
     doc = Identity(user=user, issuer=issuer, image="", credentialID=333)
 
@@ -21,8 +20,8 @@ if __name__ == "__main__":
     block = Block(index=0, data=chid)
 
 
-    Blockchain = BlockchainNetworkHandler("localhost", 8281)
-    client = BlockchainNetworkHandler("localhost", 8282)
+    Blockchain = Peer("localhost", 8281)
+    client = Peer("localhost", 8282)
 
     Blockchain.start()
     client.start()
@@ -34,13 +33,14 @@ if __name__ == "__main__":
     time.sleep(0.5)
 
 
-    # client.registerBlock(block=block)
+    client.registerBlock(block=block)
 
     ownershipQwery = Qwery(user=user, credential=doc)
 
-    client.processQwery(ownershipQwery)
+    # client.processQwery(ownershipQwery)
 
 
+    # print(Blockchain.storageManager.nodes)
 
     time.sleep(2)
 

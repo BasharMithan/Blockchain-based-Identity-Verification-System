@@ -3,13 +3,14 @@ from pathlib import Path
 from dataclasses import asdict
 from typing import Any
 
+from source.utils.logger import Logger
 
 class Ledger:
 
     def __init__(self) -> None:
         # store Block instances (or loaded dicts); start empty
         self.blocks: list = [dict]
-        self.filePath: Path = Path("source/.ledger.json")
+        self.filePath: Path = Path("storage/.ledger.json")
         self.__createFileIfnotExist()
         self.__loadLedger()
 
@@ -41,10 +42,18 @@ class Ledger:
             self.filePath.write_text('', encoding='utf-8')
 
     def insertBlock(self, block) -> None:
+        
+        if (self.__checkIfBlockExists(block)):
+            Logger.warning(f"Block with CHID: {block.get("data")["chid"]} already exists !")
+            return
+
         self.blocks.append(block)
 
         with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
             json.dump(self.blocks, ledgerFile, indent=4)
+
+        Logger.info(f"Block with CHID {block.get("data")["chid"]} inserted successfully. ")
+
 
         
     def getLatestBlock(self):
@@ -96,3 +105,14 @@ class Ledger:
                 if chid_value == target_chid:
                     return True
         return False
+
+    
+    def __checkIfBlockExists(self, targetBlock) -> bool:
+        targetCHID = targetBlock.get("data")["chid"]
+
+        for block in self.blocks:
+            if targetCHID == block.get("data")["chid"]:
+                return True
+        return False
+
+

@@ -1,0 +1,6 @@
+# Runtime dependencies inferred from the codebase
+pydantic>=2.0
+p2pnetwork
+
+# Optional / dev
+pytest>=7.0
