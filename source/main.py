@@ -7,7 +7,7 @@ from source.services.peer import Peer
 if __name__ == "__main__":
     fake_user = User(name="", nationalNumber=0, phone=0, age=0, email="", birth="")
 
-    user = User(name="Testing the Block Registeration - 2", nationalNumber=2312311,
+    user = User(name="Testing the Chain Validation - 2", nationalNumber=2312311,
                 phone=444, age=24, email="", birth="")
 
 
@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     chid = CHID(user=user, credential=doc, issuer=issuer)
 
-    block = Block(index=0, data=chid)
+    block = Block(data=chid)
 
 
     Blockchain = Peer("localhost", 8281)

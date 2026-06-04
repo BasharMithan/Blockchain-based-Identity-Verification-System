@@ -4,4 +4,8 @@ setup(
     name="blockchain_ver_ident",
     version="0.0.1",
     packages=find_packages(),
+    license="MIT",
+    classifiers=[
+        "License :: OSI Approved :: MIT License",
+    ],
 )

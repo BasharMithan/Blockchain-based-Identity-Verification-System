@@ -3,8 +3,8 @@ from enum import Enum
 from datetime import datetime, timezone
 from pydantic import BaseModel, model_validator, Field
 
-from source.services.ledger import Ledger
 from source.utils.generators import IDGenerator
+from source.utils.utility_function import getLedgerLength
 
 
 
@@ -33,6 +33,9 @@ class Authority(BaseModel):
 
     @model_validator(mode="after")
     def __post_init__(self) -> "Authority":
+
+        
+
         if (self.AUTHID == ""):
             self.AUTHID = IDGenerator.generateID(str(self.__dict__))
         return self
@@ -71,10 +74,10 @@ class CHID(BaseModel):
 class Block(BaseModel):
     """The standard schema that the user will fill,
     and prcessed and inserted to the ledger."""
-    index: int
     data: CHID
-    nonce: int = 0
 
+    index: int = 0
+    nonce: int = 0
     previousHash: str = ""
     date: str = str(datetime.now())
     hash: str = ""
@@ -82,18 +85,20 @@ class Block(BaseModel):
     @model_validator(mode="after")
     def __post_init__(self) -> "Block":
 
-        # Automatically fill previousHash using Ledger if not provided
-        try:
-            if not self.previousHash:
-                self.previousHash = Ledger().getLatestHash()
-        except Exception:
-            # fallback to 64 zeros if ledger access fails
-            self.previousHash = "0" * 64
 
-        # Generate hash after previousHash is set so it's included in the hash input
-        if self.hash == "":
-            self.hash = IDGenerator.generateID(str(self.__dict__))
+        if self.index == 0:
+            try:
+                self.index = getLedgerLength()
+            except Exception:
+                # fallback to 0 if ledger access fails or ledger file is invalid/empty
+                self.index = 0
+
         return self
+
+    def computeHash(self) -> str:
+        """Recomputable hash that includes nonce."""
+        content = f"{self.index}{self.data}{self.nonce}{self.previousHash}"
+        return IDGenerator.generateID(content)
 
 
 

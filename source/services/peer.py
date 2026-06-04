@@ -2,10 +2,10 @@
 from p2pnetwork.node import Node
 
 from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType
-from source.services.ledger import Ledger
 from source.services.verifier import Verifier
 from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
+from source.services.blockManager import BlockManager
 
 
 
@@ -21,10 +21,9 @@ class Peer(Node):
 
         Logger.info(f"Initiating a node on {self.host}:{self.port}")
 
-        # Had to import the ledger to insert blocks
-        self.ledgerHandler: Ledger = Ledger()
-
         self.storageManager = NodeStorageManager("main - node")
+
+        self.blockManager = BlockManager()
         
         super(Peer, self).__init__(self.host, self.port, callback=None)
 
@@ -34,7 +33,7 @@ class Peer(Node):
 
         payload =  {
             "action": Action.query.value, 
-            "data": Qwery.model_dump_json(qwery)
+            "data": qwery.model_dump()
             }
         
 
@@ -47,7 +46,7 @@ class Peer(Node):
 
         self.send_to_nodes({
             "action": Action.registeration.value,
-            "data": Block.model_dump(block)
+            "data": block.model_dump()
              })
 
 
@@ -59,15 +58,14 @@ class Peer(Node):
 
         # Registeration Path
         if (action == Action.registeration.value):
-
-            print("Registering a block")
-            self.ledgerHandler.insertBlock(data) 
+            block = Block.model_validate(data)  # type: ignore
+            self.blockManager.registerBlock(block)
 
         # Ownership Checking Path
         elif (action == Action.query.value):
 
             print("Processing a qwery")
-            response = Verifier.check(Qwery.model_validate_json(data))  # type: ignore
+            response = Verifier.check(Qwery.model_validate(data))  # type: ignore
             print(response)
 
     def inbound_node_connected(self, node):

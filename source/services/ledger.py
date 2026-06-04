@@ -1,9 +1,10 @@
 import json
 from pathlib import Path
-from dataclasses import asdict
-from typing import Any
 
 from source.utils.logger import Logger
+from source.utils.chain_validation import ChainValidation
+from source.services.miner import Miner
+from source.models.Models import Block, CHID, Authority, User, Identity
 
 class Ledger:
 
@@ -13,6 +14,8 @@ class Ledger:
         self.filePath: Path = Path("storage/.ledger.json")
         self.__createFileIfnotExist()
         self.__loadLedger()
+        self.miner = Miner()
+        if (len(self.blocks) == 0): self.__generateGensisBlock()
 
 
 
@@ -24,9 +27,14 @@ class Ledger:
         """
         try:
             text = self.filePath.read_text(encoding='utf-8').strip()
+           
             if not text:
-                self.blocks = []
+                Logger.warning("[Ledger] The ledger is empty !")
+                
+                self.__generateGensisBlock()
+                Logger.info("[Ledger] The Gensis block is generated and inserted to the ledger as the first block.")
                 return
+
             data = json.loads(text)
             if isinstance(data, list):
                 self.blocks = data
@@ -41,18 +49,37 @@ class Ledger:
             self.filePath.parent.mkdir(parents=True, exist_ok=True)
             self.filePath.write_text('', encoding='utf-8')
 
-    def insertBlock(self, block) -> None:
-        
-        if (self.__checkIfBlockExists(block)):
-            Logger.warning(f"Block with CHID: {block.get("data")["chid"]} already exists !")
+    def insertBlock(self, targetBlock: Block) -> None:
+
+        block = targetBlock
+
+        block.previousHash = self.getLatestHash()
+
+        minedBlock = self.miner.mine(block)
+
+        self.chainValidator = ChainValidation()
+        validLedger: bool = self.chainValidator.validate()
+
+        if (self.__checkIfBlockExists(minedBlock)):
+            Logger.warning(f"Block with CHID: {minedBlock.data.chid} already exists !")
             return
+        
+        if (not validLedger):
+            Logger.warning("[Chain Validation - Ledger] Chain is invalid !")
 
-        self.blocks.append(block)
+        blockAsDict =  json.loads(Block.model_dump_json(block))
+        
+        self.blocks.append(blockAsDict)
+        self.__writeBlockToLedger(blockAsDict)
+        self.__loadLedger()
 
+
+
+    def __writeBlockToLedger(self, block: dict) -> None:
         with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
             json.dump(self.blocks, ledgerFile, indent=4)
-
-        Logger.info(f"Block with CHID {block.get("data")["chid"]} inserted successfully. ")
+        print(block)
+        Logger.info(f"Block with CHID {block["data"]} inserted successfully. ")
 
 
         
@@ -107,12 +134,22 @@ class Ledger:
         return False
 
     
-    def __checkIfBlockExists(self, targetBlock) -> bool:
-        targetCHID = targetBlock.get("data")["chid"]
+    def __checkIfBlockExists(self, targetBlock: Block) -> bool:
+        targetCHID = targetBlock.data.chid
 
         for block in self.blocks:
-            if targetCHID == block.get("data")["chid"]:
+            if targetCHID == block["data"]["chid"]:
                 return True
         return False
 
+
+    def __generateGensisBlock(self) -> None:
+        user=User(name="Gensis-Block", nationalNumber=0, phone=0, age=0, email="", birth="")
+        auth = Authority(name="", businessID=0)
+        doc = Identity(user=user, issuer=auth, image="", credentialID=0)
+        chid = CHID(user=user, credential=doc, issuer=auth)
+
+        block = Block(data=chid, hash="0"*64)
+
+        self.insertBlock(block)
 
