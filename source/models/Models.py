@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, model_validator, Field
 
 from source.utils.generators import IDGenerator
-from source.utils.utility_function import getLedgerLength
+from source.utils.utility_function import LedgerUtilities
 
 
 
@@ -85,19 +85,14 @@ class Block(BaseModel):
     @model_validator(mode="after")
     def __post_init__(self) -> "Block":
 
-
-        if self.index == 0:
-            try:
-                self.index = getLedgerLength()
-            except Exception:
-                # fallback to 0 if ledger access fails or ledger file is invalid/empty
-                self.index = 0
-
+        # Do not mutate persisted block indexes during model validation.
+        # Index assignment for new blocks is handled explicitly by the
+        # Block creator (BlockManager / Ledger) before mining/insertion.
         return self
 
     def computeHash(self) -> str:
         """Recomputable hash that includes nonce."""
-        content = f"{self.index}{self.data}{self.nonce}{self.previousHash}"
+        content = f"{self.index}{self.data.chid}{self.nonce}{self.previousHash}"
         return IDGenerator.generateID(content)
 
 

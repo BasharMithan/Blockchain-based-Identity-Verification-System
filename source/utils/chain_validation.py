@@ -1,7 +1,8 @@
 
 import json
 
-from source.utils.utility_function import readLedger
+from source.utils.generators import IDGenerator
+from source.utils.utility_function import LedgerUtilities
 from source.utils.logger import Logger
 from source.models.Models import Block
 from source.services.miner import Miner
@@ -15,7 +16,7 @@ class ChainValidation:
         3. Check if the hash of the N block matches the hash of the N + 1 block."""
 
     def __init__(self) -> None:
-        self.ledger = readLedger()
+        self.ledger = LedgerUtilities.readLedger()
         self.miner = Miner()
 
 
@@ -27,7 +28,9 @@ class ChainValidation:
 
 
     def validate(self) -> bool:
-        if len(self.ledger) == 0:
+
+        # The ledger is empty, or it only contains the gensis block. 
+        if len(self.ledger) == 0 or len(self.ledger) == 1:
             Logger.warning("[Chain Validation] Cannot validate. The ledger is empty.")
             return True
 
@@ -65,7 +68,8 @@ class ChainValidation:
         for block_dict in self.ledger:
             block = Block.model_validate(block_dict)
             recomputed = block.computeHash()  # uses stored nonce, doesn't modify it
-            print(f"Computed Hash : {recomputed}")
+
+            # print(f"Block-to-be-checked : {block}")
 
             if block_dict["hash"] != recomputed:
                 Logger.warning(
@@ -94,3 +98,10 @@ class ChainValidation:
                 return False
         return True
 
+
+    def __extractBlockHashableData(self, block: Block) -> str:
+        index, chid, nonce, previousHash = block.index, block.data.chid, block.nonce, block.previousHash
+        return f"{index}{chid}{nonce}{previousHash}"
+
+    def regenerateHash(self, data: str) -> str:
+        return IDGenerator.generateID(data)

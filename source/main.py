@@ -34,6 +34,7 @@ if __name__ == "__main__":
 
 
     client.registerBlock(block=block)
+    
 
     ownershipQwery = Qwery(user=user, credential=doc)
 
