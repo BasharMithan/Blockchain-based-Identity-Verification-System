@@ -5,17 +5,24 @@ from source.utils.logger import Logger
 from source.utils.chain_validation import ChainValidation
 from source.services.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
+from source.utils.utility_function import LedgerUtilities
 
-class Ledger:
+class Ledger(LedgerUtilities):
 
     def __init__(self) -> None:
         # store Block instances (or loaded dicts); start empty
-        self.blocks: list = [dict]
+        self.blocks: list = []
         self.filePath: Path = Path("storage/.ledger.json")
-        self.__createFileIfnotExist()
-        self.__loadLedger()
         self.miner = Miner()
-        if (len(self.blocks) == 0): self.__generateGensisBlock()
+
+        self.__initLedger()
+        self.__loadLedger()
+
+
+    def __initLedger(self) -> None:
+        if not self.filePath.is_file():
+            self.__createFileIfnotExist()
+            self.__generateGensisBlock()
 
 
 
@@ -30,9 +37,6 @@ class Ledger:
            
             if not text:
                 Logger.warning("[Ledger] The ledger is empty !")
-                
-                self.__generateGensisBlock()
-                Logger.info("[Ledger] The Gensis block is generated and inserted to the ledger as the first block.")
                 return
 
             data = json.loads(text)
@@ -44,29 +48,28 @@ class Ledger:
             self.blocks = []
 
     def __createFileIfnotExist(self) -> None:
-        if not self.filePath.is_file():
             # ensure parent exists
             self.filePath.parent.mkdir(parents=True, exist_ok=True)
             self.filePath.write_text('', encoding='utf-8')
 
     def insertBlock(self, targetBlock: Block) -> None:
 
-        block = targetBlock
-
-        block.previousHash = self.getLatestHash()
-
-        minedBlock = self.miner.mine(block)
+        print(f"block index: {targetBlock.index}")
 
         self.chainValidator = ChainValidation()
         validLedger: bool = self.chainValidator.validate()
 
-        if (self.__checkIfBlockExists(minedBlock)):
-            Logger.warning(f"Block with CHID: {minedBlock.data.chid} already exists !")
-            return
-        
         if (not validLedger):
             Logger.warning("[Chain Validation - Ledger] Chain is invalid !")
+            return
 
+
+        block = targetBlock
+
+        if (self.__checkIfBlockExists(block)):
+            Logger.warning(f"Block with CHID: {block.data.chid} already exists !")
+            return
+        
         blockAsDict =  json.loads(Block.model_dump_json(block))
         
         self.blocks.append(blockAsDict)
@@ -83,38 +86,9 @@ class Ledger:
 
 
         
-    def getLatestBlock(self):
-        blocks: list = []
-        try:
-            with open(self.filePath, "r", encoding='utf-8') as ledgerFile:
-                data = json.load(ledgerFile)
-                for block in data:
-                    blocks.append(block)
-            return blocks[-1]
-        except json.JSONDecodeError:
-            return None
+   
     
     
-    def getLatestHash(self) -> str:
-        """
-        Return the latest block's hash as a hex string.
-        Falls back to 64 zeros when no blocks or an error occurs.
-        Handles both dict-shaped blocks and dataclass/objects with a 'hash' attribute.
-        """
-        zero_hash = "0" * 64
-        try:
-            # Prefer in-memory ledger
-            if self.blocks:
-                latest = self.blocks[-1]
-            else:
-                latest = self.getLatestBlock()
-                if not latest:
-                    return zero_hash
-            if isinstance(latest, dict):
-                return latest.get("hash", zero_hash)
-            return getattr(latest, "hash", zero_hash)
-        except Exception:
-            return zero_hash
 
 
     def allBlocks(self) -> list:
@@ -136,6 +110,8 @@ class Ledger:
     
     def __checkIfBlockExists(self, targetBlock: Block) -> bool:
         targetCHID = targetBlock.data.chid
+        if (len(self.blocks) == 0):
+            return False
 
         for block in self.blocks:
             if targetCHID == block["data"]["chid"]:
@@ -149,7 +125,12 @@ class Ledger:
         doc = Identity(user=user, issuer=auth, image="", credentialID=0)
         chid = CHID(user=user, credential=doc, issuer=auth)
 
-        block = Block(data=chid, hash="0"*64)
+        block = Block(data=chid)
+        # Ensure genesis block has correct index and previousHash before mining
+        block.index = LedgerUtilities.getLedgerLength()
+        block.previousHash = LedgerUtilities.getLatestHash()
 
-        self.insertBlock(block)
+        mined = self.miner.mine(block)
+
+        self.insertBlock(mined)
 
