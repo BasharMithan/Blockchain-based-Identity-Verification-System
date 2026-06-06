@@ -44,21 +44,32 @@ class Peer(Node):
         """**Path 2 (Block registeration):** Acts as an entry point
         to the user, when adding a new block to the network."""
 
+        print(f"[Peer] registerBlock broadcast called for block index={block.index}")
+
+        fullBlock = self.blockManager.registerBlock(block)
+
+        if (fullBlock is None):
+            # The block is invalid
+            return
+
         self.send_to_nodes({
             "action": Action.registeration.value,
-            "data": block.model_dump()
+            "data": fullBlock
              })
 
 
     def node_message(self, connected_node, payload: dict): # pyright: ignore[reportIncompatibleMethodOverride]
+        print(f"[Peer] node_message received from {connected_node}")
         action = payload.get("action")
         data   = payload.get("data")
 
+        print(f"[Peer] payload action={action} data-type={type(data)}")
         print(f"Got traffic from: {connected_node}")
 
         # Registeration Path
         if (action == Action.registeration.value):
             block = Block.model_validate(data)  # type: ignore
+
             self.blockManager.registerBlock(block)
 
         # Ownership Checking Path

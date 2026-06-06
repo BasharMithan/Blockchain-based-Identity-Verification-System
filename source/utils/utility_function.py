@@ -8,25 +8,28 @@ from pathlib import Path
 
 class LedgerUtilities:
 
-    path = Path(".storage/.ledger.json")
+    
+    path = Path(__file__).resolve().parents[2] / "storage" / ".ledger.json"
+
 
     @staticmethod
     def readLedger() -> list:
-        """Reads the /storage/.ledger.json file and returns the latest block's hash."""
-        ledger_path = Path(__file__).resolve().parents[2] / "storage" / ".ledger.json"
         try:
-            with ledger_path.open("r", encoding="utf-8") as ledger_file:
-                ledger_data = json.load(ledger_file)
-                return ledger_data
-        except json.JSONDecodeError:
+            with LedgerUtilities.path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+                return []   # corrupt file — treat as empty
+        except (json.JSONDecodeError, FileNotFoundError):
             return []
+
+    
     @staticmethod
     def getLedgerLength() -> int:
         """Returns how many blocks are in the /storage/.ledger.json file."""
-        ledger_path = Path(__file__).resolve().parents[2] / "storage" / ".ledger.json"
 
         try:
-            with ledger_path.open("r", encoding="utf-8") as ledger_file:
+            with LedgerUtilities.path.open("r", encoding="utf-8") as ledger_file:
                 ledger_data = json.load(ledger_file)
         except (FileNotFoundError, json.JSONDecodeError):
             return 0
@@ -78,6 +81,3 @@ class LedgerUtilities:
         except json.JSONDecodeError:
             return None
     
-
-if __name__ == "__main__":
-    print(LedgerUtilities.readLedger())
