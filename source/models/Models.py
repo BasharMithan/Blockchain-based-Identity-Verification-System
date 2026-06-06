@@ -4,9 +4,8 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, model_validator, Field
 
 from source.utils.generators import IDGenerator
-from source.utils.utility_function import LedgerUtilities
 
-
+DIFFICULTY = "0" * 4
 
 class User(BaseModel):
     name: str
@@ -94,6 +93,16 @@ class Block(BaseModel):
         """Recomputable hash that includes nonce."""
         content = f"{self.index}{self.data.chid}{self.nonce}{self.previousHash}"
         return IDGenerator.generateID(content)
+
+    # In Block (Models.py)
+
+    def isHashValid(self) -> bool:
+        """Hash matches a recomputation of this block's contents."""
+        return self.hash == self.computeHash()
+
+    def isMined(self) -> bool:
+        """Hash satisfies the proof-of-work target."""
+        return self.hash.startswith(DIFFICULTY)
 
 
 
