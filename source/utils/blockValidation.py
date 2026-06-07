@@ -4,7 +4,7 @@ from source.utils.logger import Logger
 class BlockValidator:
 
     @staticmethod
-    def validate(block: Block) ->  bool:
+    def validate(block: Block, previousHash: str | None = None) ->  bool:
         Logger.info(f"[Block Validation] Validatiing the block {block.index}.")
         """
         Validates an incoming block before insertion.
@@ -21,6 +21,11 @@ class BlockValidator:
         if not block.isHashValid():
             Logger.warning(f"[Block Validation] The block {block.index} is modified !")
             return False
+
+        if previousHash is not None:
+            if block.previousHash != previousHash:
+                Logger.warning(f"[Block Validation] The block {block.index} has an invalid previous hash !")
+                return False
 
         Logger.info(f"[Block Validation] The block {block.index} is valid.")
         return True

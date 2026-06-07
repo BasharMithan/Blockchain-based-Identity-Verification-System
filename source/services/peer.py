@@ -1,5 +1,7 @@
 
+import json
 from p2pnetwork.node import Node
+
 
 from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType
 from source.services.verifier import Verifier
@@ -52,31 +54,34 @@ class Peer(Node):
             # The block is invalid
             return
 
+        blockAsDict = Block.model_dump_json(fullBlock) 
+
         self.send_to_nodes({
             "action": Action.registeration.value,
-            "data": fullBlock
+            "data": json.loads(blockAsDict) 
              })
 
 
-    def node_message(self, connected_node, payload: dict): # pyright: ignore[reportIncompatibleMethodOverride]
-        print(f"[Peer] node_message received from {connected_node}")
-        action = payload.get("action")
-        data   = payload.get("data")
+    def node_message(self, node, data: dict): 
+        print(f"[Peer] node_message received from {node}")
+        action = data.get("action")
+        payload   = data.get("data")
 
-        print(f"[Peer] payload action={action} data-type={type(data)}")
-        print(f"Got traffic from: {connected_node}")
+        print(f"[Peer] payload action={action} data-type={type(payload)}")
+        print(f"Got traffic from: {node}")
 
         # Registeration Path
         if (action == Action.registeration.value):
-            block = Block.model_validate(data)  # type: ignore
+            block = Block.model_validate(payload)   
 
-            self.blockManager.registerBlock(block)
+            self.blockManager.receiveBlock(block)
+
 
         # Ownership Checking Path
         elif (action == Action.query.value):
 
             print("Processing a qwery")
-            response = Verifier.check(Qwery.model_validate(data))  # type: ignore
+            response = Verifier.check(Qwery.model_validate(payload))   
             print(response)
 
     def inbound_node_connected(self, node):

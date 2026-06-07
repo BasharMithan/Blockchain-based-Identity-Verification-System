@@ -4,7 +4,6 @@ from source.utils.utility_function import LedgerUtilities
 from source.utils.blockValidation import BlockValidator
 from source.utils.logger import Logger
 from source.models.Models import Block
-from source.services.miner import Miner
 
 
 class ChainValidation:
@@ -15,27 +14,27 @@ class ChainValidation:
         3. Check if the hash of the N block matches the hash of the N + 1 block."""
 
     def __init__(self) -> None:
-        self.miner = Miner()
 
         Logger.info("[Chain Validation] Initializing the chain validator.")
 
     def validate(self) -> bool:
-        self.ledger = LedgerUtilities.readLedger()
-        self.blockValidator = BlockValidator()
+        ledger = LedgerUtilities.readLedger()
+        blockValidator = BlockValidator()
 
 
 
-        if len(self.ledger) == 0:
+
+        if len(ledger) == 0:
             Logger.warning("[Chain Validation] Cannot validate. The ledger is empty.")
             return True
 
-        for block_dict in self.ledger:
+        for block_dict in ledger:
             block = Block.model_validate(block_dict)
-            if not self.blockValidator.validate(block):
+            if not blockValidator.validate(block):
                 return False
 
  
-        if not self.__checkChainLinkage(self.ledger):
+        if not self.__checkChainLinkage(ledger):
             Logger.warning("[Chain Validation] Failed: chain linkage broken.")
             return False
 

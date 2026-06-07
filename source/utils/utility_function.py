@@ -27,21 +27,7 @@ class LedgerUtilities:
     @staticmethod
     def getLedgerLength() -> int:
         """Returns how many blocks are in the /storage/.ledger.json file."""
-
-        try:
-            with LedgerUtilities.path.open("r", encoding="utf-8") as ledger_file:
-                ledger_data = json.load(ledger_file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            return 0
-
-        if isinstance(ledger_data, list):
-            return len(ledger_data)
-        if isinstance(ledger_data, dict):
-            blocks = ledger_data.get("blocks")
-            if isinstance(blocks, list):
-                return len(blocks)
-
-        raise ValueError("Ledger file does not contain a valid blocks list.")
+        return len(LedgerUtilities.readLedger())
 
     @staticmethod
     def getLatestHash() -> str:

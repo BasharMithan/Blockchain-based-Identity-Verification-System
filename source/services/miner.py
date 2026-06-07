@@ -1,9 +1,8 @@
 from source.models.Models import Block
 from source.utils.logger import Logger
+from source.models.constants import TARGET
 
 class Miner:
-    DIFFICULTY = 4  # number of leading zeros required
-    TARGET = "0" * DIFFICULTY
 
     @staticmethod
     def mine(block: Block) -> Block:
@@ -19,7 +18,7 @@ class Miner:
         while True:
             block.hash = block.computeHash()
 
-            if block.hash.startswith(Miner.TARGET):
+            if block.hash.startswith(TARGET):
                 Logger.info(
                     f"[Miner] Block {block.index} mined after "
                     f"{attempts} attempts. Nonce: {block.nonce}"

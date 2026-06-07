@@ -12,8 +12,6 @@ class BlockManager:
     def __init__(self) -> None:
         self.ledger = Ledger()
         self.miner = Miner()
-        self.chainValidator = ChainValidation()
-        self.blockValidation = BlockValidator()
 
 
     def registerBlock(self, block: Block) -> None | Block:
@@ -28,9 +26,6 @@ class BlockManager:
         
         minedBlock = self.miner.mine(block)
 
-        if not self.blockValidation.validate(block):
-            return None
-
         
         if (self.__valid()):
             self.ledger.insertBlock(minedBlock)
@@ -38,15 +33,29 @@ class BlockManager:
         else:
             return None
 
+    def receiveBlock(self, block: Block) -> None | Block:
+        blockValidation = BlockValidator()
+        Logger.info(f"[Block Validation] Received block {block.index}.")
+
+        print(f"Previous hash of the {block.index} -> {LedgerUtilities.getLatestHash()}")
+        if not blockValidation.validate(block, LedgerUtilities.getLatestHash()):
+            Logger.warning(f"[Block Validation] Recived block {block.index} is not valid !")
+            return None
+
+        Logger.info(f"[Block Validation] Received block {block.index} is valid and ready to be inserted to the ledger.")
+        self.ledger.insertBlock(block)
+        return block
+
 
     def __valid(self) -> bool:
-        isValid: bool = self.chainValidator.validate()
+        chainValidator = ChainValidation()
+        isValid: bool = chainValidator.validate()
         return isValid
 
     @staticmethod
     def checkIfBlockExists(targetCHID: str) -> bool:
         ledger: list = LedgerUtilities.readLedger()
-        if (LedgerUtilities.getLedgerLength() == 0):
+        if (len(ledger) == 0):
             return False
 
         for block in ledger:

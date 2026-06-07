@@ -1,11 +1,14 @@
 from datetime import datetime
+from pathlib import Path
 from enum import Enum
 from datetime import datetime, timezone
 from pydantic import BaseModel, model_validator, Field
 
 from source.utils.generators import IDGenerator
+from source.models.constants import TARGET
 
-DIFFICULTY = "0" * 4
+
+   
 
 class User(BaseModel):
     name: str
@@ -102,7 +105,7 @@ class Block(BaseModel):
 
     def isMined(self) -> bool:
         """Hash satisfies the proof-of-work target."""
-        return self.hash.startswith(DIFFICULTY)
+        return self.hash.startswith(TARGET)
 
 
 
@@ -132,3 +135,13 @@ class NodeMetadata(BaseModel):
     port: int
     connectionType: NodeConnectionType
     discoverDate: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class PeerRecord(BaseModel):
+    title: str
+    metadata: NodeMetadata
+    ledgerLocation: Path
+    knownPeers: list
+    status: str
+
+ 

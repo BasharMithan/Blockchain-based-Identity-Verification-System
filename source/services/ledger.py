@@ -60,9 +60,9 @@ class Ledger():
 
     def insertBlock(self, block: Block) -> None:
 
-        self.chainValidation = ChainValidation()
+        chainValidation = ChainValidation()
 
-        if not self.chainValidation.validate():
+        if not chainValidation.validate():
             return
 
         blockAsDict =  json.loads(Block.model_dump_json(block))
