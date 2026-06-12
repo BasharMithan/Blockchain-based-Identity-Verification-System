@@ -1,5 +1,6 @@
 from source.models.Models import Block
 from source.utils.logger import Logger
+from source.errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
 
 class BlockValidator:
 
@@ -15,17 +16,17 @@ class BlockValidator:
         # 1. Proof-of-work — was this block actually mined?
         if not block.isMined():
             Logger.warning(f"[Block Validation] The block {block.index} is nor mined !")
-            return False
+            raise BlockNotMinedError(block.index, block.hash)
 
         # 2. Hash integrity — does the stored hash match a recomputation?
         if not block.isHashValid():
             Logger.warning(f"[Block Validation] The block {block.index} is modified !")
-            return False
+            raise BlockHashMismatchError(block.index, block.hash, block.computeHash())
 
         if previousHash is not None:
             if block.previousHash != previousHash:
                 Logger.warning(f"[Block Validation] The block {block.index} has an invalid previous hash !")
-                return False
+                raise BlockPreviousHashError(block.index, previousHash, block.previousHash)
 
         Logger.info(f"[Block Validation] The block {block.index} is valid.")
         return True

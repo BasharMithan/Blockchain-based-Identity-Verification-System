@@ -6,6 +6,13 @@ from source.utils.chain_validation import ChainValidation
 from source.services.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
 
+from source.errors import (
+    LedgerNotFoundError,
+    LedgerCorruptError,
+    InvalidChainError,
+    GenesisBlockError
+    )
+
 class Ledger():
 
     def __init__(self) -> None:
@@ -49,21 +56,26 @@ class Ledger():
             if isinstance(data, list):
                 self.blocks = data
             else:
-                self.blocks = [data]
-        except Exception:
-            self.blocks = []
+                raise LedgerCorruptError(str(self.filePath))
+        except json.JSONDecodeError as error:
+            raise LedgerCorruptError(str(self.filePath)) from error
+
 
     def __createFileIfnotExist(self) -> None:
-            # ensure parent exists
-            self.filePath.parent.mkdir(parents=True, exist_ok=True)
-            self.filePath.write_text('', encoding='utf-8')
+            try:
+                # ensure parent exists
+                self.filePath.parent.mkdir(parents=True, exist_ok=True)
+                self.filePath.write_text('', encoding='utf-8')
+            except OSError as error:
+                raise LedgerNotFoundError(str(self.filePath)) from error
+
 
     def insertBlock(self, block: Block) -> None:
 
         chainValidation = ChainValidation()
 
         if not chainValidation.validate():
-            return
+            raise InvalidChainError("Chain failed integrity check before insert.")
 
         blockAsDict =  json.loads(Block.model_dump_json(block))
         
@@ -93,7 +105,10 @@ class Ledger():
         block.index = 0
         block.previousHash = "0"*64
 
-        mined = self.miner.mine(block)
+        try:
 
-        self.insertBlock(mined)
+            mined = self.miner.mine(block)
+            self.insertBlock(mined)
+        except Exception as error:
+            raise GenesisBlockError(str(error)) from error
 

@@ -6,6 +6,10 @@ from source.utils.chain_validation import ChainValidation
 from source.utils.blockValidation import BlockValidator
 from source.utils.utility_function import LedgerUtilities
 
+from source.errors import (
+    DuplicateBlockError, 
+    InvalidChainError)
+
 
 class BlockManager:
     """Manages the block functionalities and validates if the inserted block is valid."""
@@ -14,7 +18,7 @@ class BlockManager:
         self.miner = Miner()
 
 
-    def registerBlock(self, block: Block) -> None | Block:
+    def registerBlock(self, block: Block) ->  Block:
         print(f"[BlockManager] registerBlock called for block candidate index={block.index}")
         # computed hash includes the final previousHash and index.
         block.index = LedgerUtilities.getLedgerLength()
@@ -22,35 +26,32 @@ class BlockManager:
 
         if self.checkIfBlockExists(block.data.chid):
             Logger.warning(f"[Block validation] The block {block.index} aredy in the ledger !")
-            return None
+            raise DuplicateBlockError(block.data.chid)
         
         minedBlock = self.miner.mine(block)
 
         
-        if (self.__valid()):
-            self.ledger.insertBlock(minedBlock)
-            return minedBlock
-        else:
-            return None
+        if not self.__validChain():
+                raise InvalidChainError(f"[Block Manager] Chain is invalid")
+        
+        self.ledger.insertBlock(minedBlock)
+        return minedBlock
 
-    def receiveBlock(self, block: Block) -> None | Block:
+
+    def receiveBlock(self, block: Block) ->  Block:
         blockValidation = BlockValidator()
         Logger.info(f"[Block Validation] Received block {block.index}.")
 
-        print(f"Previous hash of the {block.index} -> {LedgerUtilities.getLatestHash()}")
-        if not blockValidation.validate(block, LedgerUtilities.getLatestHash()):
-            Logger.warning(f"[Block Validation] Recived block {block.index} is not valid !")
-            return None
-
+        blockValidation.validate(block, LedgerUtilities.getLatestHash())
+        
         Logger.info(f"[Block Validation] Received block {block.index} is valid and ready to be inserted to the ledger.")
         self.ledger.insertBlock(block)
         return block
 
 
-    def __valid(self) -> bool:
+    def __validChain(self) -> bool:
         chainValidator = ChainValidation()
-        isValid: bool = chainValidator.validate()
-        return isValid
+        return chainValidator.validate()
 
     @staticmethod
     def checkIfBlockExists(targetCHID: str) -> bool:

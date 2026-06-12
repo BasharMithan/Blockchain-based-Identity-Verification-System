@@ -5,6 +5,10 @@ from source.utils.blockValidation import BlockValidator
 from source.utils.logger import Logger
 from source.models.Models import Block
 
+from source.errors import LedgerCorruptError
+from source.errors import GenesisBlockError
+from source.errors import BlockPreviousHashError
+
 
 class ChainValidation:
     """Validates if the chain is valid based on 3 important checks:
@@ -30,13 +34,11 @@ class ChainValidation:
 
         for block_dict in ledger:
             block = Block.model_validate(block_dict)
-            if not blockValidator.validate(block):
-                return False
+
+            blockValidator.validate(block)
 
  
-        if not self.__checkChainLinkage(ledger):
-            Logger.warning("[Chain Validation] Failed: chain linkage broken.")
-            return False
+        self.__checkChainLinkage(ledger)
 
         Logger.info("[Chain Validation] Chain is valid.")
         return True
@@ -45,16 +47,17 @@ class ChainValidation:
     def __checkChainLinkage(self, ledger: list) -> bool:
         # Genesis block must have the zero hash
         if ledger[0]["previousHash"] != "0"*64:
-            Logger.warning("[Chain Validation] Genesis block has invalid previousHash.")
-            return False
+            raise GenesisBlockError("Genesis block has invalid previousHash.")
 
         for i in range(len(ledger) - 1):
             if ledger[i + 1]["previousHash"] != ledger[i]["hash"]:
-                Logger.warning(
-                    f"[Chain Validation] Linkage broken between "
-                    f"block {i} and block {i + 1}."
-                )
-                return False
+
+                raise BlockPreviousHashError(
+                    index=ledger[i + 1]["index"],
+                    expected=ledger[i + 1]["previousHash"],
+                    got=ledger[i]["hash"]
+                    )
+
         return True
 
     

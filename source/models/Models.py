@@ -119,6 +119,11 @@ class Action(Enum):
     query = "QWERY"
     hold = "HOLD"
 
+    @staticmethod
+    def getactionsaslist() -> list:
+        "Get all actions as list"
+        return [action.value for action in Action]
+
 
 class Qwery(BaseModel):
     user: User
@@ -143,5 +148,3 @@ class PeerRecord(BaseModel):
     ledgerLocation: Path
     knownPeers: list
     status: str
-
- 

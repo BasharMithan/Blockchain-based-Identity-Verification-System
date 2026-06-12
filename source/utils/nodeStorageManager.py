@@ -5,6 +5,8 @@ from pathlib import Path
 from source.models.Models import NodeMetadata, NodeConnectionType
 from source.utils.logger import Logger
 
+from source.errors import NodeStorageError
+
 
 
 class NodeStorageManager:
@@ -58,8 +60,9 @@ class NodeStorageManager:
                 data = json.load(f)
                 if not isinstance(data, list):
                     data = []
-        except (json.JSONDecodeError, FileNotFoundError):
-            data = []
+        except OSError as error:
+            raise NodeStorageError(str(self.filePath), str(error)) from error
+
 
         node_dict = node.model_dump()
 
@@ -77,8 +80,11 @@ class NodeStorageManager:
                 return o.value
             return str(o)
 
-        with open(self.filePath, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, default=_default_serializer)
+        try:
+            with open(self.filePath, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=4, default=_default_serializer)
+        except OSError as error:
+            raise NodeStorageError(str(self.filePath), str(error)) from error
 
         # refresh in-memory list
         self.__loadNodes()

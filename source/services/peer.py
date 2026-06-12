@@ -9,6 +9,12 @@ from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.services.blockManager import BlockManager
 
+from source.errors import (
+    LedgerCorruptError, LedgerNotFoundError, InvalidBlockPayloadError,
+    BlockHashMismatchError, BlockNotMinedError,
+    DuplicateBlockError, BlockPreviousHashError,
+    InvalidChainError)
+
 
 
 class Peer(Node):
@@ -47,24 +53,33 @@ class Peer(Node):
         to the user, when adding a new block to the network."""
 
         print(f"[Peer] registerBlock broadcast called for block index={block.index}")
+        try:
+            fullBlock = self.blockManager.registerBlock(block)
+        
+            blockAsDict = Block.model_dump_json(fullBlock) 
 
-        fullBlock = self.blockManager.registerBlock(block)
+            self.send_to_nodes({
+                "action": Action.registeration.value,
+                "data": json.loads(blockAsDict) 
+                 })
 
-        if (fullBlock is None):
-            # The block is invalid
-            return
+        except (LedgerCorruptError, LedgerNotFoundError) as error:
+            Logger.warning(f"[Peer] Fatal ledger error: {error}")
+            self.stop()   # ledger is unreadable — stopping is justified
 
-        blockAsDict = Block.model_dump_json(fullBlock) 
-
-        self.send_to_nodes({
-            "action": Action.registeration.value,
-            "data": json.loads(blockAsDict) 
-             })
-
+        except Exception as error:
+            Logger.warning(f"[Peer] Unable to register block: {error}")
+            
 
     def node_message(self, node, data: dict): 
         print(f"[Peer] node_message received from {node}")
+
         action = data.get("action")
+
+        if action not in Action.getactionsaslist():
+            Logger.warning(f"[Peer] Unknown action: got: {action}, available actions: {Action.getactionsaslist()}")
+            return
+        
         payload   = data.get("data")
 
         print(f"[Peer] payload action={action} data-type={type(payload)}")
@@ -72,9 +87,23 @@ class Peer(Node):
 
         # Registeration Path
         if (action == Action.registeration.value):
-            block = Block.model_validate(payload)   
+            try:
+                block = Block.model_validate(payload)   
+                self.blockManager.receiveBlock(block)
 
-            self.blockManager.receiveBlock(block)
+            except InvalidBlockPayloadError as error:
+                Logger.warning(f"[Peer] Invalid block payload: {str(error)}")
+
+            except (
+                BlockNotMinedError, DuplicateBlockError, BlockPreviousHashError,
+                BlockHashMismatchError) as error:
+                Logger.warning(f"[Peer] Block validation failed: {str(error)}")
+
+
+            except InvalidChainError as error:
+                Logger.warning(f"[Peer] Chain validation failed: {str(error)}")
+                self.stop()
+
 
 
         # Ownership Checking Path
