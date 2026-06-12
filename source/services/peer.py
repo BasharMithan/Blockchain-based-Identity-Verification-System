@@ -24,15 +24,13 @@ class Peer(Node):
     - **Checking identitiy ownership**: Done by the `processQwery(qwery: Qwery)` function."""
 
     def __init__(self, host, port: int) -> None:
-        self.host, self.port = host, port
+        self.host = host
+        self.port = port
         self.discoveredNodes = {}
-
+        self.seenBlocks: set = set()
         Logger.info(f"Initiating a node on {self.host}:{self.port}")
-
         self.storageManager = NodeStorageManager("main - node")
-
         self.blockManager = BlockManager()
-        
         super(Peer, self).__init__(self.host, self.port, callback=None)
 
 
@@ -87,9 +85,25 @@ class Peer(Node):
 
         # Registeration Path
         if (action == Action.registeration.value):
+
+            chid = payload["data"]["chid"]  # type: ignore
+
+            if (chid in self.seenBlocks):
+                return # Block already processed.
+
+            self.seenBlocks.add(chid) # type: ignore
+             
             try:
                 block = Block.model_validate(payload)   
                 self.blockManager.receiveBlock(block)
+
+                # Block Propagation
+                self.send_to_nodes({
+                    "action": Action.registeration.value,
+                    "data": payload
+                }, exclude=[node])
+
+
 
             except InvalidBlockPayloadError as error:
                 Logger.warning(f"[Peer] Invalid block payload: {str(error)}")

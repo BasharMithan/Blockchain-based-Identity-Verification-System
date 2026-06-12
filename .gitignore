@@ -1,0 +1,17 @@
+.venv/
+.vscode/
+
+docs/BCIVS.pdf
+docs/Details.md
+docs/P2pnetwork-Documentation.pdf
+docs/Real-World-Example-(BC IDV).drawio
+docs/Real-World-Example-(BC IDV).pdf
+docs/todo.md
+docs/What is a Blockchain-Based Identity Verification System.pdf
+
+storage/*
+
+blockchain_ver_ident.egg-info
+*__pycache__/
+*.pyc
+*.pyo
