@@ -5,6 +5,7 @@ from source.utils.logger import Logger
 from source.utils.chain_validation import ChainValidation
 from source.services.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
+from source.models.constants import LEDGER_PATH
 
 from source.errors import (
     LedgerNotFoundError,
@@ -15,10 +16,10 @@ from source.errors import (
 
 class Ledger():
 
-    def __init__(self) -> None:
+    def __init__(self, filePath: Path = LEDGER_PATH) -> None:
         # store Block instances (or loaded dicts); start empty
         self.blocks: list = []
-        self.filePath: Path = Path(__file__).resolve().parents[2] / "storage" / ".ledger.json"
+        self.filePath: Path = filePath
 
         self.miner = Miner()
 
@@ -72,7 +73,7 @@ class Ledger():
 
     def insertBlock(self, block: Block) -> None:
 
-        chainValidation = ChainValidation()
+        chainValidation = ChainValidation(self.filePath)
 
         if not chainValidation.validate():
             raise InvalidChainError("Chain failed integrity check before insert.")

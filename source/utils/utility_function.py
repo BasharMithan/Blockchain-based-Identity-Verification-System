@@ -5,17 +5,21 @@
 import json
 from pathlib import Path
 
+from source.models.constants import LEDGER_PATH
+
 
 class LedgerUtilities:
+    def __init__(self, filePath: Path = LEDGER_PATH) -> None:
+        self.filePath: Path = filePath
 
     
-    path = Path(__file__).resolve().parents[2] / "storage" / ".ledger.json"
 
 
     @staticmethod
-    def readLedger() -> list:
+    def readLedger(filePath: Path | None = None) -> list:
+        path = filePath or LEDGER_PATH 
         try:
-            with LedgerUtilities.path.open("r", encoding="utf-8") as f:
+            with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, list):
                     return data
@@ -59,7 +63,7 @@ class LedgerUtilities:
         # TODO: Move this utility function to the utils/utility_functions.py
         blocks: list = []
         try:
-            with open(LedgerUtilities.path, "r", encoding='utf-8') as ledgerFile:
+            with open(LEDGER_PATH, "r", encoding='utf-8') as ledgerFile:
                 data = json.load(ledgerFile)
                 for block in data:
                     blocks.append(block)
