@@ -73,7 +73,7 @@ class Ledger():
 
     def insertBlock(self, block: Block) -> None:
 
-        chainValidation = ChainValidation()
+        chainValidation = ChainValidation(self.filePath)
 
         if not chainValidation.validate():
             raise InvalidChainError("Chain failed integrity check before insert.")
