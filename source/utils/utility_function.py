@@ -29,19 +29,19 @@ class LedgerUtilities:
 
     
     @staticmethod
-    def getLedgerLength() -> int:
+    def getLedgerLength(filePath: Path = LEDGER_PATH) -> int:
         """Returns how many blocks are in the /storage/.ledger.json file."""
-        return len(LedgerUtilities.readLedger())
+        return len(LedgerUtilities.readLedger(filePath))
 
     @staticmethod
-    def getLatestHash() -> str:
+    def getLatestHash(filePath: Path = LEDGER_PATH) -> str:
             """
             Return the latest block's hash as a hex string.
             Falls back to 64 zeros when no blocks or an error occurs.
             Handles both dict-shaped blocks and dataclass/objects with a 'hash' attribute.
             """
 
-            blocks = LedgerUtilities.readLedger()
+            blocks = LedgerUtilities.readLedger(filePath)
 
             zero_hash = "0" * 64
             try:
