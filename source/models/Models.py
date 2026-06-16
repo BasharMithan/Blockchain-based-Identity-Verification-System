@@ -118,6 +118,7 @@ class Action(Enum):
     registeration = "REGISTERATION"
     query = "QWERY"
     hold = "HOLD"
+    BlockBroadcast = "BLOCK-BROADCAST"
 
     @staticmethod
     def getactionsaslist() -> list:

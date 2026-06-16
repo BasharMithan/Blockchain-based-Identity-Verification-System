@@ -8,13 +8,12 @@ from source.utils.logger import Logger
 from source.errors import NodeStorageError
 
 
-
 class NodeStorageManager:
     def __init__(self, nodeID: str):
-        self.filePath: Path = Path(f"storage/.known-nodes-{nodeID}.json")
+        self.filePath: Path = Path(__file__).resolve().parents[2] / "storage" / f"nodes-{nodeID}.json"
         # Active connections (actual P2P Node objects)
         self.nodes = []
-        
+
         # Ensure the persistent storage file exists
         self.__initStorage()
 
@@ -28,7 +27,7 @@ class NodeStorageManager:
             # ensure parent exists
             self.filePath.parent.mkdir(parents=True, exist_ok=True)
             # create an empty JSON array so json.load() works
-            # self.filePath.write_text('[]', encoding='utf-8')
+            self.filePath.write_text('[]', encoding='utf-8')
 
     def __loadNodes(self) -> None:
         """Loads discovered nodes from disk."""
@@ -67,9 +66,9 @@ class NodeStorageManager:
         node_dict = node.model_dump()
 
         # avoid duplicate entries by nodeID if present
-        node_id = node_dict.get('nodeID')
+        node_id = node_dict['nodeID']
         if node_id is not None:
-            if not any((d.get('nodeID') == node_id) for d in data):
+            if not any((d['nodeID'] == node_id) for d in data):
                 data.append(node_dict)
         else:
             data.append(node_dict)
@@ -99,7 +98,7 @@ class NodeStorageManager:
         for n in self.nodes:
             if (node.host == n.host and node.port == n.port):
                 Logger.info(f"[Node-storage] Node: {(node.host, node.port)} is already discovered.")
-                return 
+                return
 
         self.__saveNodes(node)
         Logger.info(f"[Node-storage] Discovered and saved new peer: {node.host}:{node.port}")
@@ -127,4 +126,3 @@ Refactor blockchain network handling and storage management;
 - Changing the name of the node class from `BlockchainNetworkHandler` -> `Peer`.
 - Adding duplication check logic for the ledger and the node storage.
 """
-

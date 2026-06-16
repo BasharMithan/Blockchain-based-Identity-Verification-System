@@ -5,7 +5,6 @@ from source.utils.logger import Logger
 from source.utils.chain_validation import ChainValidation
 from source.services.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
-from source.models.constants import LEDGER_PATH
 
 from source.errors import (
     LedgerNotFoundError,
@@ -16,7 +15,7 @@ from source.errors import (
 
 class Ledger():
 
-    def __init__(self, filePath: Path = LEDGER_PATH) -> None:
+    def __init__(self, filePath: Path) -> None:
         # store Block instances (or loaded dicts); start empty
         self.blocks: list = []
         self.filePath: Path = filePath

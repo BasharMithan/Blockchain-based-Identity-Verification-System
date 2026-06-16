@@ -34,7 +34,7 @@ class DuplicateBlockError(Exception):
 
 class GensisBlockHasInvalidPreviousHash(Exception):
     """Raised when the previous hash of the gensis is not 0*64"""
-    def __int__(self, gensisBlockPH: str):
+    def __init__(self, gensisBlockPH: str):
         super().__init__(
             f"The previous hash of the gensis block must be '{str('0'*64)[:12]}...' got {gensisBlockPH[:12]}..."
 

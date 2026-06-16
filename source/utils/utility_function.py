@@ -5,19 +5,21 @@
 import json
 from pathlib import Path
 
-from source.models.constants import LEDGER_PATH
+# from source.models.constants import LEDGER_PATH
+from source.models.Models import Block, Action
+from source.models.Models import Qwery as Query
+from source.utils.logger import Logger
 
 
 class LedgerUtilities:
-    def __init__(self, filePath: Path = LEDGER_PATH) -> None:
-        self.filePath: Path = filePath
-
+    def __init__(self) -> None:
+        ...
     
 
 
     @staticmethod
-    def readLedger(filePath: Path | None = None) -> list:
-        path = filePath or LEDGER_PATH 
+    def readLedger(filePath: Path ) -> list:
+        path = filePath 
         try:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -29,12 +31,12 @@ class LedgerUtilities:
 
     
     @staticmethod
-    def getLedgerLength(filePath: Path = LEDGER_PATH) -> int:
+    def getLedgerLength(filePath: Path ) -> int:
         """Returns how many blocks are in the /storage/.ledger.json file."""
         return len(LedgerUtilities.readLedger(filePath))
 
     @staticmethod
-    def getLatestHash(filePath: Path = LEDGER_PATH) -> str:
+    def getLatestHash(filePath: Path ) -> str:
             """
             Return the latest block's hash as a hex string.
             Falls back to 64 zeros when no blocks or an error occurs.
@@ -49,7 +51,7 @@ class LedgerUtilities:
                 if blocks:
                     latest = blocks[-1]
                 else:
-                    latest = LedgerUtilities.getLatestBlock()
+                    latest = LedgerUtilities.getLatestBlock(filePath)
                     if not latest:
                         return zero_hash
                 if isinstance(latest, dict):
@@ -59,11 +61,11 @@ class LedgerUtilities:
                 return zero_hash
         
     @staticmethod
-    def getLatestBlock():
+    def getLatestBlock(filePath: Path):
         # TODO: Move this utility function to the utils/utility_functions.py
         blocks: list = []
         try:
-            with open(LEDGER_PATH, "r", encoding='utf-8') as ledgerFile:
+            with open(filePath, "r", encoding='utf-8') as ledgerFile:
                 data = json.load(ledgerFile)
                 for block in data:
                     blocks.append(block)
@@ -71,3 +73,59 @@ class LedgerUtilities:
         except json.JSONDecodeError:
             return None
     
+
+    @staticmethod
+    def getCHIDList(filePath: Path) -> list:
+        """Return a list of unique CHIDs found in the ledger.
+        Scans each block in the ledger. For dict-shaped blocks it looks for a
+        top-level 'chid' key and for nested actions (a list under 'actions' or
+        'txs') it also collects any 'chid' values. For object blocks it will
+        attempt to read the 'chid' attribute and any actions attribute that is
+        iterable. The returned list preserves discovery order and contains no
+        duplicates.
+        """
+        chid_set = set()
+        chid_list = []
+        blocks = LedgerUtilities.readLedger(filePath)
+        for blk in blocks:
+            # handle dict-like blocks
+            if isinstance(blk, dict):
+                # top-level chid
+                chid = blk.get("chid")
+                if chid and chid not in chid_set:
+                    chid_set.add(chid)
+                    chid_list.append(chid)
+                # look into common action containers
+                for container_key in ("actions", "txs", "transactions"):
+                    items = blk.get(container_key)
+                    if isinstance(items, list):
+                        for it in items:
+                            if isinstance(it, dict):
+                                c = it.get("chid")
+                                if c and c not in chid_set:
+                                    chid_set.add(c)
+                                    chid_list.append(c)
+            else:
+                # handle object-like blocks
+                try:
+                    chid = getattr(blk, "chid", None)
+                    if chid and chid not in chid_set:
+                        chid_set.add(chid)
+                        chid_list.append(chid)
+                    # try to inspect actions attribute if present
+                    for attr in ("actions", "txs", "transactions"):
+                        items = getattr(blk, attr, None)
+                        if items and hasattr(items, "__iter__"):
+                            for it in items:
+                                c = None
+                                if isinstance(it, dict):
+                                    c = it.get("chid")
+                                else:
+                                    c = getattr(it, "chid", None)
+                                if c and c not in chid_set:
+                                    chid_set.add(c)
+                                    chid_list.append(c)
+                except Exception:
+                    # ignore malformed block entries
+                    continue
+        return chid_list

@@ -4,7 +4,6 @@ from source.utils.utility_function import LedgerUtilities
 from source.utils.blockValidation import BlockValidator
 from source.utils.logger import Logger
 from source.models.Models import Block
-from source.models.constants import LEDGER_PATH
 
 from source.errors import LedgerCorruptError
 from source.errors import GenesisBlockError
@@ -18,15 +17,13 @@ class ChainValidation:
         2. Check if all the blocks' hash starts with 4 zeros (Mined).
         3. Check if the hash of the N block matches the hash of the N + 1 block."""
 
-    def __init__(self, filePath: Path | None = None) -> None:
-        self.filePath = filePath or LEDGER_PATH 
+    def __init__(self, filePath: Path) -> None:
+        self.filePath = filePath 
         Logger.info("[Chain Validation] Initializing the chain validator.")
 
     def validate(self) -> bool:
         ledger = LedgerUtilities.readLedger(self.filePath)
         blockValidator = BlockValidator()
-
-
 
 
         if len(ledger) == 0:

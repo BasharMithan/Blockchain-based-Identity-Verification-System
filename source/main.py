@@ -7,7 +7,7 @@ from source.services.peer import Peer
 if __name__ == "__main__":
     fake_user = User(name="", nationalNumber=0, phone=0, age=0, email="", birth="")
 
-    user = User(name="Testing the Chain Validation - 14", nationalNumber=2312311,
+    user = User(name="Testing the block propagation (Client)", nationalNumber=2312311,
                 phone=444, age=24, email="", birth="")
 
 
@@ -20,30 +20,34 @@ if __name__ == "__main__":
     block = Block(data=chid)
 
 
-    Blockchain = Peer("localhost", 8281)
-    client = Peer("localhost", 8282)
+    Blockchain = Peer("Blockchain", "localhost", 8281)
+    client = Peer("client", "localhost", 8282)
+    bashar = Peer("Bashar", "localhost", 5001)
 
     Blockchain.start()
     client.start()
+    bashar.start()
 
     time.sleep(0.5)
 
-    client.connect_with_node("localhost", 8281)
+    bashar.connect_with_node("localhost", 8282)
+    bashar.connect_with_node("localhost", 8281)
+
+    Blockchain.connect_with_node("localhost", 8282)
+    Blockchain.connect_with_node("localhost", 5001)
+
 
     time.sleep(0.5)
 
 
     client.registerBlock(block=block)
-    
-
-    ownershipQwery = Qwery(user=user, credential=doc)
-
-    # client.processQwery(ownershipQwery)
 
 
-    # print(Blockchain.storageManager.nodes)
+    print(Blockchain.all_nodes)
+
 
     time.sleep(2)
 
     Blockchain.stop()
     client.stop()
+    bashar.stop()

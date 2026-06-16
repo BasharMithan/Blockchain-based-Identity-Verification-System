@@ -1,6 +1,7 @@
 
 import json
 from p2pnetwork.node import Node
+from pathlib import Path
 
 
 from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType
@@ -8,6 +9,7 @@ from source.services.verifier import Verifier
 from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.services.blockManager import BlockManager
+from source.utils.interaction import HandleIncomingInteraction
 
 from source.errors import (
     LedgerCorruptError, LedgerNotFoundError, InvalidBlockPayloadError,
@@ -23,14 +25,18 @@ class Peer(Node):
     - **Registering a block**: Done the the `registerBlock(block: Block)` function.
     - **Checking identitiy ownership**: Done by the `processQwery(qwery: Qwery)` function."""
 
-    def __init__(self, host, port: int) -> None:
+    def __init__(self, name: str, host, port: int) -> None:
+        self.peerName = name
         self.host = host
         self.port = port
         self.discoveredNodes = {}
+
+        ledgerFilePath = ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-{self.peerName}.json"
+
         self.seenBlocks: set = set()
         Logger.info(f"Initiating a node on {self.host}:{self.port}")
-        self.storageManager = NodeStorageManager("main - node")
-        self.blockManager = BlockManager()
+        self.storageManager = NodeStorageManager(f"{self.host}_{self.port}")
+        self.blockManager = BlockManager(filePath=ledgerFilePath)
         super(Peer, self).__init__(self.host, self.port, callback=None)
 
 
@@ -42,7 +48,6 @@ class Peer(Node):
             "data": qwery.model_dump()
             }
         
-
         self.send_to_nodes(payload)
 
 
@@ -55,6 +60,8 @@ class Peer(Node):
             fullBlock = self.blockManager.registerBlock(block)
         
             blockAsDict = Block.model_dump_json(fullBlock) 
+
+            print(f"[{self.peerName}] Block : {type(json.loads(blockAsDict))}")
 
             self.send_to_nodes({
                 "action": Action.registeration.value,
@@ -69,63 +76,30 @@ class Peer(Node):
             Logger.warning(f"[Peer] Unable to register block: {error}")
             
 
-    def node_message(self, node, data: dict): 
-        print(f"[Peer] node_message received from {node}")
+    def node_message(self, node, data: dict):
+        interaction = HandleIncomingInteraction(data, self.blockManager, self.seenBlocks)
 
-        action = data.get("action")
-
-        if action not in Action.getactionsaslist():
-            Logger.warning(f"[Peer] Unknown action: got: {action}, available actions: {Action.getactionsaslist()}")
+        if not interaction.shouldBroadcast():
             return
-        
-        payload   = data.get("data")
-
-        print(f"[Peer] payload action={action} data-type={type(payload)}")
-        print(f"Got traffic from: {node}")
-
-        # Registeration Path
-        if (action == Action.registeration.value):
-
-            chid = payload["data"]["chid"]  # type: ignore
-
-            if (chid in self.seenBlocks):
-                return # Block already processed.
-
-            self.seenBlocks.add(chid) # type: ignore
-             
-            try:
-                block = Block.model_validate(payload)   
-                self.blockManager.receiveBlock(block)
-
-                # Block Propagation
-                self.send_to_nodes({
-                    "action": Action.registeration.value,
-                    "data": payload
-                }, exclude=[node])
+        else:
+            block = interaction.getAsBlock()
+            if block:
+                interaction.handle()
+                self.broadcast_block(node, block)
 
 
+    def broadcast_block(self, node, block: Block) -> None:
+        """Broadcast a validated block to connected peers."""
+        self.send_to_nodes({
+            "action": Action.BlockBroadcast.value,
+            "data": Block.model_dump(block),
+            "sender": self.peerName
+        }, exclude=[node])
 
-            except InvalidBlockPayloadError as error:
-                Logger.warning(f"[Peer] Invalid block payload: {str(error)}")
-
-            except (
-                BlockNotMinedError, DuplicateBlockError, BlockPreviousHashError,
-                BlockHashMismatchError) as error:
-                Logger.warning(f"[Peer] Block validation failed: {str(error)}")
-
-
-            except InvalidChainError as error:
-                Logger.warning(f"[Peer] Chain validation failed: {str(error)}")
-                self.stop()
+        Logger.info(f"[Block Broadcast] Broadcasting the block: '{block.data.user.name}'...")
 
 
-
-        # Ownership Checking Path
-        elif (action == Action.query.value):
-
-            print("Processing a qwery")
-            response = Verifier.check(Qwery.model_validate(payload))   
-            print(response)
+    
 
     def inbound_node_connected(self, node):
         Logger.info(f"Got a connection from: {node.id}") 
@@ -149,8 +123,6 @@ class Peer(Node):
     
     def outbound_node_disconnected(self, node):
         return super().outbound_node_disconnected(node)
-
-    
 
 
 if __name__ == "__main__":
