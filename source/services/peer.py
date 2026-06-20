@@ -2,9 +2,11 @@
 import json
 from p2pnetwork.node import Node
 from pathlib import Path
+import time
 
 
-from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType
+from source.models.constants import BOOTSTRAP_NODES
+from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType, DiscoverMessage
 from source.services.verifier import Verifier
 from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
@@ -29,15 +31,55 @@ class Peer(Node):
         self.peerName = name
         self.host = host
         self.port = port
+        # self.connections: list = self.nodes_inbound + self.nodes_outbound
+
+        if self.host == "localhost": self.host = "127.0.0.1"
+
+        self.storageManager = NodeStorageManager(self.peerName)
+
         self.discoveredNodes = {}
 
         ledgerFilePath = ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-{self.peerName}.json"
 
         self.seenBlocks: set = set()
-        Logger.info(f"Initiating a node on {self.host}:{self.port}")
-        self.storageManager = NodeStorageManager(f"{self.host}_{self.port}")
+        Logger.info(f"[Interaction - Init] Initiating the node ({self.peerName}) on {self.host}:{self.port}")
+
         self.blockManager = BlockManager(filePath=ledgerFilePath)
+        # self.__clearStaleStorage()
+
         super(Peer, self).__init__(self.host, self.port, callback=None)
+        self.network = self
+        self.me: NodeMetadata = self.myMetaData()
+
+    def myMetaData(self) -> NodeMetadata:
+        return NodeMetadata(
+            name=self.peerName,
+            nodeID=self.id,
+            host=self.host,
+            port=int(self.port),
+            connectionType=NodeConnectionType.outbound
+        )
+
+    # def __clearStaleStorage(self) -> None:
+    #     """Remove saved peers on startup — forces fresh discovery each run."""
+    #     path = self.storageManager.filePath
+    #     if path.exists():
+    #         path.write_text('[]', encoding='utf-8')
+
+        
+
+    def start(self):
+        super().start()
+        time.sleep(0.1)   
+        self.__connectToBootstrap()
+
+
+    def __connectToBootstrap(self) -> None:
+        for host, port in BOOTSTRAP_NODES:
+            if host == self.host and port == self.port:
+                continue
+            Logger.info(f"[Peer] Connecting to bootstrap {host}:{port}")
+            self.connect_with_node(host, port)
 
 
     def processQwery(self, qwery: Qwery) -> None:
@@ -55,13 +97,11 @@ class Peer(Node):
         """**Path 2 (Block registeration):** Acts as an entry point
         to the user, when adding a new block to the network."""
 
-        print(f"[Peer] registerBlock broadcast called for block index={block.index}")
         try:
             fullBlock = self.blockManager.registerBlock(block)
         
             blockAsDict = Block.model_dump_json(fullBlock) 
 
-            print(f"[{self.peerName}] Block : {type(json.loads(blockAsDict))}")
 
             self.send_to_nodes({
                 "action": Action.registeration.value,
@@ -77,15 +117,27 @@ class Peer(Node):
             
 
     def node_message(self, node, data: dict):
-        interaction = HandleIncomingInteraction(data, self.blockManager, self.seenBlocks)
 
-        if not interaction.shouldBroadcast():
-            return
-        else:
+        interaction = HandleIncomingInteraction(
+            me=self.me,
+            network=self,
+            interaction=data,
+            blockManager=self.blockManager,
+            nodeManager=self.storageManager,
+            senderNode=node,
+            seenBlocks=self.seenBlocks,
+            connections=self.storageManager.nodes
+            )
+
+        block = interaction.getAsBlock()
+        
+        if interaction.shouldBroadcast(block):
             block = interaction.getAsBlock()
             if block:
-                interaction.handle()
                 self.broadcast_block(node, block)
+
+        interaction.handle()
+    
 
 
     def broadcast_block(self, node, block: Block) -> None:
@@ -99,21 +151,55 @@ class Peer(Node):
         Logger.info(f"[Block Broadcast] Broadcasting the block: '{block.data.user.name}'...")
 
 
+        
+        
+    def __Discover(self, toAll: bool) -> None:
+
+        message: DiscoverMessage = DiscoverMessage(
+            sender=self.me,
+            toAll=toAll
+        )
+
+        self.send_to_nodes(
+            {
+                "action": Action.discover.value,
+                "data": message.model_dump(mode="json")
+            }
+        )
+
+        Logger.info(f"[Peer ({self.peerName}) - Discover] Sending the discovery message.")
+
     
 
     def inbound_node_connected(self, node):
-        Logger.info(f"Got a connection from: {node.id}") 
-        self.storageManager.registerNode(
-            node=NodeMetadata(nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.inbound)
-            )
+
+        # Checking if the node is in the Bootstrap list
+        if (self.host, self.port) in BOOTSTRAP_NODES:
+            Logger.info(f"[Peer - Bootstrap]  Got a connection from: {node.host}:{node.port}") 
+
+        # self.storageManager.registerNode(
+        #     node=NodeMetadata(name=self.peerName, nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.inbound)
+        #     )
+
+        self.storageManager.update(self.nodes_inbound, NodeConnectionType.inbound)
         
         return super().inbound_node_connected(node)
+
     
     def outbound_node_connected(self, node):
-        Logger.info(f"Connected to node: {node.id}")
-        self.storageManager.registerNode(
-            node=NodeMetadata(nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.outbound)
-            )
+        if (node.host, node.port) in BOOTSTRAP_NODES:
+            Logger.info(f"[Peer ({self.peerName})] Connected to Bootstrap node {node.host}:{node.port}")
+        else: Logger.info(f"[Peer ({self.peerName})] Connected to the node ({node.host}:{node.port}).")
+
+        self.storageManager.update(self.nodes_outbound, NodeConnectionType.outbound)
+
+        # Send DISCOVER when we initiate a connection
+        self.__Discover(toAll=True)
+
+        # self.storageManager.registerNode(
+        #     node=NodeMetadata(name=self.peerName, nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.outbound)
+        #     )
+
 
         return super().outbound_node_connected(node)
 
@@ -123,7 +209,3 @@ class Peer(Node):
     
     def outbound_node_disconnected(self, node):
         return super().outbound_node_disconnected(node)
-
-
-if __name__ == "__main__":
-    pass

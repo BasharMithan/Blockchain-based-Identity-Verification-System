@@ -2,7 +2,8 @@ from datetime import datetime
 from pathlib import Path
 from enum import Enum
 from datetime import datetime, timezone
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, model_validator, Field, ConfigDict
+from p2pnetwork.nodeconnection import NodeConnection
 
 from source.utils.generators import IDGenerator
 from source.models.constants import TARGET
@@ -119,6 +120,8 @@ class Action(Enum):
     query = "QWERY"
     hold = "HOLD"
     BlockBroadcast = "BLOCK-BROADCAST"
+    discover = "DISCOVER"
+    syncPeer = "SYNC-PEER"
 
     @staticmethod
     def getactionsaslist() -> list:
@@ -136,6 +139,7 @@ class NodeConnectionType(Enum):
     outbound = "OUTBOUND"
 
 class NodeMetadata(BaseModel):
+    name: str
     nodeID: str
     host: str
     port: int
@@ -149,3 +153,20 @@ class PeerRecord(BaseModel):
     ledgerLocation: Path
     knownPeers: list
     status: str
+
+
+
+class DiscoverMessage(BaseModel):
+    sender: NodeMetadata
+    toAll: bool = False
+
+
+class PeerSyncResponse(BaseModel):
+    sender: NodeMetadata
+    connectedPeers: list[NodeMetadata]
+    to: NodeMetadata
+    date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+    
+

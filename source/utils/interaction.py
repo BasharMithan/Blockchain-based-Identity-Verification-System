@@ -1,6 +1,9 @@
 import json
+from p2pnetwork.node import Node
+import time
 
-from source.models.Models import Block, Action, Response
+from source.utils.nodeStorageManager import NodeStorageManager
+from source.models.Models import Block, Action, Response, DiscoverMessage, PeerSyncResponse, NodeMetadata
 from source.models.Models import Qwery as Query
 from source.utils.logger import Logger
 from source.services.blockManager import BlockManager
@@ -11,12 +14,17 @@ from source.errors import DuplicateBlockError, InvalidBlockPayloadError, Invalid
 
 
 class HandleIncomingInteraction:
-    def __init__(self, interaction: dict, blockManager: BlockManager, seenBlocks: set) -> None:
+    def __init__(self, me: NodeMetadata, network: Node, interaction: dict, senderNode, blockManager: BlockManager, nodeManager: NodeStorageManager, seenBlocks: set, connections: list[NodeMetadata]) -> None:
         self.blockManager = blockManager
+        self.nodeManager: NodeStorageManager = nodeManager
+        self.senderNode = senderNode
+        self.me = me
+        self.connections: list = connections
         self.interaction = interaction
         self.seenBlocks: set = seenBlocks
-        Logger.info(f"[Interaction - init] Got an interaction...")
-        print(self.blockManager.ledger.filePath)
+        self.network = network
+
+        Logger.info(f"[Interaction - {self.me.name}] Got an interaction: {self.interaction.get('action')}.") # type: ignore
 
     def getAsBlock(self) -> Block | None:
         if self.extractAction() in (Action.registeration.value, Action.BlockBroadcast.value):
@@ -35,9 +43,8 @@ class HandleIncomingInteraction:
          return self.interaction.get("action") # type: ignore
          
     
-    def shouldBroadcast(self) -> bool:
+    def shouldBroadcast(self, possibleBlock) -> bool:
 
-        possibleBlock = self.__classifyInteraction()
 
         if isinstance(possibleBlock, Block):
 
@@ -49,20 +56,17 @@ class HandleIncomingInteraction:
                 Logger.info(f"[Interaction] Block {possibleBlock.data.user.name} should be broadcasted.")
                 self.seenBlocks.add(possibleBlock.data.chid)
                 return True 
+        else: return False
             
-
-
-        Logger.warning(f"[Interaction - Broadcast checking] Invalid block.")
-        return False
-         
 
         
 
     def handle(self) -> None:
         """Handles the incoming interaction detected in the `node_message` function"""
+
         Logger.info(f"[Interaction] Starting the interaction handler.")
 
-        decision: Block | Query | None = self.__classifyInteraction()
+        decision: Block | Query | DiscoverMessage | PeerSyncResponse | None = self.__classifyInteraction()
 
         if (isinstance(decision, Block)):
 
@@ -70,6 +74,12 @@ class HandleIncomingInteraction:
 
         elif (isinstance(decision, Query)):
             self.__handleQueryInteraction(decision) 
+
+        elif (isinstance(decision, DiscoverMessage)):
+            self.__handleDiscoverMessage(decision)
+
+        elif (isinstance(decision, PeerSyncResponse)):
+            self.__handlePeerSync(decision)
 
 
 
@@ -102,7 +112,78 @@ class HandleIncomingInteraction:
         self.__handleBlockInteraction(block)
 
 
-    def __classifyInteraction(self) -> Block | Query | None:
+    def __handleDiscoverMessage(self, message: DiscoverMessage) -> None:
+        """
+        A new peer asked for our connected peers list.
+        Build a PeerSync response and send it back to the requester.
+        """
+
+        Logger.info(f"[Interaction ({self.me.name}) Handling a discovery message sent by {message.sender.name}]")
+        # All the current node connections (Inbound + Outbound).
+        # TODO: Implement the toAll checking.
+
+        response: PeerSyncResponse = PeerSyncResponse(
+            sender=self.me,
+            connectedPeers=self.connections,
+            to=message.sender
+        )
+
+
+        self.network.send_to_node(self.senderNode, {
+            "action": Action.syncPeer.value,
+            "data": response.model_dump(mode="json")
+        })
+        Logger.info(
+            f"""[Interaction - Discover Response] Sending {
+            len(self.connections)
+            } peers to the peer {
+                self.senderNode.host}:{self.senderNode.port}.""")
+
+
+
+        
+
+
+    def already_connected(self, host: str, port: int ) -> bool:
+        """Return True if the peer is already connected inbound or outbound."""
+
+        connections: list[NodeMetadata] = self.connections
+
+        for node in connections:
+            if host == node.host and node.port == port:
+                return True
+        return False
+
+
+    def __handlePeerSync(self, message: PeerSyncResponse) -> None:
+        sender = message.sender
+        nodes = message.connectedPeers
+
+        Logger.info(f"[Interaction - Peer SYNC] Got {len(nodes)} from {sender.name}.")
+
+        for node in nodes:
+            host, port = node.host, node.port
+            isSelf = (self.me.port == port and self.me.host == host)
+
+            already = any(
+                n.host == host and int(n.port) == port
+                for n in self.network.all_nodes
+            )
+
+            if not isSelf and not already:
+                self.network.connect_with_node(host=host, port=port)
+                Logger.info(f"[Interaction - Peer-Sync Received] Connecting the node: {node.host}:{node.port}.")  
+                time.sleep(0.5)
+
+                # Verifing if current node is connected the shared node sucessfully.  
+                if (self.nodeManager.nodeLookup(self.connections, host, port) in self.nodeManager.nodes):
+                    Logger.info(f"[Interaction ({self.me.name})] Done connecting with the shared node ({node.name}) from ({sender.name}).")
+
+                
+
+
+
+    def __classifyInteraction(self) -> Block | Query | DiscoverMessage | PeerSyncResponse | None:
         """Takes the incoming interaction and returns it's proper type (Block or Query)"""
 
         action: str = self.extractAction()
@@ -115,7 +196,6 @@ class HandleIncomingInteraction:
             return None
 
 
-        print(f"[Interaction] got: {action}")
 
         if action == Action.registeration.value:
             if isinstance(data, str):
@@ -136,4 +216,9 @@ class HandleIncomingInteraction:
         if action == Action.query.value:
             return Query.model_validate(data)
 
-        return None 
+        if (action == Action.discover.value):
+            return DiscoverMessage.model_validate(data)
+
+
+        if (action == Action.syncPeer.value):
+            return PeerSyncResponse.model_validate(data)
