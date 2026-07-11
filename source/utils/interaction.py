@@ -1,20 +1,31 @@
-import json
+import json, time
 from p2pnetwork.node import Node
-import time
+from typing import Any
 
 from source.utils.nodeStorageManager import NodeStorageManager
-from source.models.Models import Block, Action, Response, DiscoverMessage, PeerSyncResponse, NodeMetadata
+from source.models.Models import (
+    Block, Action, Response, DiscoverMessage,
+    PeerSyncResponse, NodeMetadata, ChainSyncRequest, ChainSyncResponse,
+    ChainLegthRequest, ChainLenghResponse
+    )
+
 from source.models.Models import Qwery as Query
 from source.utils.logger import Logger
 from source.services.blockManager import BlockManager
 from source.services.verifier import Verifier
+from source.services.chainSync import ChainSync
 
-from source.errors import DuplicateBlockError, InvalidBlockPayloadError, InvalidChainError, BlockHashMismatchError, BlockNotMinedError, BlockPreviousHashError
+from source.errors import (
+    DuplicateBlockError, InvalidBlockPayloadError, InvalidChainError,
+    BlockHashMismatchError, BlockNotMinedError, BlockPreviousHashError)
 
 
 
-class HandleIncomingInteraction:
-    def __init__(self, me: NodeMetadata, network: Node, interaction: dict, senderNode, blockManager: BlockManager, nodeManager: NodeStorageManager, seenBlocks: set, connections: list[NodeMetadata]) -> None:
+class Interaction:
+    def __init__(self, me: NodeMetadata, network: Node, interaction: dict, senderNode,
+                 blockManager: BlockManager, nodeManager: NodeStorageManager, seenBlocks: set,
+                 connections: list[NodeMetadata], receivedLedgers: list, receivedLengths: list) -> None:
+        
         self.blockManager = blockManager
         self.nodeManager: NodeStorageManager = nodeManager
         self.senderNode = senderNode
@@ -24,7 +35,16 @@ class HandleIncomingInteraction:
         self.seenBlocks: set = seenBlocks
         self.network = network
 
+        self.chainSharing = ChainSync(
+            ledger=self.blockManager.ledger,
+            receivedLedgers=receivedLedgers,
+            network=self.network,
+            receivedLengths=receivedLengths,
+            me=self.me)
+
         Logger.info(f"[Interaction - {self.me.name}] Got an interaction: {self.interaction.get('action')}.") # type: ignore
+
+
 
     def getAsBlock(self) -> Block | None:
         if self.extractAction() in (Action.registeration.value, Action.BlockBroadcast.value):
@@ -37,7 +57,6 @@ class HandleIncomingInteraction:
             return Block.model_validate(blockDict)
         return None
         
-
 
     def extractAction(self) -> str:
          return self.interaction.get("action") # type: ignore
@@ -59,14 +78,13 @@ class HandleIncomingInteraction:
         else: return False
             
 
-        
-
     def handle(self) -> None:
         """Handles the incoming interaction detected in the `node_message` function"""
 
         Logger.info(f"[Interaction] Starting the interaction handler.")
 
-        decision: Block | Query | DiscoverMessage | PeerSyncResponse | None = self.__classifyInteraction()
+        decision = self.__classifyInteraction()
+
 
         if (isinstance(decision, Block)):
 
@@ -81,6 +99,17 @@ class HandleIncomingInteraction:
         elif (isinstance(decision, PeerSyncResponse)):
             self.__handlePeerSync(decision)
 
+        elif (isinstance(decision, ChainSyncRequest)):
+            self.__handleChainSyncRequest(decision)
+
+        elif (isinstance(decision, ChainSyncResponse)):
+            self.__handleChainSyncResponse(decision)
+
+        elif (isinstance(decision, ChainLegthRequest)):
+            self.__handleChainLengthRequest(decision)
+
+        elif (isinstance(decision, ChainLenghResponse)):
+            self.__handleChainLengthResponse(decision)
 
 
     def __handleBlockInteraction(self, block: Block) -> None:
@@ -107,6 +136,7 @@ class HandleIncomingInteraction:
         """Handles the incoming queris"""
         response: Response = Verifier.check(query)
         return response
+
 
     def __handleBlockBroadcast(self, block: Block, sender: str) -> None:
         self.__handleBlockInteraction(block)
@@ -138,10 +168,6 @@ class HandleIncomingInteraction:
             len(self.connections)
             } peers to the peer {
                 self.senderNode.host}:{self.senderNode.port}.""")
-
-
-
-        
 
 
     def already_connected(self, host: str, port: int ) -> bool:
@@ -179,17 +205,34 @@ class HandleIncomingInteraction:
                 if (self.nodeManager.nodeLookup(self.connections, host, port) in self.nodeManager.nodes):
                     Logger.info(f"[Interaction ({self.me.name})] Done connecting with the shared node ({node.name}) from ({sender.name}).")
 
-                
+
+    def __handleChainSyncRequest(self, message: ChainSyncRequest) -> None:
+        self.chainSharing.send(request=message)
+        ...           
 
 
+    def __handleChainSyncResponse(self, message: ChainSyncResponse) -> None:
+        self.chainSharing.receive(message)
 
-    def __classifyInteraction(self) -> Block | Query | DiscoverMessage | PeerSyncResponse | None:
+
+    def __handleChainLengthRequest(self, message: ChainLegthRequest) -> None:
+
+        self.chainSharing.receiveChainLengthRequest(message)
+
+
+    def __handleChainLengthResponse(self, message: ChainLenghResponse) -> None:
+
+        self.chainSharing.receiveLengthResponse(message) # TODO: Implement this function
+
+
+    def __classifyInteraction(self) -> Any:
         """Takes the incoming interaction and returns it's proper type (Block or Query)"""
 
         action: str = self.extractAction()
         
         data = self.interaction.get("data")
-        sender = self.interaction.get("sender", None)
+
+        print(f"({self.me.name}) Got an interaction: {action}")
 
         if (action not in Action.getactionsaslist()):
             Logger.warning(f"[Interaction] Unknown action: got: {action}, available actions: {Action.getactionsaslist()}")
@@ -222,3 +265,16 @@ class HandleIncomingInteraction:
 
         if (action == Action.syncPeer.value):
             return PeerSyncResponse.model_validate(data)
+
+        if (action == Action.chainSyncRequest.value):
+            return ChainSyncRequest.model_validate(data)
+
+        if (action == Action.chainSyncResponse.value):
+            return ChainSyncResponse.model_validate(data)
+
+
+        if (action == Action.chainLenghRequest.value):
+            return ChainLegthRequest.model_validate(data)
+        
+        if (action == Action.chainLenghResponse.value):
+            return ChainLenghResponse.model_validate(data)

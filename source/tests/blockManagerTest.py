@@ -1,12 +1,13 @@
 import pytest
 
 from source.services.blockManager import BlockManager
+from source.services.ledger import Ledger
 from source.errors import DuplicateBlockError, BlockPreviousHashError
 
 
 @pytest.fixture
 def blockManager(tempLedgerPath):
-    return BlockManager(filePath=tempLedgerPath)
+    return BlockManager(Ledger(filePath=tempLedgerPath))
 
 
 def test_register_assigns_correct_index(blockManager, unminedBlock):
@@ -96,5 +97,44 @@ def test_receive_duplicate_block_raises(blockManager, unminedBlock):
     blockManager.receiveBlock(mined)
 
     duplicate = copy.deepcopy(mined)
-    with pytest.raises(BlockPreviousHashError):
+    with pytest.raises(DuplicateBlockError):
         blockManager.receiveBlock(duplicate)
+
+
+def test_concurrent_receive_block_does_not_duplicate_same_chid(blockManager, unminedBlock, monkeypatch):
+    import copy
+    import threading
+    from source.services.miner import Miner
+
+    unminedBlock.index = 1
+    unminedBlock.previousHash = blockManager.ledger.blocks[0]["hash"]
+    mined = Miner.mine(unminedBlock)
+
+    barrier = threading.Barrier(2)
+    original_check = BlockManager.checkIfBlockExists
+
+    def delayed_check(targetCHID, filePath):
+        barrier.wait(timeout=5)
+        return original_check(targetCHID, filePath)
+
+    monkeypatch.setattr(BlockManager, "checkIfBlockExists", staticmethod(delayed_check))
+
+    results = []
+    errors = []
+
+    def worker():
+        try:
+            blockManager.receiveBlock(copy.deepcopy(mined))
+            results.append("ok")
+        except Exception as exc:  # pragma: no cover - assertion path
+            errors.append(type(exc).__name__)
+
+    first = threading.Thread(target=worker)
+    second = threading.Thread(target=worker)
+    first.start()
+    second.start()
+    first.join()
+    second.join()
+
+    assert len(errors) == 1
+    assert len(blockManager.ledger.blocks) == 2

@@ -5,10 +5,6 @@
 import json
 from pathlib import Path
 
-# from source.models.constants import LEDGER_PATH
-from source.models.Models import Block, Action
-from source.models.Models import Qwery as Query
-from source.utils.logger import Logger
 
 
 class LedgerUtilities:
@@ -62,7 +58,6 @@ class LedgerUtilities:
         
     @staticmethod
     def getLatestBlock(filePath: Path):
-        # TODO: Move this utility function to the utils/utility_functions.py
         blocks: list = []
         try:
             with open(filePath, "r", encoding='utf-8') as ledgerFile:

@@ -4,6 +4,7 @@ from enum import Enum
 from datetime import datetime, timezone
 from pydantic import BaseModel, model_validator, Field, ConfigDict
 from p2pnetwork.nodeconnection import NodeConnection
+from typing import Any
 
 from source.utils.generators import IDGenerator
 from source.models.constants import TARGET
@@ -123,6 +124,12 @@ class Action(Enum):
     discover = "DISCOVER"
     syncPeer = "SYNC-PEER"
 
+    chainSyncRequest = "CHAIN-SYNC-REQUEST"
+    chainSyncResponse = "CHAIN-SYNC-RESPONSE"
+
+    chainLenghRequest = "CHAIN-LEDGTH-REQUEST"
+    chainLenghResponse = "CHAIN-LENGTH-RESPONSE"
+
     @staticmethod
     def getactionsaslist() -> list:
         "Get all actions as list"
@@ -169,4 +176,28 @@ class PeerSyncResponse(BaseModel):
 
 
     
+class ChainSyncRequest(BaseModel):
+    sender: NodeMetadata
 
+
+class ChainSyncResponse(BaseModel):
+    sender: NodeMetadata
+    ledger: list
+    length: int
+
+
+class ChainLegthRequest(BaseModel):
+    sender: NodeMetadata
+
+
+
+class ChainLenghResponse(BaseModel):
+    sender: NodeMetadata
+    length: int
+
+
+
+
+class Payload(BaseModel):
+    action: str | Action
+    data: Any

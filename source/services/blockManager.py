@@ -12,8 +12,11 @@ from source.errors import DuplicateBlockError, InvalidChainError
 class BlockManager:
     """Manages the block functionalities and validates if the inserted block is valid."""
 
-    def __init__(self, filePath) -> None:
-        self.ledger = Ledger(filePath)
+    def __init__(self, ledgerInstance: Ledger) -> None:
+        # BlockManager expects a Ledger instance. The Ledger object encapsulates
+        # the file path and persistence details; callers should create the
+        # Ledger and pass it here.
+        self.ledger = ledgerInstance
         self.miner = Miner()
 
     def registerBlock(self, block: Block) -> Block:
@@ -47,7 +50,7 @@ class BlockManager:
         return block
 
     def __validChain(self) -> bool:
-        return ChainValidation(self.ledger.filePath).validate()
+        return ChainValidation(self.ledger.blocks).validate()
 
     @staticmethod
     def checkIfBlockExists(targetCHID: str, filePath) -> bool:

@@ -1,17 +1,19 @@
 
-import json
+import json, time, threading
 from p2pnetwork.node import Node
 from pathlib import Path
-import time
+
 
 
 from source.models.constants import BOOTSTRAP_NODES
-from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType, DiscoverMessage
+from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType, DiscoverMessage, ChainSyncRequest
 from source.services.verifier import Verifier
 from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.services.blockManager import BlockManager
-from source.utils.interaction import HandleIncomingInteraction
+from source.utils.interaction import Interaction
+from source.services.chainSync import ChainSync
+from source.services.ledger import Ledger
 
 from source.errors import (
     LedgerCorruptError, LedgerNotFoundError, InvalidBlockPayloadError,
@@ -31,7 +33,6 @@ class Peer(Node):
         self.peerName = name
         self.host = host
         self.port = port
-        # self.connections: list = self.nodes_inbound + self.nodes_outbound
 
         if self.host == "localhost": self.host = "127.0.0.1"
 
@@ -41,15 +42,29 @@ class Peer(Node):
 
         ledgerFilePath = ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-{self.peerName}.json"
 
+        self.ledger = Ledger(ledgerFilePath)
+
         self.seenBlocks: set = set()
         Logger.info(f"[Interaction - Init] Initiating the node ({self.peerName}) on {self.host}:{self.port}")
 
-        self.blockManager = BlockManager(filePath=ledgerFilePath)
-        # self.__clearStaleStorage()
+        self.blockManager = BlockManager(self.ledger)
 
         super(Peer, self).__init__(self.host, self.port, callback=None)
+
         self.network = self
         self.me: NodeMetadata = self.myMetaData()
+
+        self.receivedLedgers: list = [] # Needed for the chain sharing class
+        self.receivedLengths: list = []
+
+        self.chainSync = ChainSync(
+            ledger=self.blockManager.ledger,
+            network=self,
+            receivedLedgers=self.receivedLedgers,
+            receivedLengths=self.receivedLengths,
+            me=self.me)
+
+
 
     def myMetaData(self) -> NodeMetadata:
         return NodeMetadata(
@@ -59,6 +74,8 @@ class Peer(Node):
             port=int(self.port),
             connectionType=NodeConnectionType.outbound
         )
+
+    
 
     # def __clearStaleStorage(self) -> None:
     #     """Remove saved peers on startup — forces fresh discovery each run."""
@@ -72,6 +89,19 @@ class Peer(Node):
         super().start()
         time.sleep(0.1)   
         self.__connectToBootstrap()
+
+
+
+    
+    def requestChainSync(self) -> None:
+        """
+        Sends a single ChainSyncRequest to all currently connected peers.
+        Clears receivedLedgers first so previous sessions don't pollute the result.
+        """
+
+        self.receivedLedgers.clear()
+        self.chainSync.request()
+        
 
 
     def __connectToBootstrap(self) -> None:
@@ -117,8 +147,10 @@ class Peer(Node):
             
 
     def node_message(self, node, data: dict):
+        "TODO: Solve the block broadcast issue."
 
-        interaction = HandleIncomingInteraction(
+
+        interaction = Interaction(
             me=self.me,
             network=self,
             interaction=data,
@@ -126,7 +158,9 @@ class Peer(Node):
             nodeManager=self.storageManager,
             senderNode=node,
             seenBlocks=self.seenBlocks,
-            connections=self.storageManager.nodes
+            connections=self.storageManager.nodes,
+            receivedLedgers=self.receivedLedgers,
+            receivedLengths=self.receivedLengths
             )
 
         block = interaction.getAsBlock()
@@ -196,10 +230,10 @@ class Peer(Node):
         # Send DISCOVER when we initiate a connection
         self.__Discover(toAll=True)
 
+
         # self.storageManager.registerNode(
         #     node=NodeMetadata(name=self.peerName, nodeID=node.id, host=node.host, port=int(node.port), connectionType=NodeConnectionType.outbound)
         #     )
-
 
         return super().outbound_node_connected(node)
 

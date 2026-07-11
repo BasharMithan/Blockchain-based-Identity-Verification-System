@@ -17,26 +17,30 @@ class ChainValidation:
         2. Check if all the blocks' hash starts with 4 zeros (Mined).
         3. Check if the hash of the N block matches the hash of the N + 1 block."""
 
-    def __init__(self, filePath: Path) -> None:
-        self.filePath = filePath 
+    def __init__(self, chain: list) -> None:
+        self.chain = chain
         Logger.info("[Chain Validation] Initializing the chain validator.")
 
+
+
     def validate(self) -> bool:
-        ledger = LedgerUtilities.readLedger(self.filePath)
+
         blockValidator = BlockValidator()
 
 
-        if len(ledger) == 0:
+        if len(self.chain) == 0:
             Logger.warning("[Chain Validation] Cannot validate. The ledger is empty.")
             return True
 
-        for block_dict in ledger:
+        for block_dict in self.chain:
             block = Block.model_validate(block_dict)
 
             blockValidator.validate(block)
 
+            if self.checkDuplication(block):
+                ...
  
-        self.__checkChainLinkage(ledger)
+        self.__checkChainLinkage(self.chain)
 
         Logger.info("[Chain Validation] Chain is valid.")
         return True
@@ -57,5 +61,15 @@ class ChainValidation:
                     )
 
         return True
+
+
+    def checkDuplication(self, block: Block) -> bool:
+        hashes: list = [blockHash["hash"] for blockHash in self.chain]
+
+        if block.hash in hashes:
+            return True
+        return False
+
+
 
     

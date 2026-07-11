@@ -1,4 +1,5 @@
 import json
+import threading
 from pathlib import Path
 
 from source.utils.logger import Logger
@@ -10,7 +11,8 @@ from source.errors import (
     LedgerNotFoundError,
     LedgerCorruptError,
     InvalidChainError,
-    GenesisBlockError
+    GenesisBlockError,
+    DuplicateBlockError,
     )
 
 class Ledger():
@@ -19,6 +21,7 @@ class Ledger():
         # store Block instances (or loaded dicts); start empty
         self.blocks: list = []
         self.filePath: Path = filePath
+        self._lock = threading.RLock() # A lock to prevent concurrent insert/write race in the same ledger instance.
 
         self.miner = Miner()
 
@@ -71,16 +74,21 @@ class Ledger():
 
 
     def insertBlock(self, block: Block) -> None:
+        with self._lock:
+            chainValidation = ChainValidation(self.blocks)
 
-        chainValidation = ChainValidation(self.filePath)
+            if not chainValidation.validate():
+                raise InvalidChainError("Chain failed integrity check before insert.")
 
-        if not chainValidation.validate():
-            raise InvalidChainError("Chain failed integrity check before insert.")
+            blockAsDict = json.loads(Block.model_dump_json(block))
+            blockChid = blockAsDict.get("data", {}).get("chid")
 
-        blockAsDict =  json.loads(Block.model_dump_json(block))
-        
-        self.blocks.append(blockAsDict)
-        self.__writeBlockToLedger(blockAsDict)
+            if any(existing.get("data", {}).get("chid") == blockChid for existing in self.blocks):
+                Logger.warning(f"[Ledger] Block with CHID {blockChid} already exists; refusing duplicate insert.")
+                raise DuplicateBlockError(blockChid)
+
+            self.blocks.append(blockAsDict)
+            self.__writeBlockToLedger(blockAsDict)
 
 
     def __writeBlockToLedger(self, block: dict) -> None:
@@ -112,3 +120,12 @@ class Ledger():
         except Exception as error:
             raise GenesisBlockError(str(error)) from error
 
+
+    def updateLedger(self, newLedger: list) -> None:
+        """Defined to meet the requirements of the `ChainSync` class, where it replaces
+        the current ledger, with a ledger that has been choosen by the `ChainSync` class.
+        """
+        self.blocks = newLedger
+
+        with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
+            json.dump(newLedger, ledgerFile, indent=4)
