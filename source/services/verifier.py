@@ -1,6 +1,6 @@
 from source.models.Models import User ,Identity, Response, Block, Qwery
 from source.utils.generators import IDGenerator
-from source.services.blockManager import BlockManager
+from source.utils.blocks.blockManager import BlockManager
 
 class Verifier:
     def __init__(self) -> None:

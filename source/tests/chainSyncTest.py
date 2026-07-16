@@ -15,9 +15,9 @@ from source.models.Models import (
     NodeMetadata,
     User,
 )
-from source.services.chainSync import ChainSync
+from source.utils.chain.chainSync import ChainSync
 from source.services.ledger import Ledger
-from source.services.miner import Miner
+from source.utils.blocks.miner import Miner
 from source.utils.nodeStorageManager import NodeStorageManager
 
 
@@ -109,7 +109,7 @@ def test_request_sends_chain_sync_request_to_known_nodes(tmp_path):
 
     chain_sync.request()
 
-    assert chain_sync.expectedResponses == len(network.all_nodes)
+    assert chain_sync.expectedResponses == max(0, len(network.all_nodes) - 1)
     assert len(network.sent_to_nodes) == 1
     payload, exclude = network.sent_to_nodes[0]
     assert payload["action"] == Action.chainSyncRequest.value

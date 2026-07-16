@@ -1,25 +1,28 @@
 
-import json, time, threading
+import json, time, threading, uvicorn
 from p2pnetwork.node import Node
 from pathlib import Path
+from fastapi import FastAPI
 
 
 
 from source.models.constants import BOOTSTRAP_NODES
-from source.models.Models import Action, Block, Qwery, NodeMetadata, NodeConnectionType, DiscoverMessage, ChainSyncRequest
+from source.models.Models import (Action, Block, Qwery, NodeMetadata,
+                                  NodeConnectionType, DiscoverMessage, ChainSyncRequest,
+                                  Payload)
 from source.services.verifier import Verifier
 from source.utils.logger import Logger
 from source.utils.nodeStorageManager import NodeStorageManager
-from source.services.blockManager import BlockManager
-from source.utils.interaction import Interaction
-from source.services.chainSync import ChainSync
+from source.utils.blocks.blockManager import BlockManager
+from source.utils.interaction import  NewInteraction
+from source.utils.chain.chainSync import ChainSync
 from source.services.ledger import Ledger
+from source.services.network import Network
+from source.models.events import InteractionContext
 
 from source.errors import (
-    LedgerCorruptError, LedgerNotFoundError, InvalidBlockPayloadError,
-    BlockHashMismatchError, BlockNotMinedError,
-    DuplicateBlockError, BlockPreviousHashError,
-    InvalidChainError)
+    LedgerCorruptError, LedgerNotFoundError
+    )
 
 
 
@@ -34,6 +37,7 @@ class Peer(Node):
         self.host = host
         self.port = port
 
+
         if self.host == "localhost": self.host = "127.0.0.1"
 
         self.storageManager = NodeStorageManager(self.peerName)
@@ -47,7 +51,7 @@ class Peer(Node):
         self.seenBlocks: set = set()
         Logger.info(f"[Interaction - Init] Initiating the node ({self.peerName}) on {self.host}:{self.port}")
 
-        self.blockManager = BlockManager(self.ledger)
+        self.blockManager = BlockManager(self.ledger, network=self, seenBlocks=self.seenBlocks)
 
         super(Peer, self).__init__(self.host, self.port, callback=None)
 
@@ -64,6 +68,21 @@ class Peer(Node):
             receivedLengths=self.receivedLengths,
             me=self.me)
 
+        """
+        self.interaction = Interaction(
+            me=self.me,
+            network=self,
+            blockManager=self.blockManager,
+            nodeManager=self.storageManager,
+            seenBlocks=self.seenBlocks,
+            connections=self.storageManager.nodes,
+            receivedLedgers=self.receivedLedgers,
+            receivedLengths=self.receivedLengths,
+            chainSync=self.chainSync
+            )"""
+
+
+        self.startAPI()
 
 
     def myMetaData(self) -> NodeMetadata:
@@ -74,22 +93,12 @@ class Peer(Node):
             port=int(self.port),
             connectionType=NodeConnectionType.outbound
         )
-
-    
-
-    # def __clearStaleStorage(self) -> None:
-    #     """Remove saved peers on startup — forces fresh discovery each run."""
-    #     path = self.storageManager.filePath
-    #     if path.exists():
-    #         path.write_text('[]', encoding='utf-8')
-
         
 
     def start(self):
         super().start()
         time.sleep(0.1)   
         self.__connectToBootstrap()
-
 
 
     
@@ -101,6 +110,31 @@ class Peer(Node):
 
         self.receivedLedgers.clear()
         self.chainSync.request()
+
+
+    def startAPI(self) -> None:
+        app = self.buildAPI()
+        thread = threading.Thread(
+            target=uvicorn.run,
+            args=(app,),
+            kwargs={
+                "host": self.host,
+                "port": self.port + 10000,
+                "log_level": "warning"
+            },
+            daemon=True
+        )
+
+        thread.start()
+
+        api_port = self.port + 10000
+        print(f"[{self.peerName}] API running on {self.host}:{api_port}.")
+
+    def buildAPI(self) -> FastAPI:
+        from source.API.router import buildRouter
+        app = FastAPI(title=f"Peer Node - {self.peerName}")
+        app.include_router(buildRouter(self.blockManager, self.me))
+        return app
         
 
 
@@ -149,28 +183,36 @@ class Peer(Node):
     def node_message(self, node, data: dict):
         "TODO: Solve the block broadcast issue."
 
-
-        interaction = Interaction(
-            me=self.me,
+        context = InteractionContext(
             network=self,
-            interaction=data,
             blockManager=self.blockManager,
+            chainSync=self.chainSync,
             nodeManager=self.storageManager,
-            senderNode=node,
             seenBlocks=self.seenBlocks,
-            connections=self.storageManager.nodes,
             receivedLedgers=self.receivedLedgers,
-            receivedLengths=self.receivedLengths
+            receivedLengths=self.receivedLengths,
+            me=self.myMetaData(),
+            connections=self.all_nodes,
+            sender=node
             )
 
-        block = interaction.getAsBlock()
-        
-        if interaction.shouldBroadcast(block):
-            block = interaction.getAsBlock()
-            if block:
-                self.broadcast_block(node, block)
+        sender = NodeStorageManager.nodeConnectionToMetadata(connectionType=NodeConnectionType.outbound, nodeConnection=node)
 
-        interaction.handle()
+        payload = Payload.model_validate(data)
+
+        newInteraction = NewInteraction(context=context)
+
+        newInteraction.handle(payload=payload, sender=sender)
+        
+
+        # block = self.interaction.getAsBlock(interaction=data)
+        
+        # if self.interaction.shouldBroadcast(block):
+        #     block = self.interaction.getAsBlock(interaction=data)
+        #     if block:
+        #         self.broadcast_block(node, block)
+
+        # self.interaction.handle(data)
     
 
 
@@ -185,7 +227,6 @@ class Peer(Node):
         Logger.info(f"[Block Broadcast] Broadcasting the block: '{block.data.user.name}'...")
 
 
-        
         
     def __Discover(self, toAll: bool) -> None:
 

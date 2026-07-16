@@ -4,7 +4,7 @@ from pathlib import Path
 
 from source.utils.logger import Logger
 from source.utils.chain_validation import ChainValidation
-from source.services.miner import Miner
+from source.utils.blocks.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
 
 from source.errors import (

@@ -4,9 +4,10 @@ from source.services.ledger import Ledger
 from source.utils.chain_validation import ChainValidation
 from source.utils.blockValidation import BlockValidator
 from source.utils.nodeStorageManager import NodeStorageManager
-from source.models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata,
-                                  ChainLenghResponse, ChainLegthRequest)
-from source.utils.utility_function import LedgerUtilities
+from source.models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata
+                                  )
+
+from source.errors import BlockHashMismatchError
 
 
 
@@ -34,7 +35,7 @@ class ChainSync:
 
         message = ChainSyncRequest(sender=self.me)
 
-        # Requsting the ledger to all connected nodes. TODO: Implement the conditions to execute this function.
+        # Requsting the ledger to all connected nodes.
         self.network.send_to_nodes({
             "action": Action.chainSyncRequest.value,
             "data": message.model_dump(mode="json")
@@ -56,7 +57,8 @@ class ChainSync:
             choosenChain = self.__chooseBestLedger(self.receivedLedgers) 
             print(f"{response.sender.name} -> {self.me.name} a ledger with {len(choosenChain)} blocks.")
 
-            self.ledger.updateLedger(choosenChain) if self.compareReceivedChain(choosenChain) else None
+            # if self.compareReceivedChain(choosenChain):
+            self.ledger.updateLedger(choosenChain)
             print(f"[{self.me.name}] Ledger is updated from a {len(self.ledger.blocks)} to a ledger with {len(choosenChain)}.")
 
 
@@ -64,14 +66,12 @@ class ChainSync:
     def send(self, request: ChainSyncRequest) -> None:
         """Reads the received request, and responds to it."""
 
-        # sender: NodeMetadata = request.sender # TODO: Convert it to NodeConnection
-
         copiedLedger: list = self.copyChain()
 
         response: ChainSyncResponse = ChainSyncResponse(sender=self.me, ledger=copiedLedger, length=len(copiedLedger))
 
         # Checks the validity of the local ledger before sending it.
-        if self.validateBeforeSending(copiedLedger):
+        if self.checkChainValidation(copiedLedger):
 
             # The given node is a NodeMetadata, converting it to NodeConnection
             targetNode = NodeStorageManager.metadataToNodeConnection(request.sender, self.network.all_nodes)
@@ -81,6 +81,11 @@ class ChainSync:
                 "action": Action.chainSyncResponse.value,
                 "data": response.model_dump(mode="json")
                 })
+
+        else:
+            # The local chain is ivalid. So the dosen't send it.
+            pass
+
             
 
     def compareReceivedChain(self, receivedChain: list) -> bool:
@@ -98,45 +103,6 @@ class ChainSync:
             
 
 
-    def receiveChainLengthRequest(self, lengthRequest: ChainLegthRequest) -> None:
-        "Receives the chain length request, and responses with the chain length response."
-
-        localChainLength = len(self.ledger.blocks)
-        sender = NodeStorageManager.metadataToNodeConnection(lengthRequest.sender, self.network.all_nodes)
-        response = ChainLenghResponse(sender=self.me, length=localChainLength)
-
-        self.network.send_to_node(sender, {
-            "action": Action.chainLenghResponse.value,
-            "data": response.model_dump(mode="json") 
-        })
-
-
-    def requestLength(self) -> None:
-        """Requesting the length of the nodes' lengths before sending the chain sync request.
-        Length request is a lightweight request, let's the node get the lengths first
-        to check if there is blocks are missing,
-        or it has been disconnected for a while and missed some blocks."""
-
-        request = ChainLegthRequest(sender=self.me)
-
-        self.network.send_to_nodes({
-            "action": Action.chainLenghRequest.value,
-            "data": request.model_dump(mode="json")
-        })
-
-
-    def receiveLengthResponse(self, response: ChainLenghResponse) -> None:
-        "Takes the chain length response, and adds it to the `receivedLengths` list."
-
-        self.receivedLengths.append(response) 
-
-
-
-    def verifiy(self, leger: list) -> bool:
-        """Checks the validity of the received chain."""
-        ...
-
-
     def __chooseBestLedger(self, ledgers: list) -> list:
         """Takes the collection of chains, and returns what it calls **the best chain**.
            The best chain is the chain that is valid, and is the longest (Contains more nodes).
@@ -144,18 +110,13 @@ class ChainSync:
            (Only if all the received chains are equl and all valid)."""
 
         # Loop through the received ledgers and extract the valid ones.
-        validLedgers = [vl for vl in ledgers if self.__validateReceivedLedger(vl)]
+        validLedgers = [vl for vl in ledgers if self.checkChainValidation(vl)]
 
         if not validLedgers:
             return self.ledger.blocks # Keep the local ledger if the validLedgers list is empty.
 
         return max(validLedgers, key=len) # Longest valid chain wins.
     
-
-    def __validateReceivedLedger(self, ledger: list) -> bool:
-        """Inital step after receiving a ledger. Verifies the received ledger."""
-        valid: bool = ChainValidation(ledger).validate()
-        return valid
 
     def copyChain(self) -> list:
         """Returns a deep copy of the current stored ledger `ledger.nodes`."""
@@ -165,10 +126,13 @@ class ChainSync:
         return copy.deepcopy(local)
 
 
-    def validateBeforeSending(self, ledger: list) -> bool:
+    def checkChainValidation(self, ledger: list) -> bool:
         """Last step in the chain sync response. Checks the validity of the chain before
-        sending to the node that requested it, if it's not valid, we dont send it. 
+        sending to the node that requested it, and the received chain, if it's not valid, we dont send it. 
         # TODO: Implenent the message that must be sent if the local ledger is not valid."""
 
-        chainValidation = ChainValidation(self.ledger.blocks)
-        return chainValidation.validate()
+        try:
+            ChainValidation(ledger).validate()
+            return True
+        except BlockHashMismatchError:
+            return False

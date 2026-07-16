@@ -1,54 +1,68 @@
 import json, time
 from p2pnetwork.node import Node
+from p2pnetwork.nodeconnection import NodeConnection
 from typing import Any
 
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.models.Models import (
     Block, Action, Response, DiscoverMessage,
     PeerSyncResponse, NodeMetadata, ChainSyncRequest, ChainSyncResponse,
-    ChainLegthRequest, ChainLenghResponse
+    Payload, NodeConnectionType
     )
+
+from source.models.events import InteractionContext
 
 from source.models.Models import Qwery as Query
 from source.utils.logger import Logger
-from source.services.blockManager import BlockManager
+from source.utils.blocks.blockManager import BlockManager
 from source.services.verifier import Verifier
-from source.services.chainSync import ChainSync
+from source.utils.chain.chainSync import ChainSync
+
+from source.events.eventTools import EventRegiseration
 
 from source.errors import (
     DuplicateBlockError, InvalidBlockPayloadError, InvalidChainError,
     BlockHashMismatchError, BlockNotMinedError, BlockPreviousHashError)
 
 
+class NewInteraction:
+    def __init__(self, context: InteractionContext) -> None:
+        self.context = context
+          
 
+    def handle(self, payload: Payload, sender: NodeMetadata) -> None:
+
+        action = payload.action
+        data = payload.data
+
+        print(f"New Interaction got an action: {payload.action}")
+
+        event = EventRegiseration.resolve(action=str(action), data=data)
+        event.excute(self.context, payload=payload, sender=sender) if event else None
+            
+
+# Old Interaction class.
+"""
 class Interaction:
-    def __init__(self, me: NodeMetadata, network: Node, interaction: dict, senderNode,
+    def __init__(self, me: NodeMetadata, network: Node,
                  blockManager: BlockManager, nodeManager: NodeStorageManager, seenBlocks: set,
-                 connections: list[NodeMetadata], receivedLedgers: list, receivedLengths: list) -> None:
+                 connections: list[NodeMetadata], receivedLedgers: list, receivedLengths: list,
+                 chainSync: ChainSync) -> None:
         
         self.blockManager = blockManager
         self.nodeManager: NodeStorageManager = nodeManager
-        self.senderNode = senderNode
         self.me = me
         self.connections: list = connections
-        self.interaction = interaction
         self.seenBlocks: set = seenBlocks
         self.network = network
-
-        self.chainSharing = ChainSync(
-            ledger=self.blockManager.ledger,
-            receivedLedgers=receivedLedgers,
-            network=self.network,
-            receivedLengths=receivedLengths,
-            me=self.me)
-
-        Logger.info(f"[Interaction - {self.me.name}] Got an interaction: {self.interaction.get('action')}.") # type: ignore
+        self.chainSharing = chainSync
 
 
 
-    def getAsBlock(self) -> Block | None:
-        if self.extractAction() in (Action.registeration.value, Action.BlockBroadcast.value):
-            blockDict = self.interaction.get("data")
+
+    def getAsBlock(self, interaction: dict) -> Block | None:
+        if self.extractAction(interaction=interaction) in (Action.registeration.value, Action.BlockBroadcast.value):
+            blockDict = interaction.get("data")
             if isinstance(blockDict, str):
                 try:
                     blockDict = json.loads(blockDict)
@@ -58,12 +72,11 @@ class Interaction:
         return None
         
 
-    def extractAction(self) -> str:
-         return self.interaction.get("action") # type: ignore
+    def extractAction(self, interaction: dict) -> str:
+         return interaction.get("action") # type: ignore
          
     
     def shouldBroadcast(self, possibleBlock) -> bool:
-
 
         if isinstance(possibleBlock, Block):
 
@@ -78,12 +91,14 @@ class Interaction:
         else: return False
             
 
-    def handle(self) -> None:
-        """Handles the incoming interaction detected in the `node_message` function"""
+    def handle(self, interaction: dict) -> None:
+        \"""Handles the incoming interaction detected in the `node_message` function\"""
+
+        Logger.info(f"[Interaction - {self.me.name}] Got an interaction: {interaction.get('action')}.") # type: ignore
 
         Logger.info(f"[Interaction] Starting the interaction handler.")
 
-        decision = self.__classifyInteraction()
+        decision = self.__classifyInteraction(interaction=interaction)
 
 
         if (isinstance(decision, Block)):
@@ -105,15 +120,11 @@ class Interaction:
         elif (isinstance(decision, ChainSyncResponse)):
             self.__handleChainSyncResponse(decision)
 
-        elif (isinstance(decision, ChainLegthRequest)):
-            self.__handleChainLengthRequest(decision)
 
-        elif (isinstance(decision, ChainLenghResponse)):
-            self.__handleChainLengthResponse(decision)
 
 
     def __handleBlockInteraction(self, block: Block) -> None:
-        """Handles the received block"""
+        \"""Handles the received block\"""
 
 
         try:
@@ -133,7 +144,7 @@ class Interaction:
 
 
     def __handleQueryInteraction(self, query: Query) -> Response:
-        """Handles the incoming queris"""
+        \"""Handles the incoming queris\"""
         response: Response = Verifier.check(query)
         return response
 
@@ -143,10 +154,10 @@ class Interaction:
 
 
     def __handleDiscoverMessage(self, message: DiscoverMessage) -> None:
-        """
+        \"""
         A new peer asked for our connected peers list.
         Build a PeerSync response and send it back to the requester.
-        """
+        \"""
 
         Logger.info(f"[Interaction ({self.me.name}) Handling a discovery message sent by {message.sender.name}]")
         # All the current node connections (Inbound + Outbound).
@@ -158,20 +169,17 @@ class Interaction:
             to=message.sender
         )
 
+        sender = NodeStorageManager.metadataToNodeConnection(message.sender, self.network.all_nodes)
 
-        self.network.send_to_node(self.senderNode, {
+        self.network.send_to_node(sender, {
             "action": Action.syncPeer.value,
             "data": response.model_dump(mode="json")
         })
-        Logger.info(
-            f"""[Interaction - Discover Response] Sending {
-            len(self.connections)
-            } peers to the peer {
-                self.senderNode.host}:{self.senderNode.port}.""")
+        
 
 
     def already_connected(self, host: str, port: int ) -> bool:
-        """Return True if the peer is already connected inbound or outbound."""
+        \"""Return True if the peer is already connected inbound or outbound.\"""
 
         connections: list[NodeMetadata] = self.connections
 
@@ -215,22 +223,13 @@ class Interaction:
         self.chainSharing.receive(message)
 
 
-    def __handleChainLengthRequest(self, message: ChainLegthRequest) -> None:
 
-        self.chainSharing.receiveChainLengthRequest(message)
+    def __classifyInteraction(self, interaction: dict) -> Any:
+        \"""Takes the incoming interaction and returns it's proper type (Block or Query)\"""
 
-
-    def __handleChainLengthResponse(self, message: ChainLenghResponse) -> None:
-
-        self.chainSharing.receiveLengthResponse(message) # TODO: Implement this function
-
-
-    def __classifyInteraction(self) -> Any:
-        """Takes the incoming interaction and returns it's proper type (Block or Query)"""
-
-        action: str = self.extractAction()
+        action: str = self.extractAction(interaction=interaction)
         
-        data = self.interaction.get("data")
+        data = interaction.get("data")
 
         print(f"({self.me.name}) Got an interaction: {action}")
 
@@ -272,9 +271,4 @@ class Interaction:
         if (action == Action.chainSyncResponse.value):
             return ChainSyncResponse.model_validate(data)
 
-
-        if (action == Action.chainLenghRequest.value):
-            return ChainLegthRequest.model_validate(data)
-        
-        if (action == Action.chainLenghResponse.value):
-            return ChainLenghResponse.model_validate(data)
+"""

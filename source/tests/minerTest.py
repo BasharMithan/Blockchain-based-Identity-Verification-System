@@ -1,4 +1,4 @@
-from source.services.miner import Miner
+from source.utils.blocks.miner import Miner
 from source.models.constants import TARGET
 
 

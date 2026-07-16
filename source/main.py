@@ -3,8 +3,9 @@ from dataclasses import asdict
 
 from source.models.Models import Authority, Block, CHID, Identity, User, Qwery
 from source.services.peer import Peer
+from source.services.network import Network
 
-from source.utils.chain_validation import ChainValidation
+
 
 
 if __name__ == "__main__":
@@ -83,6 +84,15 @@ if __name__ == "__main__":
     print(f"Ali received {len(Ali.receivedLedgers)} ledgers") 
     print(f"Omar received {len(Omar.receivedLedgers)} ledgers") 
     print(f"Gov received {len(gov.receivedLedgers)} ledgers") 
+
+
+    # client.startAPI()
+    # bashar.startAPI()
+    # bilal.startAPI()
+    # Omar.startAPI()
+    # gov.startAPI()
+    # Blockchain.startAPI()
+    # newP.startAPI()
 
 
 

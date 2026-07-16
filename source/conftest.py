@@ -1,6 +1,6 @@
 import pytest
 from source.models.Models import Block, CHID, User, Authority, Identity
-from source.services.miner import Miner
+from source.utils.blocks.miner import Miner
 from source.services.ledger import Ledger
 
 

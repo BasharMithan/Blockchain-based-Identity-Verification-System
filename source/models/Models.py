@@ -186,16 +186,6 @@ class ChainSyncResponse(BaseModel):
     length: int
 
 
-class ChainLegthRequest(BaseModel):
-    sender: NodeMetadata
-
-
-
-class ChainLenghResponse(BaseModel):
-    sender: NodeMetadata
-    length: int
-
-
 
 
 class Payload(BaseModel):

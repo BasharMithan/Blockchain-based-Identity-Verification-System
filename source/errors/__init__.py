@@ -21,3 +21,7 @@ from source.errors.nodeErrors import (
 from source.errors.actionErrors import (
     UnknowActionError
 )
+
+from source.errors.chainSyncErrors import (
+    ReceivedChainIsInvalid
+)

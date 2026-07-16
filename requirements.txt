@@ -4,3 +4,6 @@ p2pnetwork
 
 # Optional / dev
 pytest>=7.0
+
+fastapi>=0.100
+uvicorn>=0.23

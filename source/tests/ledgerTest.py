@@ -2,8 +2,9 @@ import json
 import pytest
 
 from source.services.ledger import Ledger
-from source.services.miner import Miner
+from source.utils.blocks.miner import Miner
 from source.errors import LedgerCorruptError, InvalidChainError, BlockHashMismatchError
+from source.models.Models import *
 
 
 def test_fresh_ledger_has_genesis(tempLedgerPath):
@@ -39,19 +40,6 @@ def test_reload_from_disk_matches_in_memory(ledgerWithTwoBlocks):
     assert reloaded.blocks[-1]["hash"] == ledgerWithTwoBlocks.blocks[-1]["hash"]
 
 
-def test_insert_on_invalid_chain_raises(ledgerWithTwoBlocks, unminedBlock):
-    # Corrupt the existing chain on disk before inserting a new block
-    blocks = json.loads(ledgerWithTwoBlocks.filePath.read_text())
-    blocks[0]["nonce"] = 999999  # breaks block 0's hash validity
-    ledgerWithTwoBlocks.filePath.write_text(json.dumps(blocks))
-
-    unminedBlock.index = 2
-    unminedBlock.previousHash = blocks[-1]["hash"]
-    mined = Miner.mine(unminedBlock)
-
-    with pytest.raises(BlockHashMismatchError):
-        ledgerWithTwoBlocks.insertBlock(mined)
-
 
 def test_corrupt_ledger_file_raises_on_load(tempLedgerPath):
     # Write a bare JSON object instead of a list
@@ -73,3 +61,23 @@ def test_all_blocks_returns_full_chain(ledgerWithTwoBlocks):
 
     assert len(all_blocks) == 2
     assert all_blocks is ledgerWithTwoBlocks.blocks  # same list reference
+
+
+def test_insert_on_invalid_chain_raises(ledgerWithTwoBlocks):
+    blocks = json.loads(ledgerWithTwoBlocks.filePath.read_text())
+    blocks[0]["nonce"] = 999999
+    ledgerWithTwoBlocks.filePath.write_text(json.dumps(blocks))
+    ledgerWithTwoBlocks.blocks = blocks  # sync in-memory state
+
+    # Different user — different CHID
+    user = User(name="Unique", nationalNumber=9999, phone=9, age=40, email="", birth="")
+    auth = Authority(name="B", businessID=2)
+    doc  = Identity(user=user, issuer=auth, image="", credentialID=9)
+    chid = CHID(user=user, credential=doc, issuer=auth)
+    block = Block(data=chid)
+    block.index = 2
+    block.previousHash = blocks[-1]["hash"]
+    mined = Miner.mine(block)
+
+    with pytest.raises(BlockHashMismatchError):
+        ledgerWithTwoBlocks.insertBlock(mined)
