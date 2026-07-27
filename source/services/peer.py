@@ -40,6 +40,8 @@ class Peer(Node):
 
         if self.host == "localhost": self.host = "127.0.0.1"
 
+        self.network = self
+
         self.storageManager = NodeStorageManager(self.peerName)
 
         self.discoveredNodes = {}
@@ -51,11 +53,10 @@ class Peer(Node):
         self.seenBlocks: set = set()
         Logger.info(f"[Interaction - Init] Initiating the node ({self.peerName}) on {self.host}:{self.port}")
 
-        self.blockManager = BlockManager(self.ledger, network=self, seenBlocks=self.seenBlocks)
+        self.blockManager = BlockManager(self.ledger, seenBlocks=self.seenBlocks)
 
         super(Peer, self).__init__(self.host, self.port, callback=None)
 
-        self.network = self
         self.me: NodeMetadata = self.myMetaData()
 
         self.receivedLedgers: list = [] # Needed for the chain sharing class
@@ -63,7 +64,7 @@ class Peer(Node):
 
         self.chainSync = ChainSync(
             ledger=self.blockManager.ledger,
-            network=self,
+            network=self.network,
             receivedLedgers=self.receivedLedgers,
             receivedLengths=self.receivedLengths,
             me=self.me)
@@ -93,7 +94,7 @@ class Peer(Node):
             port=int(self.port),
             connectionType=NodeConnectionType.outbound
         )
-        
+
 
     def start(self):
         super().start()

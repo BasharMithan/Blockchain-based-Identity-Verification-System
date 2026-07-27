@@ -14,13 +14,12 @@ from source.errors import DuplicateBlockError, InvalidChainError
 class BlockManager:
     """Manages the block functionalities and validates if the inserted block is valid."""
 
-    def __init__(self, ledgerInstance: Ledger, network: Node, seenBlocks: set) -> None:
+    def __init__(self, ledgerInstance: Ledger, seenBlocks: set) -> None:
         # BlockManager expects a Ledger instance. The Ledger object encapsulates
         # the file path and persistence details; callers should create the
         # Ledger and pass it here.
         self.ledger = ledgerInstance
         self.miner = Miner()
-        self.network = network
         self.seenBlocks = seenBlocks
 
 
@@ -41,8 +40,6 @@ class BlockManager:
 
 
         self.ledger.insertBlock(minedBlock)
-
-        self.broadcastBlock(minedBlock)
 
         return minedBlock
 
@@ -68,7 +65,7 @@ class BlockManager:
                 return True
         return False
 
-
+    """
     def shouldBoradcast(self, block: Block) -> bool:
 
         if block.data.chid in self.seenBlocks:
@@ -85,4 +82,4 @@ class BlockManager:
                 "action": Action.BlockBroadcast.value,
                 "data": block.model_dump(mode="json")
             }
-        )
+        )"""

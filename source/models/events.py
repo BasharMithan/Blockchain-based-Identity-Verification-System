@@ -22,3 +22,9 @@ class InteractionContext:
     me: NodeMetadata
     connections: list[NodeConnection]
     sender: NodeMetadata
+
+
+@dataclass
+class InteractionRequirements:
+    receivedLedgers: list
+    receivedLengths: list

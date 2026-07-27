@@ -1,5 +1,5 @@
 from source.events.eventTools import EventRegiseration, Event
-from source.models.Models import Action, NodeMetadata, Payload, Block
+from source.models import Action, NodeMetadata, Payload, Block
 from source.models.events import InteractionContext
 
 from source.errors import DuplicateBlockError

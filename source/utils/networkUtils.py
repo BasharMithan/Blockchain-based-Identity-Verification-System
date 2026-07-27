@@ -33,7 +33,7 @@ class NetworkCallbacks:
 def buildNodeInformation(name: str, node: Node) -> NodeMetadata:
     return NodeMetadata(
         name=name,
-        nodeID=node.id,
+        nodeID="",
         host=node.host,
         port=node.port,
         connectionType=NodeConnectionType.inbound)

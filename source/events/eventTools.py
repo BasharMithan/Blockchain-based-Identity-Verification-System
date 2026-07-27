@@ -7,6 +7,7 @@ from source.models.Models import Payload, NodeMetadata
 
 
 class Event(BaseModel, ABC):
+    "A command patten design to reduce code repitition and ease the implementation of new request/response events."
 
     @classmethod
     @abstractmethod

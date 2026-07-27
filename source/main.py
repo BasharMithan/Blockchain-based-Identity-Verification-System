@@ -28,6 +28,7 @@ if __name__ == "__main__":
     Omar       = Peer("Omar",       "localhost", 5011)
     gov        = Peer("GOV",        "localhost", 9999)
     newP       = Peer("new",        "localhost", 8888)
+    test       = Peer("Test",       "localhost", 1111)
 
     Blockchain.start()   # bootstrap — starts first, waits
     time.sleep(0.3)
@@ -40,6 +41,7 @@ if __name__ == "__main__":
     Omar.start()
     gov.start()
     newP.start()
+    test.start()
 
     time.sleep(3)        # peer exchange completes
 
@@ -62,7 +64,7 @@ if __name__ == "__main__":
     print(f"    Client: {len(client.all_nodes)}")
     print(f"    Bilal: {len(bilal.all_nodes)}")
     print(f"    Ali: {len(Ali.all_nodes)}")
-
+    print(f"    Test: {len(test.all_nodes)}")
 
 
 
@@ -75,6 +77,7 @@ if __name__ == "__main__":
     gov.requestChainSync()
     Blockchain.requestChainSync()
     newP.requestChainSync()
+    test.requestChainSync()
 
     time.sleep(2)
 
@@ -84,6 +87,7 @@ if __name__ == "__main__":
     print(f"Ali received {len(Ali.receivedLedgers)} ledgers") 
     print(f"Omar received {len(Omar.receivedLedgers)} ledgers") 
     print(f"Gov received {len(gov.receivedLedgers)} ledgers") 
+    print(f"Test received {len(test.receivedLedgers)} ledgers") 
 
 
     # client.startAPI()
@@ -104,3 +108,4 @@ if __name__ == "__main__":
     Omar.stop()
     gov.stop()
     newP.stop()
+    test.stop()
