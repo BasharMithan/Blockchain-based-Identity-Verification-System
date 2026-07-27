@@ -1,8 +1,8 @@
 # API Description
 
-The main way to access the system's functionalities is via API calls. Each path in the system is accessable by API calls. For example:
+The main way to access the system's functionalities is via API calls. Each path in the system is accessible by API calls. For example:
 
-1. **Block Registeration Path**: To register a block, the user will have to send a POST request to the `/register` end point. The payload that should be sent in the POST request is:
+1. **Block Registration Path**: To register a block, the user will have to send a POST request to the `/register` end point. The payload that should be sent in the POST request is:
 
 ```json
 

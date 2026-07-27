@@ -7,7 +7,7 @@ from source.errors import DuplicateBlockError, BlockPreviousHashError
 
 @pytest.fixture
 def blockManager(tempLedgerPath):
-    return BlockManager(Ledger(filePath=tempLedgerPath))
+    return BlockManager(Ledger(filePath=tempLedgerPath), set())
 
 
 def test_register_assigns_correct_index(blockManager, unminedBlock):
@@ -17,7 +17,7 @@ def test_register_assigns_correct_index(blockManager, unminedBlock):
     assert result.index == 1
 
 
-def test_register_assigns_correct_previous_hash(blockManager, unminedBlock):
+def test_register_assigns_correct_previous_hash(blockManager: BlockManager, unminedBlock):
     genesisHash = blockManager.ledger.blocks[0]["hash"]
 
     result = blockManager.registerBlock(unminedBlock)
@@ -25,20 +25,20 @@ def test_register_assigns_correct_previous_hash(blockManager, unminedBlock):
     assert result.previousHash == genesisHash
 
 
-def test_register_returns_mined_block(blockManager, unminedBlock):
+def test_register_returns_mined_block(blockManager: BlockManager, unminedBlock):
     result = blockManager.registerBlock(unminedBlock)
 
     assert result.isMined() is True
     assert result.isHashValid() is True
 
 
-def test_register_persists_to_ledger(blockManager, unminedBlock):
+def test_register_persists_to_ledger(blockManager: BlockManager, unminedBlock):
     blockManager.registerBlock(unminedBlock)
 
     assert len(blockManager.ledger.blocks) == 2  # genesis + new block
 
 
-def test_register_duplicate_raises(blockManager, unminedBlock):
+def test_register_duplicate_raises(blockManager: BlockManager, unminedBlock):
     blockManager.registerBlock(unminedBlock)
 
     # Build a second block with the same underlying CHID

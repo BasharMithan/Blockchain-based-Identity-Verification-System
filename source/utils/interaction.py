@@ -35,14 +35,13 @@ class NewInteraction:
         action = payload.action
         data = payload.data
 
-        print(f"New Interaction got an action: {payload.action}")
+
 
         event = EventRegiseration.resolve(action=str(action), data=data)
         event.excute(self.context, payload=payload, sender=sender) if event else None
             
 
 # Old Interaction class.
-"""
 class Interaction:
     def __init__(self, me: NodeMetadata, network: Node,
                  blockManager: BlockManager, nodeManager: NodeStorageManager, seenBlocks: set,
@@ -92,7 +91,7 @@ class Interaction:
             
 
     def handle(self, interaction: dict) -> None:
-        \"""Handles the incoming interaction detected in the `node_message` function\"""
+        """Handles the incoming interaction detected in the `node_message` function"""
 
         Logger.info(f"[Interaction - {self.me.name}] Got an interaction: {interaction.get('action')}.") # type: ignore
 
@@ -124,7 +123,7 @@ class Interaction:
 
 
     def __handleBlockInteraction(self, block: Block) -> None:
-        \"""Handles the received block\"""
+        """Handles the received block"""
 
 
         try:
@@ -144,7 +143,7 @@ class Interaction:
 
 
     def __handleQueryInteraction(self, query: Query) -> Response:
-        \"""Handles the incoming queris\"""
+        """Handles the incoming queris"""
         response: Response = Verifier.check(query)
         return response
 
@@ -154,10 +153,10 @@ class Interaction:
 
 
     def __handleDiscoverMessage(self, message: DiscoverMessage) -> None:
-        \"""
+        """
         A new peer asked for our connected peers list.
         Build a PeerSync response and send it back to the requester.
-        \"""
+        """
 
         Logger.info(f"[Interaction ({self.me.name}) Handling a discovery message sent by {message.sender.name}]")
         # All the current node connections (Inbound + Outbound).
@@ -179,7 +178,7 @@ class Interaction:
 
 
     def already_connected(self, host: str, port: int ) -> bool:
-        \"""Return True if the peer is already connected inbound or outbound.\"""
+        """Return True if the peer is already connected inbound or outbound."""
 
         connections: list[NodeMetadata] = self.connections
 
@@ -225,13 +224,13 @@ class Interaction:
 
 
     def __classifyInteraction(self, interaction: dict) -> Any:
-        \"""Takes the incoming interaction and returns it's proper type (Block or Query)\"""
+        """Takes the incoming interaction and returns it's proper type (Block or Query)"""
 
         action: str = self.extractAction(interaction=interaction)
         
         data = interaction.get("data")
 
-        print(f"({self.me.name}) Got an interaction: {action}")
+
 
         if (action not in Action.getactionsaslist()):
             Logger.warning(f"[Interaction] Unknown action: got: {action}, available actions: {Action.getactionsaslist()}")
@@ -270,5 +269,3 @@ class Interaction:
 
         if (action == Action.chainSyncResponse.value):
             return ChainSyncResponse.model_validate(data)
-
-"""

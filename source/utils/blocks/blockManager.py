@@ -65,7 +65,6 @@ class BlockManager:
                 return True
         return False
 
-    """
     def shouldBoradcast(self, block: Block) -> bool:
 
         if block.data.chid in self.seenBlocks:
@@ -75,6 +74,7 @@ class BlockManager:
             return True
 
 
+    """
     def broadcastBlock(self, block: Block) -> None:
 
         self.network.send_to_nodes(

@@ -4,6 +4,7 @@ from source.events.eventTools import Event, EventRegiseration
 from source.models.Models import Action
 from source.models.Models import PeerSyncResponse, Payload, NodeMetadata
 from source.models.events import InteractionContext
+from source.utils.nodeStorageManager import NodeStorageManager
 
 @EventRegiseration.register
 class DiscoverEvent(Event):
@@ -13,12 +14,13 @@ class DiscoverEvent(Event):
         return Action.discover.value
 
     def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
-        print(f"Event {self.eventAction()} is ready to be excuted.")
+
 
 
         response = PeerSyncResponse(sender=context.me, connectedPeers=context.nodeManager.nodes, to=sender)
+        targetNode = NodeStorageManager.metadataToNodeConnection(sender, context.network.all_nodes)
 
-        context.network.send_to_node(context.sender, {
+        context.network.send_to_node(targetNode, {
             "action": Action.syncPeer.value,
             "data": response.model_dump(mode="json")
         })

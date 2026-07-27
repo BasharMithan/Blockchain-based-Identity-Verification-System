@@ -1,6 +1,7 @@
 from p2pnetwork.node import NodeConnection
 
 from source.models.APIModels import VerificationRequest, NodeStatus, ChainModel, RegisterationRequest
+from source.services.peer import NewPeer
 from source.models.Models import NodeMetadata
 from source.services.verifier import Verifier
 from source.utils.blocks.blockManager import BlockManager
@@ -9,17 +10,18 @@ from source.utils.chain_validation import ChainValidation
 
 class APICommunication:
     "Responsable for responding to API messages and nalysing the incoming data from the API"
-    def __init__(self) -> None:
+    def __init__(self, peer: NewPeer) -> None:
+        self.peer = peer
         pass
 
 
     @staticmethod
-    def processVerificationRequest(verificationRequest: VerificationRequest) -> None:
+    def processVerificationRequest(verificationRequest: VerificationRequest, blockManager: BlockManager, me: NodeMetadata) -> None:
         ...
 
-    @staticmethod
-    def processBlockRegisterationRequest(registerationRequest: RegisterationRequest) -> None:
-        ...
+    def processBlockRegisterationRequest(self, registerationRequest: RegisterationRequest) -> None:
+        block = registerationRequest.block
+        self.peer.registerBlock(block)
 
 
     @staticmethod
@@ -47,5 +49,4 @@ class APICommunication:
 
     @staticmethod
     def sendChain(node: NodeMetadata, blockManager: BlockManager) -> ChainModel:
-
         return ChainModel(sender=node, chain=blockManager.ledger.blocks)

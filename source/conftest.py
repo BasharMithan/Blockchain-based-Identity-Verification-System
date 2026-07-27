@@ -2,6 +2,7 @@ import pytest
 from source.models.Models import Block, CHID, User, Authority, Identity
 from source.utils.blocks.miner import Miner
 from source.services.ledger import Ledger
+from source.services.peer import NewPeer
 
 
 @pytest.fixture
@@ -37,3 +38,14 @@ def ledgerWithTwoBlocks(tempLedgerPath, unminedBlock):
     ledger.insertBlock(mined)
 
     return ledger
+
+
+@pytest.fixture
+def fulledger(tempLedgerPath) -> Ledger:
+    ledger = Ledger(tempLedgerPath)
+    return ledger
+
+
+@pytest.fixture
+def peer():
+    NewPeer("Testing", "localhost", 121212)

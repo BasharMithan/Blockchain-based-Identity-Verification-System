@@ -5,7 +5,8 @@ from source.models.Models import NodeMetadata
 
 
 class RegisterationRequest(BaseModel):
-    ...
+    block: Block
+    sender: NodeMetadata
 
 class RegisterationResponse(BaseModel):
     ...

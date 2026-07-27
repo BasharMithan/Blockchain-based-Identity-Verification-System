@@ -21,6 +21,7 @@ class ChainSync:
         self.receivedLedgers: list = receivedLedgers
         self.receivedLengths = receivedLengths
         self.me: NodeMetadata = me
+        self.hasSynced = False
     
 
         self.expectedResponses: int = 0 # Keeps track of the number of connected nodes. 
@@ -30,6 +31,10 @@ class ChainSync:
            is a new node, or the ledger seems to be invalid or the whole ledger
            is missing.
            """
+
+        self.ledger.shouldRequestChain = True
+
+        self.hasSynced = True
 
         self.expectedResponses = len(self.network.all_nodes)
 
@@ -48,18 +53,40 @@ class ChainSync:
         received ledger, the chooses the best ledger among all the received ledger to be set
         as the ledger of the current node."""
 
+
+
+
+
+        if not self.ledger.shouldRequestChain:
+
+            return
+
+        if not self.checkChainValidation(response.ledger):
+
+            return
+        
+        if len(response.ledger) < len(self.ledger.blocks):
+
+            return
+
         # Store the received ledger.
         self.receivedLedgers.append(response.ledger)
+
 
         # Check if the main contidion to say that the request has been sent to all nodes.
         if (len(self.receivedLedgers) >= self.expectedResponses):
             
+
             choosenChain = self.__chooseBestLedger(self.receivedLedgers) 
-            print(f"{response.sender.name} -> {self.me.name} a ledger with {len(choosenChain)} blocks.")
+
+            self.ledger.shouldRequestChain = False
+
+
 
             # if self.compareReceivedChain(choosenChain):
             self.ledger.updateLedger(choosenChain)
-            print(f"[{self.me.name}] Ledger is updated from a {len(self.ledger.blocks)} to a ledger with {len(choosenChain)}.")
+            self.receivedLedgers.clear()
+
 
 
 
@@ -135,4 +162,5 @@ class ChainSync:
             ChainValidation(ledger).validate()
             return True
         except BlockHashMismatchError:
+            # self.request()
             return False

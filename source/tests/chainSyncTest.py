@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
+from p2pnetwork.node import Node
 
 from source.models.Models import (
     Action,
@@ -19,6 +20,8 @@ from source.utils.chain.chainSync import ChainSync
 from source.services.ledger import Ledger
 from source.utils.blocks.miner import Miner
 from source.utils.nodeStorageManager import NodeStorageManager
+from source.services.network import Network
+from source.services.peer import NewPeer
 
 
 class FakeNodeConnection:
@@ -47,6 +50,93 @@ class FakeNetwork:
 
     def send_to_node(self, node, payload):
         self.sent_to_node.append((node, payload))
+
+def peer() -> NewPeer:
+    return NewPeer("Testing", "localhost", 121212)
+
+
+def test_is_connected_returns_true_for_existing_connection():
+    network = Network.__new__(Network)
+    network.nodes_inbound = []
+    network.nodes_outbound = [
+        FakeNodeConnection(host="127.0.0.1", port=5001, node_id="self"),
+        FakeNodeConnection(host="127.0.0.1", port=5002, node_id="peer"),
+    ]
+
+    node = NodeMetadata(
+        name="PeerNode",
+        nodeID="peer",
+        host="127.0.0.1",
+        port=5002,
+        connectionType=NodeConnectionType.outbound,
+    )
+
+    assert network.isConnected(node) is True
+
+
+def test_is_connected_returns_false_for_missing_connection():
+    network = Network.__new__(Network)
+    network.nodes_inbound = []
+    network.nodes_outbound = [
+        FakeNodeConnection(host="127.0.0.1", port=5001, node_id="self"),
+    ]
+
+    node = NodeMetadata(
+        name="PeerNode",
+        nodeID="peer",
+        host="127.0.0.1",
+        port=5002,
+        connectionType=NodeConnectionType.outbound,
+    )
+
+    assert network.isConnected(node) is False
+
+
+def test_is_self_returns_true_for_current_node():
+    network = Network.__new__(Network)
+    network.host = "127.0.0.1"
+    network.port = 5001
+
+    node = NodeMetadata(
+        name="SelfNode",
+        nodeID="self",
+        host="127.0.0.1",
+        port=5001,
+        connectionType=NodeConnectionType.outbound,
+    )
+
+    assert network.isSelf(node=node) is True
+
+
+def test_is_self_returns_false_for_other_node():
+    network = Network.__new__(Network)
+    network.host = "127.0.0.1"
+    network.port = 5001
+
+    node = NodeMetadata(
+        name="PeerNode",
+        nodeID="peer",
+        host="127.0.0.1",
+        port=5002,
+        connectionType=NodeConnectionType.outbound,
+    )
+
+    assert network.isSelf(node=node) is False
+
+
+def test_connect_with_node_blocks_self_connection(monkeypatch):
+    network = Network.__new__(Network)
+    network.host = "127.0.0.1"
+    network.port = 5001
+
+    def fail(*args, **kwargs):
+        raise AssertionError("connect_with_node should not be called for self")
+
+    monkeypatch.setattr(Node, "connect_with_node", fail)
+
+    assert network.connect(host="127.0.0.1", port=5001) is False
+
+
 
 
 @pytest.fixture
@@ -101,7 +191,7 @@ def test_request_sends_chain_sync_request_to_known_nodes(tmp_path):
 
     chain_sync = ChainSync(
         ledger=Ledger(filePath=tmp_path / ".ledger-sync-request.json"),
-        network=network,
+        network=network, # type: ignore
         receivedLedgers=[],
         receivedLengths=[],
         me=self_meta,
@@ -109,7 +199,9 @@ def test_request_sends_chain_sync_request_to_known_nodes(tmp_path):
 
     chain_sync.request()
 
-    assert chain_sync.expectedResponses == max(0, len(network.all_nodes) - 1)
+
+
+    assert chain_sync.expectedResponses == len(network.all_nodes)
     assert len(network.sent_to_nodes) == 1
     payload, exclude = network.sent_to_nodes[0]
     assert payload["action"] == Action.chainSyncRequest.value
@@ -140,7 +232,7 @@ def test_send_responds_with_local_ledger_when_valid(tmp_path):
     ledger = Ledger(filePath=tmp_path / ".ledger-send.json")
     chain_sync = ChainSync(
         ledger=ledger,
-        network=network,
+        network=network, # type: ignore
         receivedLedgers=[],
         receivedLengths=[],
         me=self_meta,
@@ -179,13 +271,13 @@ def test_send_skips_send_when_local_ledger_invalid(tmp_path, monkeypatch):
     ledger = Ledger(filePath=tmp_path / ".ledger-send-invalid.json")
     chain_sync = ChainSync(
         ledger=ledger,
-        network=network,
+        network=network, # type: ignore
         receivedLedgers=[],
         receivedLengths=[],
         me=self_meta,
     )
 
-    monkeypatch.setattr(chain_sync, "validateBeforeSending", lambda ledger: False)
+    monkeypatch.setattr(chain_sync, "checkChainValidation", lambda ledger: False)
     chain_sync.send(ChainSyncRequest(sender=peer_meta))
 
     assert len(network.sent_to_node) == 0
@@ -218,12 +310,13 @@ def test_receive_updates_ledger_with_longer_valid_chain(tmp_path):
     )
     chain_sync = ChainSync(
         ledger=local,
-        network=network,
+        network=network, # type: ignore
         receivedLedgers=[],
         receivedLengths=[],
         me=self_meta,
     )
     chain_sync.expectedResponses = 1
+    chain_sync.ledger.shouldRequestChain = True
 
     response = ChainSyncResponse(sender=self_meta, ledger=remote.blocks, length=len(remote.blocks))
     chain_sync.receive(response)
@@ -244,7 +337,10 @@ def test_receive_does_not_replace_with_shorter_chain(tmp_path):
         block.previousHash = local.blocks[-1]["hash"]
         local.insertBlock(Miner.mine(block))
 
+
     remote = Ledger(filePath=tmp_path / ".ledger-remote-short.json")
+
+
     assert len(remote.blocks) < len(local.blocks)
 
     network = FakeNetwork()
@@ -257,15 +353,20 @@ def test_receive_does_not_replace_with_shorter_chain(tmp_path):
     )
     chain_sync = ChainSync(
         ledger=local,
-        network=network,
+        network=network, # type: ignore
         receivedLedgers=[],
         receivedLengths=[],
         me=self_meta,
     )
+
+    chain_sync.ledger.shouldRequestChain = True
     chain_sync.expectedResponses = 1
+    
 
     response = ChainSyncResponse(sender=self_meta, ledger=remote.blocks, length=len(remote.blocks))
     chain_sync.receive(response)
+
+
 
     assert len(local.blocks) != len(remote.blocks)
     assert local.blocks != remote.blocks

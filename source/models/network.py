@@ -6,6 +6,6 @@ from source.utils.blocks.blockManager import BlockManager
 
 @dataclass
 class NetworkContext:
-    metadata: NodeMetadata
-    nodeManager: NodeStorageManager
-    blockManager: BlockManager
+    receivedLengths: list
+    receivedLedgers: list
+    seenBlocks: set

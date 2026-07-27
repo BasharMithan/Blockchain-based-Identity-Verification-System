@@ -16,6 +16,7 @@ class BlockValidator:
         # 1. Proof-of-work — was this block actually mined?
         if not block.isMined():
             Logger.warning(f"[Block Validation] The block {block.index} is nor mined !")
+
             raise BlockNotMinedError(block.index, block.hash)
 
         # 2. Hash integrity — does the stored hash match a recomputation?

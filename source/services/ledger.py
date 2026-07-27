@@ -25,6 +25,8 @@ class Ledger():
 
         self.miner = Miner()
 
+        self.shouldRequestChain = False
+
         self.__initLedger()
         self.__loadLedger()
         self.__ensureGenesis()
@@ -59,8 +61,11 @@ class Ledger():
             if isinstance(data, list):
                 self.blocks = data
             else:
+                self.shouldRequestChain = True
                 raise LedgerCorruptError(str(self.filePath))
+            
         except json.JSONDecodeError as error:
+            self.shouldRequestChain = True
             raise LedgerCorruptError(str(self.filePath)) from error
 
 
@@ -70,10 +75,11 @@ class Ledger():
                 self.filePath.parent.mkdir(parents=True, exist_ok=True)
                 self.filePath.write_text('', encoding='utf-8')
             except OSError as error:
+                self.shouldRequestChain = True
                 raise LedgerNotFoundError(str(self.filePath)) from error
 
 
-    def insertBlock(self, block: Block) -> None:
+    def insertBlock(self, block: Block) -> Block:
         with self._lock:
             chainValidation = ChainValidation(self.blocks)
 
@@ -89,6 +95,8 @@ class Ledger():
 
             self.blocks.append(blockAsDict)
             self.__writeBlockToLedger(blockAsDict)
+
+            return block
 
 
     def __writeBlockToLedger(self, block: dict) -> None:
@@ -118,6 +126,7 @@ class Ledger():
             mined = self.miner.mine(block)
             self.insertBlock(mined)
         except Exception as error:
+            self.shouldRequestChain = True
             raise GenesisBlockError(str(error)) from error
 
 
@@ -129,3 +138,7 @@ class Ledger():
 
         with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
             json.dump(newLedger, ledgerFile, indent=4)
+
+        self.shouldRequestChain = False
+
+
