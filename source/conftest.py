@@ -2,7 +2,7 @@ import pytest
 from source.models.Models import Block, CHID, User, Authority, Identity
 from source.utils.blocks.miner import Miner
 from source.services.ledger import Ledger
-from source.services.peer import NewPeer
+from source.services.peer import Peer
 
 
 @pytest.fixture
@@ -10,7 +10,7 @@ def unminedBlock():
     """A Block with nonce=0, hash='' — not yet mined."""
     user = User(name="Test", nationalNumber=1, phone=1, age=20, email="", birth="")
     auth = Authority(name="TestAuth", businessID=1)
-    doc = Identity(user=user, issuer=auth, image="", credentialID=1)
+    doc = Identity(image="", credentialID=1)
     chid = CHID(user=user, credential=doc, issuer=auth)
     return Block(data=chid)
 
@@ -48,4 +48,4 @@ def fulledger(tempLedgerPath) -> Ledger:
 
 @pytest.fixture
 def peer():
-    NewPeer("Testing", "localhost", 121212)
+    Peer("Testing", "localhost", 121212)

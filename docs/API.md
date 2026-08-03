@@ -1,30 +1,35 @@
 # API Description
 
-The main way to access the system's functionalities is via API calls. Each path in the system is accessible by API calls. For example:
+The main way to access the system's functionalities is via API calls. Each path in the system is accessible by API calls.
 
-1. **Block Registration Path**: To register a block, the user will have to send a POST request to the `/register` end point. The payload that should be sent in the POST request is:
+## How It Works
 
-```json
-
-{
-    block: Block,
-    sender: NodeMetadata
-}
-
-```
-
-2. **Ownership Verification Path**: To verify that an identity belongs to a user, the user/authority will have to send a POST requst to the `/verify` end point. The payload that should be sent with the POST request is:
+**Registration** - full object in, `CHID` derived and stored on-chain.
 
 ```json
-{
-    doc: Identity,
-    user: User
-}
-```
-
-```
 POST /register
-GET /verify
-GET /chain
+{
+  "user":       { "name": "Alice", "nationalNumber": 123456, ... },
+  "issuer":     { "name": "JPUF", "businessID": 3423 },
+  "credential": { "credentialID": 101, "image": "..." }
+}
 ```
 
+The node builds `User -> Authority -> Identity -> CHID -> Block`, mines it, stores the `CHID` on-chain. The full personal data is never written anywhere. It's used to derive the hash and discarded.
+
+**Verification** - three integers in, ledger search:
+
+```json
+POST /verify
+{
+  "nationalNumber": 123456,
+  "credentialID":   101,
+  "businessID":     3423
+}
+```
+
+The node scans every block in the ledger looking for one where all three conditions are met simultaneously. If a block matches all three $\rightarrow$ `APPROVE`. If not $\rightarrow$ `DECLINE`.
+
+##  Why This Works Without Hashing
+
+The blocks already store the full nested data structure: `User`, `Credential`, `Issuer` are all in `Block.data`. So we don't need to reconstruct the `CHID` at all during the verification. We just search for the block directly. 

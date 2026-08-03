@@ -72,7 +72,7 @@ def test_insert_on_invalid_chain_raises(ledgerWithTwoBlocks):
     # Different user — different CHID
     user = User(name="Unique", nationalNumber=9999, phone=9, age=40, email="", birth="")
     auth = Authority(name="B", businessID=2)
-    doc  = Identity(user=user, issuer=auth, image="", credentialID=9)
+    doc  = Identity(image="", credentialID=9)
     chid = CHID(user=user, credential=doc, issuer=auth)
     block = Block(data=chid)
     block.index = 2

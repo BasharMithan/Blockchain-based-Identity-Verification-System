@@ -12,7 +12,7 @@ from source.models.Models import (
 
 from source.models.events import InteractionContext
 
-from source.models.Models import Qwery as Query
+from source.models.Models import Query
 from source.utils.logger import Logger
 from source.utils.blocks.blockManager import BlockManager
 from source.services.verifier import Verifier

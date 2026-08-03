@@ -21,7 +21,7 @@ from source.services.ledger import Ledger
 from source.utils.blocks.miner import Miner
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.services.network import Network
-from source.services.peer import NewPeer
+from source.services.peer import Peer
 
 
 class FakeNodeConnection:
@@ -51,8 +51,8 @@ class FakeNetwork:
     def send_to_node(self, node, payload):
         self.sent_to_node.append((node, payload))
 
-def peer() -> NewPeer:
-    return NewPeer("Testing", "localhost", 121212)
+def peer() -> Peer:
+    return Peer("Testing", "localhost", 121212)
 
 
 def test_is_connected_returns_true_for_existing_connection():
@@ -146,7 +146,7 @@ def ledger_with_one_block(tmp_path):
 
     user = User(name="SyncUser1", nationalNumber=111, phone=1, age=20, email="", birth="")
     auth = Authority(name="SyncAuthority", businessID=1)
-    identity = Identity(user=user, issuer=auth, image="", credentialID=1)
+    identity = Identity(image="", credentialID=1)
     chid = CHID(user=user, credential=identity, issuer=auth)
     block = Block(data=chid)
     block.index = len(ledger.blocks)
@@ -164,7 +164,7 @@ def ledger_with_two_blocks(tmp_path):
     for idx in range(2):
         user = User(name=f"SyncUser_{idx}", nationalNumber=100 + idx, phone=idx, age=20, email="", birth="")
         auth = Authority(name="SyncAuthority", businessID=idx)
-        identity = Identity(user=user, issuer=auth, image="", credentialID=idx)
+        identity = Identity(image="", credentialID=idx)
         chid = CHID(user=user, credential=identity, issuer=auth)
         block = Block(data=chid)
         block.index = len(ledger.blocks)
@@ -290,7 +290,7 @@ def test_receive_updates_ledger_with_longer_valid_chain(tmp_path):
     for idx in range(2):
         user = User(name=f"RemoteUser_{idx}", nationalNumber=300 + idx, phone=idx, age=25, email="", birth="")
         auth = Authority(name="RemoteAuth", businessID=10 + idx)
-        identity = Identity(user=user, issuer=auth, image="", credentialID=idx)
+        identity = Identity(credentialID=idx, image="", CID="")
         chid = CHID(user=user, credential=identity, issuer=auth)
         block = Block(data=chid)
         block.index = len(remote.blocks)
@@ -330,7 +330,7 @@ def test_receive_does_not_replace_with_shorter_chain(tmp_path):
     for idx in range(2):
         user = User(name=f"LocalUser_{idx}", nationalNumber=400 + idx, phone=idx, age=25, email="", birth="")
         auth = Authority(name="LocalAuth", businessID=20 + idx)
-        identity = Identity(user=user, issuer=auth, image="", credentialID=idx)
+        identity = Identity(image="", credentialID=idx)
         chid = CHID(user=user, credential=identity, issuer=auth)
         block = Block(data=chid)
         block.index = len(local.blocks)

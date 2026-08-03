@@ -6,6 +6,7 @@ from source.utils.logger import Logger
 from source.utils.chain_validation import ChainValidation
 from source.utils.blocks.miner import Miner
 from source.models.Models import Block, CHID, Authority, User, Identity
+from source.models.APIModels import UserAPIModel, IdentityAPIModel
 
 from source.errors import (
     LedgerNotFoundError,
@@ -109,11 +110,44 @@ class Ledger():
         return self.blocks
 
 
+    def findUser(self, nationalNumber: int) -> User | None:
+        "Takes the user from the API block registeration request, returns the actual User (with HID)"
+        for blockDict in self.blocks:
+            block = Block.model_validate(blockDict)
+
+            if nationalNumber == block.data.user.nationalNumber:
+                return block.data.user
+        return None
+
+
+    def findCredential(self, credentialID: int) -> Identity | None:
+        "Finds the in-chain credential and returns it."
+
+        for blockDict in self.blocks:
+            block = Block.model_validate(blockDict)
+
+            if credentialID == block.data.credential.credentialID:
+                return block.data.credential
+        return None        
+
+
+    def findIssuer(self, issuerID: int) -> Authority | None:
+        "Finds the on-chain issuer"
+
+        for blockDict in self.blocks:
+            block = Block.model_validate(blockDict)
+
+            if issuerID == block.data.issuer.businessID:
+                return block.data.issuer
+
+        
+
+
     
     def __generateGensisBlock(self) -> None:
         user=User(name="Gensis-Block", nationalNumber=0, phone=0, age=0, email="", birth="")
         auth = Authority(name="", businessID=0)
-        doc = Identity(user=user, issuer=auth, image="", credentialID=0)
+        doc = Identity(image="", credentialID=0)
         chid = CHID(user=user, credential=doc, issuer=auth)
 
         block = Block(data=chid)

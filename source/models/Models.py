@@ -46,8 +46,8 @@ class Authority(BaseModel):
 
 
 class Identity(BaseModel):
-    user: User
-    issuer: Authority
+    # user: User
+    # issuer: Authority
     image: str
     credentialID: int
     CID: str = ""
@@ -136,9 +136,10 @@ class Action(Enum):
         return [action.value for action in Action]
 
 
-class Qwery(BaseModel):
+class Query(BaseModel):
     user: User
     credential: Identity
+    issuer: Authority
        
 
 class NodeConnectionType(Enum):

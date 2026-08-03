@@ -124,3 +124,4 @@ class LedgerUtilities:
                     # ignore malformed block entries
                     continue
         return chid_list
+
