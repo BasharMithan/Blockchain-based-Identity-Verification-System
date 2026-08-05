@@ -35,12 +35,17 @@ class ChainValidation:
         for block_dict in self.chain:
             block = Block.model_validate(block_dict)
 
-            blockValidator.validate(block)
+            try:
+                blockValidator.validate(block)
+            except BlockPreviousHashError:
+                return False
 
             if self.checkDuplication(block):
                 ...
- 
-        self.__checkChainLinkage(self.chain)
+        try:
+            self.__checkChainLinkage(self.chain)
+        except BlockPreviousHashError:
+            return False
 
         Logger.info("[Chain Validation] Chain is valid.")
         return True

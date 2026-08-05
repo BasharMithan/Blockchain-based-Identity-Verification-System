@@ -1,32 +1,23 @@
 
 import json, time, threading, uvicorn
-from p2pnetwork.node import Node
 from pathlib import Path
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from source.errors.blockErrors import DuplicateBlockError
-import source.events.chainSharing
-import source.events.disocver
-import source.events.blocks
-
 
 from source.models.constants import BOOTSTRAP_NODES
-from source.models.Models import (Action, Block, Query, NodeMetadata,
-                                  NodeConnectionType, DiscoverMessage, ChainSyncRequest,
-                                  Payload)
-from source.services.verifier import Verifier
-from source.utils.logger import Logger
+from source.models.Models import (Action, Block, NodeMetadata,Payload)
+
 from source.utils.nodeStorageManager import NodeStorageManager
 from source.utils.blocks.blockManager import BlockManager
-from source.utils.interaction import  NewInteraction
-from source.utils.chain.chainSync import ChainSync
 from source.services.ledger import Ledger
 from source.services.network import Network
-from source.models.events import InteractionContext
 from source.models.network import NetworkContext
 
 from source.errors import (
-    LedgerCorruptError, LedgerNotFoundError
+    LedgerCorruptError, LedgerNotFoundError, InvalidChainError
     )
 
 
@@ -37,24 +28,58 @@ class Peer:
         self.host = host
         self.port = port
         ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-{self.title}.json"
-
-        if self.host == "localhost": self.host = "127.0.0.1"
-
-        networkContext = NetworkContext(seenBlocks=set(), receivedLengths=[], receivedLedgers=[])
-
-        self.nodeManager = NodeStorageManager(self.title)
-        self.ledger = Ledger(ledgerFilePath)
-        self.blockManager = BlockManager(self.ledger, networkContext.seenBlocks)
-        self.network = Network(self.title, self.host, self.port, self.nodeManager, self.blockManager, self.ledger, networkContext)
-
-        self.me = self.network.metadata
-        self.storageManager = self.nodeManager
+        # Packing the storage lists and sets to share it across the services and tools.
         self.receivedLedgers: list = []
         self.receivedLengths: list = []
-        self.seenBlocks = networkContext.seenBlocks
+        self.seenBlocks = set()
+
+        # The p2pnetwork only uses the local host: "127.0.0.1".
+        if self.host == "localhost":
+            self.host = "127.0.0.1"
+
+        ledger_corrupt = False
+        try:
+            self.ledger = Ledger(ledgerFilePath)
+        except (LedgerCorruptError, LedgerNotFoundError):
+            # Ledger file is unreadable/corrupt. Reset the file so we can
+            # initialize a fresh ledger instance and request a chain sync
+            # from peers to recover the correct ledger state.
+            print("Ledger-Corruption-Error: resetting ledger file and requesting chain sync")
+            ledger_corrupt = True
+            ledgerFilePath.parent.mkdir(parents=True, exist_ok=True)
+            ledgerFilePath.write_text('', encoding='utf-8')
+            self.ledger = Ledger(ledgerFilePath)
+            # Ensure chain sync will run to recover ledger contents from peers.
+            self.ledger.shouldRequestChain = True
+
+        # Use the instance's shared lists so Network/ChainSync update the
+        # same collections that Peer methods reference.
+        networkContext = NetworkContext(
+            seenBlocks=self.seenBlocks,
+            receivedLengths=self.receivedLengths,
+            receivedLedgers=self.receivedLedgers,
+        )
+
+        self.blockManager = BlockManager(self.ledger, self.seenBlocks)
+        self.nodeManager = NodeStorageManager(self.title)
+        self.network = Network(self.title, self.host, self.port, self.nodeManager, self.blockManager, self.ledger, networkContext)
+
+        # Creating an identity for the current node
+        self.me = self.network.metadata
+
         self.chainSync = self.network.chainSharing
 
-        if bootstrap == True:
+        # If ledger was corrupt or ledger indicated a need to sync, request chain sync.
+        if ledger_corrupt or self.ledger.shouldRequestChain == True:
+            try:
+                self.chainSync.request()
+            except Exception:
+                # Network may not be started yet; outbound connections will
+                # call chain sync when they connect.
+                pass
+
+        # A bootstrap node is a node that all nodes should connect to it on the start.
+        if bootstrap:
             BOOTSTRAP_NODES.append((self.host, self.port))
 
         self.startAPI()
@@ -66,10 +91,13 @@ class Peer:
         self.network.stop()
 
     def connect(self, node: NodeMetadata, host: str = "", port: int = 0) -> None:
+        "Connects to a specific node by NodeMetadata, or host and port."
+
         self.network.connect(node=node, host=host, port=port)
 
 
     def requestChainSync(self) -> None:
+        "Triggers the chain sync request, cleans the local current local chain."
         self.ledger.shouldRequestChain = True
         self.receivedLedgers.clear()
         self.chainSync.request()
@@ -90,31 +118,46 @@ class Peer:
 
             thread.start()
 
-            # api_port = self.port + 10000
 
 
     def buildAPI(self) -> FastAPI:
         from source.API.router import buildRouter
         app = FastAPI(title=f"Peer Node - {self.title}")
+        # Allow the console UI (and other local origins) to call the API.
+        # Permit the exact API origin and localhost variants so browser hostname
+        # mismatches (localhost vs 127.0.0.1) don't cause CORS failures.
+        api_origin = f"http://{self.host}:{self.port + 10000}"
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=[api_origin, "http://localhost:" + str(self.port + 10000), "http://127.0.0.1:" + str(self.port + 10000), "*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
         app.include_router(buildRouter(self))
+
+        staticDir = Path(__file__).resolve().parents[1] / "API" / "static"
+        app.mount("/console", StaticFiles(directory=staticDir, html=True), name="Console")
         return app
 
     
 
     def registerBlock(self, block: Block) -> Block | None:
+        "Registers a block on-chain."
+
         try:
             resultBlock: Block = self.blockManager.registerBlock(block)
-        except DuplicateBlockError:
-
+        except (DuplicateBlockError, InvalidChainError):
             return None
 
         if self.blockManager.shouldBoradcast(block):
+            # Broadcasting a block to all connecting nodes.
             self.network.broadcast(Payload(action=Action.BlockBroadcast.value, data=block), [])
+
+            # Adding the block to the seenBlocks set to prevent broadcast loop.
             self.seenBlocks.add(block.data.chid)
             return resultBlock
 
-
-    
         
 
 
@@ -155,10 +198,6 @@ if __name__ == "__main__":
 
     time.sleep(0.5)
 
-    np.registerBlock(block1)
-
-
-    time.sleep(0.1)
 
     # Blockchain.stopNetwork()
     # client.stopNetwork()

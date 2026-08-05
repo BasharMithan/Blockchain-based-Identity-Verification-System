@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 
-from source.models.Models import Block
-from source.models.Models import NodeMetadata, User, Identity, Authority
+from source.models.Models import NodeMetadata
 
 
 

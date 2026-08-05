@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry Desk — BCIV Node Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2430;
+    --ink-soft:#333f4f;
+    --paper:#f4f1e9;
+    --paper-raised:#ffffff;
+    --line:#c9c2ad;
+    --wax:#9c3b2c;
+    --wax-dim:#c98a7c;
+    --seal-green:#3a5a45;
+    --muted:#6d7280;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'Fraunces', serif;
+    --sans: 'Source Sans 3', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      linear-gradient(rgba(28,36,48,0.02) 1px, transparent 1px);
+    background-size: 100% 28px;
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  .frame{
+    max-width:980px;
+    margin:0 auto;
+    padding:32px 24px 80px;
+  }
+  header.masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:3px double var(--ink);
+    padding-bottom:14px;
+    margin-bottom:6px;
+  }
+  .masthead h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:2.1rem;
+    margin:0;
+    letter-spacing:0.3px;
+  }
+  .masthead .kicker{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--wax);
+  }
+  .masthead .date{
+    font-family:var(--mono);
+    font-size:0.75rem;
+    color:var(--muted);
+    text-align:right;
+  }
+  .connbar{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    padding:12px 16px;
+    margin:18px 0 28px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:0.82rem;
+    flex-wrap:wrap;
+  }
+  .connbar label{color:var(--muted); white-space:nowrap;}
+  .connbar input{
+    flex:1;
+    min-width:220px;
+    border:1px solid var(--line);
+    background:transparent;
+    padding:6px 8px;
+    font-family:var(--mono);
+    font-size:0.82rem;
+    color:var(--ink);
+  }
+  .connbar input:focus{outline:2px solid var(--wax-dim); outline-offset:1px;}
+  .pill{
+    font-family:var(--mono);
+    font-size:0.7rem;
+    padding:4px 9px;
+    border-radius:2px;
+    border:1px solid currentColor;
+    white-space:nowrap;
+  }
+  .pill.ok{color:var(--seal-green);}
+  .pill.err{color:var(--wax);}
+  .pill.idle{color:var(--muted);}
+
+  nav.desk-tabs{
+    display:flex;
+    gap:2px;
+    border-bottom:1px solid var(--ink);
+  }
+  nav.desk-tabs button{
+    font-family:var(--serif);
+    font-size:1.02rem;
+    background:transparent;
+    border:1px solid transparent;
+    border-bottom:none;
+    padding:10px 20px 9px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    position:relative;
+    top:1px;
+  }
+  nav.desk-tabs button .num{
+    font-family:var(--mono);
+    font-size:0.65rem;
+    color:var(--wax);
+    display:block;
+    letter-spacing:0.1em;
+  }
+  nav.desk-tabs button.active{
+    color:var(--ink);
+    background:var(--paper-raised);
+    border-color:var(--ink);
+    border-bottom:1px solid var(--paper-raised);
+  }
+  .sheet{
+    background:var(--paper-raised);
+    border:1px solid var(--ink);
+    border-top:none;
+    padding:28px 30px;
+    min-height:320px;
+  }
+  .sheet h2{
+    font-family:var(--serif);
+    font-size:1.3rem;
+    margin:0 0 4px;
+  }
+  .sheet .endpoint{
+    font-family:var(--mono);
+    font-size:0.75rem;
+    color:var(--wax);
+    margin-bottom:20px;
+    display:block;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px 20px;
+  }
+  .grid.single{grid-template-columns:1fr;}
+  fieldset{
+    border:1px solid var(--line);
+    padding:14px 16px 16px;
+    margin:0 0 4px;
+  }
+  fieldset legend{
+    font-family:var(--mono);
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--muted);
+    padding:0 6px;
+  }
+  .field{margin-bottom:12px;}
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+    font-weight:500;
+  }
+  input[type=text], input[type=number], input[type=email]{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    font-family:var(--sans);
+    font-size:0.9rem;
+    color:var(--ink);
+  }
+  input:focus{outline:2px solid var(--wax-dim); outline-offset:0; border-color:var(--wax-dim);}
+  .actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px dashed var(--line);
+  }
+  button.submit{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:11px 22px;
+    cursor:pointer;
+  }
+  button.submit:hover{background:var(--wax);}
+  button.submit:disabled{background:var(--muted); cursor:wait;}
+  button.ghost{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    padding:9px 16px;
+    cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--ink);}
+  .result{
+    margin-top:20px;
+    border:1px solid var(--ink);
+    background:var(--paper);
+  }
+  .result .result-head{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 14px;
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--line);
+  }
+  .result pre{
+    margin:0;
+    padding:14px;
+    font-family:var(--mono);
+    font-size:0.78rem;
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-height:340px;
+    overflow:auto;
+  }
+  .stamp-approve{color:var(--seal-green); font-weight:600;}
+  .stamp-decline{color:var(--wax); font-weight:600;}
+  table.chain-table{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--mono);
+    font-size:0.76rem;
+  }
+  table.chain-table th, table.chain-table td{
+    border-bottom:1px solid var(--line);
+    padding:7px 8px;
+    text-align:left;
+    vertical-align:top;
+  }
+  table.chain-table th{
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-size:0.68rem;
+    color:var(--muted);
+  }
+  .hash{color:var(--ink-soft);}
+  .statgrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-top:6px;
+  }
+  .stat{
+    border:1px solid var(--line);
+    padding:16px 14px;
+    text-align:center;
+  }
+  .stat .v{font-family:var(--serif); font-size:1.7rem; display:block;}
+  .stat .l{font-family:var(--mono); font-size:0.65rem; text-transform:uppercase; color:var(--muted); letter-spacing:0.08em;}
+  footer.desk-note{
+    margin-top:28px;
+    font-family:var(--mono);
+    font-size:0.7rem;
+    color:var(--muted);
+    text-align:center;
+  }
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr;}
+    .statgrid{grid-template-columns:1fr 1fr;}
+    nav.desk-tabs{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <header class="masthead">
+    <div>
+      <span class="kicker">Peer Node Console</span>
+      <h1>The Registry Desk</h1>
+    </div>
+    <div class="date">Blockchain-Based Identity<br>Verification System</div>
+  </header>
+
+  <div class="connbar">
+    <label for="baseUrl">Node API base&nbsp;→</label>
+    <input id="baseUrl" type="text" value="http://127.0.0.1:15005" spellcheck="false">
+    <span id="connPill" class="pill idle">not checked</span>
+    <button class="ghost" id="pingBtn" type="button">Ping /status</button>
+  </div>
+
+  <nav class="desk-tabs" id="tabs">
+    <button data-tab="register" class="active"><span class="num">01 · POST /register</span>Register a Credential</button>
+    <button data-tab="check"><span class="num">02 · POST /check</span>Verify Ownership</button>
+    <button data-tab="chain"><span class="num">03 · GET /chain</span>Inspect the Chain</button>
+    <button data-tab="status"><span class="num">04 · GET /status</span>Node Status</button>
+  </nav>
+
+  <!-- ================= REGISTER ================= -->
+  <section class="sheet" id="panel-register">
+    <h2>Register a Credential</h2>
+    <span class="endpoint">APIRegisterationRequest → POST {base}/register</span>
+
+    <form id="registerForm">
+      <div class="grid">
+        <fieldset>
+          <legend>Holder (User)</legend>
+          <div class="field"><label>Name</label><input required type="text" name="user.name"></div>
+          <div class="field"><label>National Number</label><input required type="number" name="user.nationalNumber"></div>
+          <div class="field"><label>Phone</label><input required type="number" name="user.phone"></div>
+          <div class="field"><label>Age</label><input required type="number" name="user.age"></div>
+          <div class="field"><label>Email</label><input required type="email" name="user.email"></div>
+          <div class="field"><label>Birth</label><input required type="text" name="user.birth" placeholder="YYYY-MM-DD"></div>
+        </fieldset>
+
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <fieldset>
+            <legend>Credential (Identity)</legend>
+            <div class="field"><label>Identity ID</label><input required type="number" name="credential.identityID"></div>
+            <div class="field"><label>Image (URL or base64)</label><input type="text" name="credential.image" placeholder="optional"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Issuer (Authority)</legend>
+            <div class="field"><label>Name</label><input required type="text" name="issuer.name"></div>
+            <div class="field"><label>Issuer ID</label><input required type="number" name="issuer.issuerID"></div>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Node mines &amp; stores only the derived CHID — no raw data is written on-chain.</span>
+        <button class="submit" type="submit">Submit Registration</button>
+      </div>
+    </form>
+
+    <div class="result" id="result-register" hidden>
+      <div class="result-head"><span id="result-register-status">—</span><span id="result-register-meta"></span></div>
+      <pre id="result-register-body"></pre>
+    </div>
+  </section>
+
+  <!-- ================= CHECK ================= -->
+  <section class="sheet" id="panel-check" hidden>
+    <h2>Verify Ownership</h2>
+    <span class="endpoint">VerificationRequest → POST {base}/check</span>
+
+    <form id="checkForm">
+      <div class="grid">
+        <fieldset>
+          <legend>Holder</legend>
+          <div class="field"><label>User name</label><input required type="text" name="user"></div>
+          <div class="field"><label>National Number (UserID)</label><input required type="number" name="UserID"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Credential &amp; Issuer</legend>
+          <div class="field"><label>Credential ID</label><input required type="number" name="credentialID"></div>
+          <div class="field"><label>Issuer name</label><input required type="text" name="issuer"></div>
+          <div class="field"><label>Issuer ID</label><input required type="number" name="issuerID"></div>
+        </fieldset>
+      </div>
+
+      <div class="actions">
+        <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">The node scans the ledger for a block matching all three identifiers.</span>
+        <button class="submit" type="submit">Run Check</button>
+      </div>
+    </form>
+
+    <div class="result" id="result-check" hidden>
+      <div class="result-head"><span id="result-check-status">—</span><span id="result-check-meta"></span></div>
+      <pre id="result-check-body"></pre>
+    </div>
+  </section>
+
+  <!-- ================= CHAIN ================= -->
+  <section class="sheet" id="panel-chain" hidden>
+    <h2>Inspect the Chain</h2>
+    <span class="endpoint">ChainModel ← GET {base}/chain</span>
+
+    <div class="actions" style="margin-top:0; padding-top:0; border-top:none;">
+      <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Returns the sender's node metadata and the full ledger.</span>
+      <button class="submit" id="chainFetchBtn" type="button">Fetch Chain</button>
+    </div>
+
+    <div class="result" id="result-chain" hidden>
+      <div class="result-head"><span id="result-chain-status">—</span><span id="result-chain-meta"></span></div>
+      <div id="result-chain-body" style="padding:14px; overflow:auto;"></div>
+    </div>
+  </section>
+
+  <!-- ================= STATUS ================= -->
+  <section class="sheet" id="panel-status" hidden>
+    <h2>Node Status</h2>
+    <span class="endpoint">NodeStatus ← GET {base}/status</span>
+
+    <div class="actions" style="margin-top:0; padding-top:0; border-top:none;">
+      <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Name, host:port, chain validity, and block count for this peer.</span>
+      <button class="submit" id="statusFetchBtn" type="button">Fetch Status</button>
+    </div>
+
+    <div class="result" id="result-status" hidden>
+      <div class="result-head"><span id="result-status-status">—</span><span id="result-status-meta"></span></div>
+      <div id="result-status-body" style="padding:16px;"></div>
+    </div>
+  </section>
+
+  <footer class="desk-note">Talks directly to the peer's FastAPI router — /register · /check · /chain · /status. No data leaves this page except to the node you configure above.</footer>
+</div>
+
+<script>
+(function(){
+  const baseUrlInput = document.getElementById('baseUrl');
+  const connPill = document.getElementById('connPill');
+
+  function base(){ return baseUrlInput.value.replace(/\/+$/, ''); }
+
+  function setPill(state, text){
+    connPill.className = 'pill ' + state;
+    connPill.textContent = text;
+  }
+
+  function setNested(obj, path, value){
+    const parts = path.split('.');
+    let cur = obj;
+    for(let i=0;i<parts.length-1;i++){
+      cur[parts[i]] = cur[parts[i]] || {};
+      cur = cur[parts[i]];
+    }
+    cur[parts[parts.length-1]] = value;
+  }
+
+  function formToPayload(form, numericFields){
+    const data = {};
+    for(const el of form.elements){
+      if(!el.name) continue;
+      let val = el.value;
+      if(el.type === 'number'){
+        val = val === '' ? null : Number(val);
+      }
+      setNested(data, el.name, val);
+    }
+    return data;
+  }
+
+  async function callAPI({method, path, body}){
+    const url = base() + path;
+    const opts = { method, headers: {} };
+    if(body !== undefined){
+      opts.headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(body);
+    }
+    const started = performance.now();
+    let res, json, text;
+    try{
+      res = await fetch(url, opts);
+    }catch(err){
+      throw { network: true, message: err.message, url };
+    }
+    const elapsed = Math.round(performance.now() - started);
+    text = await res.text();
+    try{ json = text ? JSON.parse(text) : null; }catch(e){ json = text; }
+    return { ok: res.ok, status: res.status, elapsed, data: json };
+  }
+
+  function renderResult(prefix, outcome){
+    const wrap = document.getElementById('result-' + prefix);
+    const statusEl = document.getElementById('result-' + prefix + '-status');
+    const metaEl = document.getElementById('result-' + prefix + '-meta');
+    wrap.hidden = false;
+
+    if(outcome.error){
+      statusEl.textContent = 'CONNECTION FAILED';
+      statusEl.style.color = 'var(--wax)';
+      metaEl.textContent = outcome.url || '';
+      const bodyEl = document.getElementById('result-' + prefix + '-body');
+      if(bodyEl) bodyEl.textContent = outcome.message + '\n\nCheck the node API base URL above and confirm the peer is running.';
+      return outcome;
+    }
+
+    statusEl.textContent = (outcome.ok ? 'OK ' : 'ERROR ') + outcome.status;
+    statusEl.style.color = outcome.ok ? 'var(--seal-green)' : 'var(--wax)';
+    metaEl.textContent = outcome.elapsed + ' ms';
+    return outcome;
+  }
+
+  async function pingStatus(){
+    setPill('idle', 'checking…');
+    try{
+      const outcome = await callAPI({method:'GET', path:'/status'});
+      if(outcome.ok){ setPill('ok', 'connected · ' + (outcome.data?.name || 'node')); }
+      else{ setPill('err', 'HTTP ' + outcome.status); }
+    }catch(err){
+      setPill('err', 'unreachable');
+    }
+  }
+  document.getElementById('pingBtn').addEventListener('click', pingStatus);
+
+  // ---- tabs ----
+  const tabs = document.querySelectorAll('#tabs button');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.sheet').forEach(s => s.hidden = true);
+      document.getElementById('panel-' + btn.dataset.tab).hidden = false;
+    });
+  });
+
+  // ---- register ----
+  const registerForm = document.getElementById('registerForm');
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = registerForm.querySelector('button.submit');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const raw = formToPayload(registerForm);
+    // Shape exactly like APIRegisterationRequest -> UserAPIModel / IdentityAPIModel / IssuerAPIModel
+    const payload = {
+      user: {
+        name: raw.user.name,
+        nationalNumber: raw.user.nationalNumber,
+        phone: raw.user.phone,
+        age: raw.user.age,
+        email: raw.user.email,
+        birth: raw.user.birth
+      },
+      credential: {
+        image: raw.credential.image || '',
+        identityID: raw.credential.identityID
+      },
+      issuer: {
+        name: raw.issuer.name,
+        issuerID: raw.issuer.issuerID
+      }
+    };
+
+    try{
+      const outcome = await callAPI({method:'POST', path:'/register', body: payload});
+      renderResult('register', outcome);
+      document.getElementById('result-register-body').textContent = JSON.stringify(outcome.data, null, 2);
+    }catch(err){
+      renderResult('register', {error:true, message: err.message, url: err.url});
+    }finally{
+      btn.disabled = false; btn.textContent = 'Submit Registration';
+    }
+  });
+
+  // ---- check ----
+  const checkForm = document.getElementById('checkForm');
+  checkForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = checkForm.querySelector('button.submit');
+    btn.disabled = true; btn.textContent = 'Checking…';
+
+    const raw = formToPayload(checkForm);
+    // Shape exactly like VerificationRequest
+    const payload = {
+      user: raw.user,
+      UserID: raw.UserID,
+      credentialID: raw.credentialID,
+      issuer: raw.issuer,
+      issuerID: raw.issuerID
+    };
+
+    try{
+      const outcome = await callAPI({method:'POST', path:'/check', body: payload});
+      renderResult('check', outcome);
+      const bodyEl = document.getElementById('result-check-body');
+      let verdict = outcome.data;
+      let stampHtml = '';
+      const verdictStr = typeof verdict === 'string' ? verdict : (verdict && verdict.value) || JSON.stringify(verdict);
+      if(verdictStr && verdictStr.toUpperCase().includes('APPROVE')){
+        stampHtml = '<span class="stamp-approve">✓ APPROVED — credential ownership confirmed on-chain</span>\n\n';
+      } else if(verdictStr && verdictStr.toUpperCase().includes('DECLINE')){
+        stampHtml = '<span class="stamp-decline">✗ DECLINED — no matching block found</span>\n\n';
+      } else if(verdict === null){
+        stampHtml = '<span class="stamp-decline">✗ No response — one or more identifiers did not resolve (user, credential, or issuer not found)</span>\n\n';
+      }
+      bodyEl.innerHTML = stampHtml + escapeHtml(JSON.stringify(outcome.data, null, 2));
+    }catch(err){
+      renderResult('check', {error:true, message: err.message, url: err.url});
+    }finally{
+      btn.disabled = false; btn.textContent = 'Run Check';
+    }
+  });
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  }
+
+  // ---- chain ----
+  document.getElementById('chainFetchBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('chainFetchBtn');
+    btn.disabled = true; btn.textContent = 'Fetching…';
+    try{
+      const outcome = await callAPI({method:'GET', path:'/chain'});
+      renderResult('chain', outcome);
+      const bodyEl = document.getElementById('result-chain-body');
+      const chain = outcome.data && outcome.data.chain;
+      if(Array.isArray(chain) && chain.length){
+        let rows = chain.map(b => {
+          const shortHash = (b.hash || '').slice(0,14) + (b.hash && b.hash.length > 14 ? '…' : '');
+          const shortPrev = (b.previousHash || '').slice(0,14) + (b.previousHash && b.previousHash.length > 14 ? '…' : '');
+          const chid = (b.data && b.data.chid) ? b.data.chid.slice(0,14) + '…' : '—';
+          return `<tr><td>${b.index}</td><td class="hash">${shortHash}</td><td class="hash">${shortPrev}</td><td>${b.nonce}</td><td class="hash">${chid}</td><td>${b.date || ''}</td></tr>`;
+        }).join('');
+        bodyEl.innerHTML = `<table class="chain-table">
+          <thead><tr><th>#</th><th>Hash</th><th>Prev Hash</th><th>Nonce</th><th>CHID</th><th>Date</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+      } else {
+        bodyEl.innerHTML = '<pre>' + JSON.stringify(outcome.data, null, 2) + '</pre>';
+      }
+    }catch(err){
+      renderResult('chain', {error:true, message: err.message, url: err.url});
+    }finally{
+      btn.disabled = false; btn.textContent = 'Fetch Chain';
+    }
+  });
+
+  // ---- status ----
+  document.getElementById('statusFetchBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('statusFetchBtn');
+    btn.disabled = true; btn.textContent = 'Fetching…';
+    try{
+      const outcome = await callAPI({method:'GET', path:'/status'});
+      renderResult('status', outcome);
+      const bodyEl = document.getElementById('result-status-body');
+      const d = outcome.data || {};
+      bodyEl.innerHTML = `<div class="statgrid">
+        <div class="stat"><span class="v">${d.name ?? '—'}</span><span class="l">Name</span></div>
+        <div class="stat"><span class="v">${(d.host ?? '—')}:${d.port ?? ''}</span><span class="l">Host:Port</span></div>
+        <div class="stat"><span class="v" style="color:${d.chainValidity ? 'var(--seal-green)':'var(--wax)'}">${d.chainValidity === true ? 'VALID' : d.chainValidity === false ? 'INVALID' : '—'}</span><span class="l">Chain Validity</span></div>
+        <div class="stat"><span class="v">${d.blocksCount ?? '—'}</span><span class="l">Blocks</span></div>
+      </div>`;
+      setPill(outcome.ok ? 'ok' : 'err', outcome.ok ? 'connected · ' + (d.name || 'node') : 'HTTP ' + outcome.status);
+    }catch(err){
+      renderResult('status', {error:true, message: err.message, url: err.url});
+    }finally{
+      btn.disabled = false; btn.textContent = 'Fetch Status';
+    }
+  });
+
+  // initial silent ping
+  pingStatus();
+})();
+</script>
+</body>
+</html>

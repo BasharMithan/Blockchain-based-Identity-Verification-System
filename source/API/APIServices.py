@@ -1,8 +1,8 @@
 from source.models.APIModels import (VerificationRequest, NodeStatus,
                                      ChainModel, APIRegisterationRequest)
 from source.services.peer import Peer
-from source.models.Models import NodeMetadata, Identity, Authority, Block, CHID, Query, Response
-from source.services.verifier import Verifier, User
+from source.models.Models import NodeMetadata, Identity, Authority, Block, CHID, Query, Response, User
+from source.services.verifier import Verifier
 from source.utils.blocks.blockManager import BlockManager
 from source.utils.chain_validation import ChainValidation
 
@@ -18,9 +18,13 @@ class APICommunication:
 
     
     def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | None:
+
+        # Looping over the local chain to locate the block that contains all the information.
         user = self.peer.ledger.findUser(verificationRequest.UserID)
         credential = self.peer.ledger.findCredential(verificationRequest.credentialID)
         issuer = self.peer.ledger.findIssuer(verificationRequest.issuerID)
+
+        # Excute only if the User, Identity, and the Authority are stored on-chain.
         if user and credential and issuer:
             query = Query(user=user, credential=credential, issuer=issuer)
             return self.verifier.check(query)
@@ -30,6 +34,8 @@ class APICommunication:
     def processBlockRegisterationRequest(self, registerationRequest: APIRegisterationRequest) -> Block | None:
         "Takes the `RegisterationRequest` received from the API, builds the block and registers it on the chain."
 
+
+        # Converting the data models from API models to the data models that are recognized by the network.
         user = User(
             name=registerationRequest.user.name,
             age=registerationRequest.user.age,
