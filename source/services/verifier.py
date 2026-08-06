@@ -7,9 +7,10 @@ from pathlib import Path
 class Verifier:
 
     @staticmethod
-    def check(qwery: Query) -> Response:
+    def check(qwery: Query, blocks: list) -> Response:
 
-        ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-Bashar.json"
+
+        # ledgerFilePath = Path(__file__).resolve().parents[2] / "storage" / f".ledger-Bashar.json"
 
         data: Query = qwery
         user, credential, issuer = data.user, data.credential, data.issuer
@@ -20,7 +21,7 @@ class Verifier:
 
 
 
-        if BlockManager.checkIfBlockExists(CHID, ledgerFilePath):
+        if BlockManager.checkIfBlockExists(CHID, blocks):
             return Response.appove
         return Response.decline
 

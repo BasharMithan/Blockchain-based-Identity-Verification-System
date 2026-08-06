@@ -83,7 +83,7 @@ class Block(BaseModel):
     index: int = 0
     nonce: int = 0
     previousHash: str = ""
-    date: str = str(datetime.now())
+    date: str = Field(default_factory=lambda: str(datetime.now()))
     hash: str = ""
 
     @model_validator(mode="after")

@@ -5,6 +5,7 @@ from source.models.Models import NodeMetadata, Identity, Authority, Block, CHID,
 from source.services.verifier import Verifier
 from source.utils.blocks.blockManager import BlockManager
 from source.utils.chain_validation import ChainValidation
+from source.errors import DuplicateBlockError, InvalidChainError
 
 
 
@@ -20,18 +21,19 @@ class APICommunication:
     def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | None:
 
         # Looping over the local chain to locate the block that contains all the information.
-        user = self.peer.ledger.findUser(verificationRequest.UserID)
+        user = self.peer.ledger.findUser(verificationRequest.UserID, verificationRequest.user)
         credential = self.peer.ledger.findCredential(verificationRequest.credentialID)
-        issuer = self.peer.ledger.findIssuer(verificationRequest.issuerID)
+        issuer = self.peer.ledger.findIssuer(verificationRequest.issuerID, verificationRequest.issuer)
 
         # Excute only if the User, Identity, and the Authority are stored on-chain.
         if user and credential and issuer:
             query = Query(user=user, credential=credential, issuer=issuer)
-            return self.verifier.check(query)
+            print(query)
+            return self.verifier.check(query, self.peer.ledger.blocks)
 
 
 
-    def processBlockRegisterationRequest(self, registerationRequest: APIRegisterationRequest) -> Block | None:
+    def processBlockRegisterationRequest(self, registerationRequest: APIRegisterationRequest) -> Block | dict | None:
         "Takes the `RegisterationRequest` received from the API, builds the block and registers it on the chain."
 
 
@@ -67,7 +69,16 @@ class APICommunication:
             )
         )
 
-        return self.peer.registerBlock(block)
+        
+        result: Block | Exception | None = self.peer.registerBlock(block)
+        if isinstance(result, DuplicateBlockError):
+            return {"Error": "Duplicated-Block", "Message": "Block already exists."}
+        elif isinstance(result, InvalidChainError):
+            return {"Error": "Invalid-Chain", "Message": "Chain integrity failed; chain sync requested."}
+        elif isinstance(result, Block):
+            return result
+        elif isinstance(result, Exception):
+            return {"Error": "Internal-Error", "Message": str(result)}
 
 
 
@@ -100,9 +111,3 @@ class APICommunication:
 
 
 
-class Authorization:
-    def __init__(self) -> None:
-        pass
-
-    def CHIDVerification(self, chid: str) -> bool:
-        ...

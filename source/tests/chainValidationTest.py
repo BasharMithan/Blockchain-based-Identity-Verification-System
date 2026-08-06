@@ -60,8 +60,7 @@ def test_broken_linkage_raises(ledgerWithTwoBlocks: Ledger):
     ledgerWithTwoBlocks.updateLedger(blocks)
 
     cv = ChainValidation(ledgerWithTwoBlocks.blocks)
-    with pytest.raises(BlockPreviousHashError):
-        cv.validate()
+    assert cv.validate() is False
 
 
 def test_genesis_with_nonzero_previous_hash_raises(tempLedgerPath):

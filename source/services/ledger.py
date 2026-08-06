@@ -110,12 +110,12 @@ class Ledger():
         return self.blocks
 
 
-    def findUser(self, nationalNumber: int) -> User | None:
+    def findUser(self, nationalNumber: int, username: str) -> User | None:
         "Takes the user from the API block registeration request, returns the actual User (with HID)"
         for blockDict in self.blocks:
             block = Block.model_validate(blockDict)
 
-            if nationalNumber == block.data.user.nationalNumber:
+            if nationalNumber == block.data.user.nationalNumber and username == block.data.user.name:
                 return block.data.user
         return None
 
@@ -131,14 +131,20 @@ class Ledger():
         return None        
 
 
-    def findIssuer(self, issuerID: int) -> Authority | None:
+    def findIssuer(self, issuerID: int, issuerName: str) -> Authority | None:
         "Finds the on-chain issuer"
 
         for blockDict in self.blocks:
             block = Block.model_validate(blockDict)
 
-            if issuerID == block.data.issuer.businessID:
+            if issuerID == block.data.issuer.businessID and issuerName == block.data.issuer.name:
                 return block.data.issuer
+
+
+    def getLatestHash(self) -> str:
+        "Return the latest block's hash."
+        return self.blocks[-1]["hash"]
+            
 
         
 

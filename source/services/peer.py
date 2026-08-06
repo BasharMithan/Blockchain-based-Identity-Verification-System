@@ -33,6 +33,14 @@ class Peer:
         self.receivedLengths: list = []
         self.seenBlocks = set()
 
+        # Use the instance's shared lists so Network/ChainSync update the
+        # same collections that Peer methods reference.
+        networkContext = NetworkContext(
+            seenBlocks=self.seenBlocks,
+            receivedLengths=self.receivedLengths,
+            receivedLedgers=self.receivedLedgers,
+        )
+
         # The p2pnetwork only uses the local host: "127.0.0.1".
         if self.host == "localhost":
             self.host = "127.0.0.1"
@@ -40,7 +48,7 @@ class Peer:
         ledger_corrupt = False
         try:
             self.ledger = Ledger(ledgerFilePath)
-        except (LedgerCorruptError, LedgerNotFoundError):
+        except LedgerCorruptError:
             # Ledger file is unreadable/corrupt. Reset the file so we can
             # initialize a fresh ledger instance and request a chain sync
             # from peers to recover the correct ledger state.
@@ -52,13 +60,6 @@ class Peer:
             # Ensure chain sync will run to recover ledger contents from peers.
             self.ledger.shouldRequestChain = True
 
-        # Use the instance's shared lists so Network/ChainSync update the
-        # same collections that Peer methods reference.
-        networkContext = NetworkContext(
-            seenBlocks=self.seenBlocks,
-            receivedLengths=self.receivedLengths,
-            receivedLedgers=self.receivedLedgers,
-        )
 
         self.blockManager = BlockManager(self.ledger, self.seenBlocks)
         self.nodeManager = NodeStorageManager(self.title)
@@ -142,13 +143,24 @@ class Peer:
 
     
 
-    def registerBlock(self, block: Block) -> Block | None:
+    def registerBlock(self, block: Block) -> Block | None | Exception:
         "Registers a block on-chain."
 
         try:
             resultBlock: Block = self.blockManager.registerBlock(block)
-        except (DuplicateBlockError, InvalidChainError):
-            return None
+
+        except InvalidChainError:
+            # Request a chain sync and retry once. If the chain is still
+            # invalid after the retry, return an InvalidChainError instance
+            # so the caller can respond appropriately instead of letting
+            # the exception bubble up to the ASGI server.
+            self.requestChainSync()
+            time.sleep(0.2)
+            
+            resultBlock: Block = self.blockManager.registerBlock(block)
+
+        except DuplicateBlockError:
+            return DuplicateBlockError(block.data.chid)
 
         if self.blockManager.shouldBoradcast(block):
             # Broadcasting a block to all connecting nodes.
@@ -173,40 +185,12 @@ if __name__ == "__main__":
 
     Blockchain = Peer("Blockchain", "localhost", 8000)
     time.sleep(0.1)
-    client     = Peer("client",     "localhost", 8282)
     bashar     = Peer("Bashar",     "localhost", 5001)
     bilal      = Peer("Bilal",      "localhost", 5005)
-    Ali        = Peer("Ali",        "localhost", 4040)
-    Omar       = Peer("Omar",       "localhost", 5011)
-    gov        = Peer("GOV",        "localhost", 9999)
-    newP       = Peer("new",        "localhost", 8888)
-    test       = Peer("Test",       "localhost", 1111)
-    np = Peer("NewPeer", "localhost", 2222)
+   
 
     Blockchain.startNetwork()
     time.sleep(0.3)
 
-    client.startNetwork()       
     bashar.startNetwork()        
     bilal.startNetwork()
-    Ali.startNetwork()
-    Omar.startNetwork()
-    gov.startNetwork()
-    newP.startNetwork()
-    test.startNetwork()
-    np.startNetwork()
-
-    time.sleep(0.5)
-
-
-    # Blockchain.stopNetwork()
-    # client.stopNetwork()
-    # bashar.stopNetwork()
-    # bilal.stopNetwork()
-    # Ali.stopNetwork()
-    # Omar.stopNetwork()
-    # gov.stopNetwork()
-    # newP.stopNetwork()
-    # test.stopNetwork()
-    # np.stopNetwork()
-

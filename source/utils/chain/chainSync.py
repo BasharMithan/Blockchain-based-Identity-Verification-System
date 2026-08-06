@@ -7,7 +7,7 @@ from source.utils.nodeStorageManager import NodeStorageManager
 from source.models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata
                                   )
 
-from source.errors import BlockHashMismatchError
+from source.errors import BlockHashMismatchError, BlockPreviousHashError, GenesisBlockError
 
 
 
@@ -53,37 +53,24 @@ class ChainSync:
         received ledger, the chooses the best ledger among all the received ledger to be set
         as the ledger of the current node."""
 
-
-
-
-
         if not self.ledger.shouldRequestChain:
-
             return
 
         if not self.checkChainValidation(response.ledger):
-
             return
         
         if len(response.ledger) < len(self.ledger.blocks):
-
             return
 
         # Store the received ledger.
         self.receivedLedgers.append(response.ledger)
 
-
         # Check if the main contidion to say that the request has been sent to all nodes.
         if (len(self.receivedLedgers) >= self.expectedResponses):
-            
 
             choosenChain = self.__chooseBestLedger(self.receivedLedgers) 
 
             self.ledger.shouldRequestChain = False
-
-
-
-            # if self.compareReceivedChain(choosenChain):
             self.ledger.updateLedger(choosenChain)
             self.receivedLedgers.clear()
 
@@ -159,8 +146,9 @@ class ChainSync:
         # TODO: Implenent the message that must be sent if the local ledger is not valid."""
 
         try:
-            ChainValidation(ledger).validate()
-            return True
-        except BlockHashMismatchError:
-            # self.request()
+            # `ChainValidation.validate()` returns a boolean and may also
+            # raise specific block/chain exceptions. Return the boolean
+            # result, and treat any raised validation exceptions as invalid.
+            return ChainValidation(ledger).validate()
+        except (BlockHashMismatchError, BlockPreviousHashError, GenesisBlockError):
             return False

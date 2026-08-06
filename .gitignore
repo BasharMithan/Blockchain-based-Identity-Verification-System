@@ -15,5 +15,3 @@ blockchain_ver_ident.egg-info
 *__pycache__/
 *.pyc
 *.pyo
-
-source/services/network.py
