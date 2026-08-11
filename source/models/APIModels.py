@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 
-from source.models.Models import NodeMetadata
+from models.Models import NodeMetadata
 
 
 

@@ -1,10 +1,10 @@
 import time
 
-from source.events.eventTools import Event, EventRegiseration
-from source.models.Models import Action
-from source.models.Models import PeerSyncResponse, Payload, NodeMetadata
-from source.models.events import InteractionContext
-from source.utils.nodeStorageManager import NodeStorageManager
+from events.eventTools import Event, EventRegiseration
+from models.Models import Action
+from models.Models import PeerSyncResponse, Payload, NodeMetadata
+from models.events import InteractionContext
+from utils.nodeStorageManager import NodeStorageManager
 
 @EventRegiseration.register
 class DiscoverEvent(Event):

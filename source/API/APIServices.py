@@ -1,11 +1,11 @@
-from source.models.APIModels import (VerificationRequest, NodeStatus,
+from models.APIModels import (VerificationRequest, NodeStatus,
                                      ChainModel, APIRegisterationRequest)
-from source.services.peer import Peer
-from source.models.Models import NodeMetadata, Identity, Authority, Block, CHID, Query, Response, User
-from source.services.verifier import Verifier
-from source.utils.blocks.blockManager import BlockManager
-from source.utils.chain_validation import ChainValidation
-from source.errors import DuplicateBlockError, InvalidChainError
+from services.peer import Peer
+from models.Models import NodeMetadata, Identity, Authority, Block, CHID, Query, Response, User
+from services.verifier import Verifier
+from utils.blocks.blockManager import BlockManager
+from utils.chain_validation import ChainValidation
+from errors import DuplicateBlockError, InvalidChainError
 
 
 

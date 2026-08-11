@@ -1,10 +1,10 @@
 import pytest
 
-from source.services.ledger import Ledger
-from source.services.verifier import Verifier
-from source.utils.blocks.blockManager import BlockManager
-from source.utils.blocks.miner import Miner
-from source.models.Models import Block, CHID, User, Authority, Identity, Query, Response
+from services.ledger import Ledger
+from services.verifier import Verifier
+from utils.blocks.blockManager import BlockManager
+from utils.blocks.miner import Miner
+from models.Models import Block, CHID, User, Authority, Identity, Query, Response
 
 
 def _makeChid(nationalNumber: int, credentialID: int, businessID: int, tag: str = "") -> CHID:

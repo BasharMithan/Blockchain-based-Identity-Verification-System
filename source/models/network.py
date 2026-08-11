@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from source.models import NodeMetadata
-from source.utils.nodeStorageManager import NodeStorageManager 
-from source.utils.blocks.blockManager import BlockManager
+from models import NodeMetadata
+from utils.nodeStorageManager import NodeStorageManager 
+from utils.blocks.blockManager import BlockManager
 
 @dataclass
 class NetworkContext:

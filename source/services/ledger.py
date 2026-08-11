@@ -1,14 +1,15 @@
 import json
 import threading
 from pathlib import Path
+from typing import Any 
 
-from source.utils.logger import Logger
-from source.utils.chain_validation import ChainValidation
-from source.utils.blocks.miner import Miner
-from source.models.Models import Block, CHID, Authority, User, Identity
-from source.models.APIModels import UserAPIModel, IdentityAPIModel
+from utils.logger import Logger
+from utils.chain_validation import ChainValidation
+from utils.blocks.miner import Miner
+from models.Models import Block, CHID, Authority, User, Identity
+from models.APIModels import UserAPIModel, IdentityAPIModel
 
-from source.errors import (
+from errors import (
     LedgerNotFoundError,
     LedgerCorruptError,
     InvalidChainError,
@@ -20,7 +21,7 @@ class Ledger():
 
     def __init__(self, filePath: Path) -> None:
         # store Block instances (or loaded dicts); start empty
-        self.blocks: list = []
+        self.blocks: list[dict[str, Any]] = []
         self.filePath: Path = filePath
         self._lock = threading.RLock() # A lock to prevent concurrent insert/write race in the same ledger instance.
 

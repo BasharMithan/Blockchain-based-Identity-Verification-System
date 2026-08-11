@@ -1,4 +1,4 @@
-from source.models.Models import ChainSyncRequest
+from models.Models import ChainSyncRequest
 
 
 class ReceivedChainIsInvalid(Exception):

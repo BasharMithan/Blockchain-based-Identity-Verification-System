@@ -2,20 +2,20 @@ from p2pnetwork.node import Node
 from typing import Callable
 import time
 
-from source.models.Models import NodeMetadata, Payload
+from models.Models import NodeMetadata, Payload
 
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.utils.networkUtils import NetworkCallbacks, buildNodeInformation
-from source.events.eventTools import EventRegiseration
-from source.utils.interaction import Interaction
-from source.models.events import InteractionContext
-from source.utils.blocks.blockManager import BlockManager
-from source.utils.chain.chainSync import ChainSync
-from source.services.ledger import Ledger
-from source.models.network import NetworkContext
-from source.models.Models import NodeConnectionType, DiscoverMessage, Action
+from utils.nodeStorageManager import NodeStorageManager
+from utils.networkUtils import NetworkCallbacks, buildNodeInformation
+from events.eventTools import EventRegiseration
+from utils.interaction import Interaction
+from models.events import InteractionContext
+from utils.blocks.blockManager import BlockManager
+from utils.chain.chainSync import ChainSync
+from services.ledger import Ledger
+from models.network import NetworkContext
+from models.Models import NodeConnectionType, DiscoverMessage, Action
 
-from source.models.constants import BOOTSTRAP_NODES
+from models.constants import BOOTSTRAP_NODES
 
 
 class Network(Node):

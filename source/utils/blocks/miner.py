@@ -1,6 +1,6 @@
-from source.models.Models import Block
-from source.utils.logger import Logger
-from source.models.constants import TARGET
+from models.Models import Block
+from utils.logger import Logger
+from models.constants import TARGET
 
 class Miner:
 

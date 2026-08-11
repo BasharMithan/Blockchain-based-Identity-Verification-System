@@ -1,5 +1,5 @@
-from source.utils.blocks.miner import Miner
-from source.models.constants import TARGET
+from utils.blocks.miner import Miner
+from models.constants import TARGET
 
 
 def test_mined_block_satisfies_target(unminedBlock):

@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from p2pnetwork.nodeconnection import NodeConnection
 from p2pnetwork.node import Node
 
-from source.utils.blocks.blockManager import BlockManager
-from source.utils.chain.chainSync import ChainSync
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.models.Models import NodeMetadata
+from utils.blocks.blockManager import BlockManager
+from utils.chain.chainSync import ChainSync
+from utils.nodeStorageManager import NodeStorageManager
+from models.Models import NodeMetadata
 
 
 

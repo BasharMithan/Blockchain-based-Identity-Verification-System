@@ -2,10 +2,10 @@ from p2pnetwork.nodeconnection import NodeConnection
 from p2pnetwork.node import Node
 from typing import Callable
 
-from source.utils.nodeStorageManager import NodeStorageManager
+from utils.nodeStorageManager import NodeStorageManager
 
-from source.models.Models import NodeConnectionType, Payload
-from source.models.Models import NodeMetadata
+from models.Models import NodeConnectionType, Payload
+from models.Models import NodeMetadata
 
 class NetworkCallbacks:
 

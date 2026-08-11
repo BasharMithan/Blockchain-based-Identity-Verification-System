@@ -1,4 +1,4 @@
-from source.utils.generators import IDGenerator
+from utils.generators import IDGenerator
 
 
 

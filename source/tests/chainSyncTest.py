@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from p2pnetwork.node import Node
 
-from source.models.Models import (
+from models.Models import (
     Action,
     Authority,
     Block,
@@ -16,12 +16,12 @@ from source.models.Models import (
     NodeMetadata,
     User,
 )
-from source.utils.chain.chainSync import ChainSync
-from source.services.ledger import Ledger
-from source.utils.blocks.miner import Miner
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.services.network import Network
-from source.services.peer import Peer
+from utils.chain.chainSync import ChainSync
+from services.ledger import Ledger
+from utils.blocks.miner import Miner
+from utils.nodeStorageManager import NodeStorageManager
+from services.network import Network
+from services.peer import Peer
 
 
 class FakeNodeConnection:

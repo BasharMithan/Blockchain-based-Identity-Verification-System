@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel
 from typing import Type
 
-from source.models.events import InteractionContext
-from source.models.Models import Payload, NodeMetadata
+from models.events import InteractionContext
+from models.Models import Payload, NodeMetadata
 
 
 class Event(BaseModel, ABC):

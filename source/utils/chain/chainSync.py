@@ -1,13 +1,13 @@
 from p2pnetwork.node import Node
 
-from source.services.ledger import Ledger
-from source.utils.chain_validation import ChainValidation
-from source.utils.blockValidation import BlockValidator
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata
+from services.ledger import Ledger
+from utils.chain_validation import ChainValidation
+from utils.blockValidation import BlockValidator
+from utils.nodeStorageManager import NodeStorageManager
+from models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata
                                   )
 
-from source.errors import BlockHashMismatchError, BlockPreviousHashError, GenesisBlockError
+from errors import BlockHashMismatchError, BlockPreviousHashError, GenesisBlockError
 
 
 

@@ -1,8 +1,8 @@
 import pytest
-from source.models.Models import Block, CHID, User, Authority, Identity
-from source.utils.blocks.miner import Miner
-from source.services.ledger import Ledger
-from source.services.peer import Peer
+from models.Models import Block, CHID, User, Authority, Identity
+from utils.blocks.miner import Miner
+from services.ledger import Ledger
+from services.peer import Peer
 
 
 @pytest.fixture

@@ -5,18 +5,18 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-from source.errors.blockErrors import DuplicateBlockError
+from errors.blockErrors import DuplicateBlockError
 
-from source.models.constants import BOOTSTRAP_NODES
-from source.models.Models import (Action, Block, NodeMetadata,Payload)
+from models.constants import BOOTSTRAP_NODES
+from models.Models import (Action, Block, NodeMetadata,Payload)
 
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.utils.blocks.blockManager import BlockManager
-from source.services.ledger import Ledger
-from source.services.network import Network
-from source.models.network import NetworkContext
+from utils.nodeStorageManager import NodeStorageManager
+from utils.blocks.blockManager import BlockManager
+from services.ledger import Ledger
+from services.network import Network
+from models.network import NetworkContext
 
-from source.errors import (
+from errors import (
     LedgerCorruptError, LedgerNotFoundError, InvalidChainError
     )
 
@@ -122,7 +122,7 @@ class Peer:
 
 
     def buildAPI(self) -> FastAPI:
-        from source.API.router import buildRouter
+        from API.router import buildRouter
         app = FastAPI(title=f"Peer Node - {self.title}")
         # Allow the console UI (and other local origins) to call the API.
         # Permit the exact API origin and localhost variants so browser hostname
@@ -174,7 +174,7 @@ class Peer:
 
 
 if __name__ == "__main__":
-    from source.models import Authority, User, Identity, CHID
+    from models import Authority, User, Identity, CHID
 
     issuer = Authority(name="JPUF", businessID=3423)
 

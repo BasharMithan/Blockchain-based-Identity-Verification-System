@@ -1,6 +1,6 @@
-from source.models.Models import Response, Query
-from source.utils.generators import IDGenerator
-from source.utils.blocks.blockManager import BlockManager
+from models.Models import Response, Query
+from utils.generators import IDGenerator
+from utils.blocks.blockManager import BlockManager
 from pathlib import Path
 
 

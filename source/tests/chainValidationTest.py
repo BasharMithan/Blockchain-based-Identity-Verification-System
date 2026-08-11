@@ -1,11 +1,11 @@
 import json
 import pytest
 
-from source.utils.chain_validation import ChainValidation
-from source.services.ledger import Ledger
-from source.utils.blocks.miner import Miner
-from source.models.Models import Block
-from source.errors import (
+from utils.chain_validation import ChainValidation
+from services.ledger import Ledger
+from utils.blocks.miner import Miner
+from models.Models import Block
+from errors import (
     BlockHashMismatchError,
     BlockNotMinedError,
     BlockPreviousHashError,

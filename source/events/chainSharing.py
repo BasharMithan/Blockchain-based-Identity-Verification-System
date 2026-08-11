@@ -1,6 +1,6 @@
-from source.events.eventTools import Event, EventRegiseration
-from source.models.Models import Action, NodeMetadata, Payload, ChainSyncRequest, ChainSyncResponse
-from source.models.events import InteractionContext
+from events.eventTools import Event, EventRegiseration
+from models.Models import Action, NodeMetadata, Payload, ChainSyncRequest, ChainSyncResponse
+from models.events import InteractionContext
 
 
 @EventRegiseration.register

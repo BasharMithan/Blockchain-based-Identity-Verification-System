@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 from p2pnetwork.nodeconnection import NodeConnection
 
-from source.models.Models import NodeMetadata, NodeConnectionType
-from source.utils.logger import Logger
+from models.Models import NodeMetadata, NodeConnectionType
+from utils.logger import Logger
 
-from source.errors import NodeStorageError
+from errors import NodeStorageError
 
 
 class NodeStorageManager:

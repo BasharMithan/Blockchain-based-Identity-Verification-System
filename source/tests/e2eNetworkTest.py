@@ -5,8 +5,8 @@ import itertools
 
 import pytest
 
-from source.services.peer import Peer
-from source.models.Models import Authority, Block, CHID, Identity, User
+from services.peer import Peer
+from models.Models import Authority, Block, CHID, Identity, User
 
 
 pytestmark = pytest.mark.integration
@@ -100,8 +100,8 @@ def test_status_and_chain_agree_across_connected_peers(spawnPeer):
 # ---------------- verification on a peer that didn't originate the block ----------------
 
 def test_verification_succeeds_on_peer_that_did_not_originate_block(spawnPeer):
-    from source.services.verifier import Verifier
-    from source.models.Models import Query, Response
+    from services.verifier import Verifier
+    from models.Models import Query, Response
 
     peerA = spawnPeer("A")
     peerB = spawnPeer("B")

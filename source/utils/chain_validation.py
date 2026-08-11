@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from source.utils.utility_function import LedgerUtilities
-from source.utils.blockValidation import BlockValidator
-from source.utils.logger import Logger
-from source.models.Models import Block
+from utils.utility_function import LedgerUtilities
+from utils.blockValidation import BlockValidator
+from utils.logger import Logger
+from models.Models import Block
 
-from source.errors import LedgerCorruptError
-from source.errors import GenesisBlockError
-from source.errors import BlockPreviousHashError
+from errors import LedgerCorruptError
+from errors import GenesisBlockError
+from errors import BlockPreviousHashError
 
 
 class ChainValidation:

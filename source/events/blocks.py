@@ -1,9 +1,9 @@
 # source/events/blocks.py
-from source.events.eventTools import EventRegiseration, Event
-from source.models import Action, NodeMetadata, Payload, Block
-from source.models.events import InteractionContext
+from events.eventTools import EventRegiseration, Event
+from models import Action, NodeMetadata, Payload, Block
+from models.events import InteractionContext
 
-from source.errors import DuplicateBlockError
+from errors import DuplicateBlockError
 
 
 @EventRegiseration.register

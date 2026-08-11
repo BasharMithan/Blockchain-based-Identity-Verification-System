@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 
-from source.services.peer import Peer
-from source.models.APIModels import APIRegisterationRequest, VerificationRequest
-from source.API.APIServices import APICommunication
+from services.peer import Peer
+from models.APIModels import APIRegisterationRequest, VerificationRequest
+from API.APIServices import APICommunication
 
 
 def buildRouter(peer: Peer) -> APIRouter:

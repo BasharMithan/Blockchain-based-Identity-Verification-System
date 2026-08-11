@@ -1,27 +1,27 @@
 
-from source.errors.blockErrors import (
+from errors.blockErrors import (
     BlockNotMinedError,
     BlockHashMismatchError,
     BlockPreviousHashError,
     DuplicateBlockError,
 )
-from source.errors.ledgerErrors import (
+from errors.ledgerErrors import (
     LedgerNotFoundError,
     LedgerCorruptError,
     InvalidChainError,
     GenesisBlockError,
 )
-from source.errors.nodeErrors import (
+from errors.nodeErrors import (
     NodeConnectionError,
     NodeStorageError,
     InvalidBlockPayloadError,
     UnknownActionError,
 )
 
-from source.errors.actionErrors import (
+from errors.actionErrors import (
     UnknowActionError
 )
 
-from source.errors.chainSyncErrors import (
+from errors.chainSyncErrors import (
     ReceivedChainIsInvalid
 )

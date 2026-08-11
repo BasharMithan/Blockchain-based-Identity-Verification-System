@@ -1,6 +1,6 @@
-from source.models.Models import Block
-from source.utils.logger import Logger
-from source.errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
+from models.Models import Block
+from utils.logger import Logger
+from errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
 
 class BlockValidator:
 

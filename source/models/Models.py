@@ -6,8 +6,8 @@ from pydantic import BaseModel, model_validator, Field, ConfigDict
 from p2pnetwork.nodeconnection import NodeConnection
 from typing import Any
 
-from source.utils.generators import IDGenerator
-from source.models.constants import TARGET
+from utils.generators import IDGenerator
+from models.constants import TARGET
 
 
    
@@ -26,6 +26,12 @@ class User(BaseModel):
         if (self.HID == ""):
             self.HID = IDGenerator.generateID(str(self.__dict__))
         return self
+
+    class Confing:
+        frozen = True
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.nationalNumber))
 
 
 

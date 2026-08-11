@@ -1,8 +1,8 @@
 import pytest
 
-from source.utils.blocks.blockManager import BlockManager
-from source.services.ledger import Ledger
-from source.errors import DuplicateBlockError, BlockPreviousHashError
+from utils.blocks.blockManager import BlockManager
+from services.ledger import Ledger
+from errors import DuplicateBlockError, BlockPreviousHashError
 
 
 @pytest.fixture
@@ -56,7 +56,7 @@ def test_register_duplicate_raises(blockManager: BlockManager, unminedBlock):
 
 def test_receive_block_with_correct_previous_hash_stores_unchanged(blockManager, unminedBlock):
     # Simulate another node mining this block independently
-    from source.utils.blocks.miner import Miner
+    from utils.blocks.miner import Miner
 
     unminedBlock.index = 1
     unminedBlock.previousHash = blockManager.ledger.blocks[0]["hash"]
@@ -73,7 +73,7 @@ def test_receive_block_with_correct_previous_hash_stores_unchanged(blockManager,
 
 
 def test_receive_block_with_wrong_previous_hash_raises(blockManager: BlockManager, unminedBlock):
-    from source.utils.blocks.miner import Miner
+    from utils.blocks.miner import Miner
 
     unminedBlock.index = 1
     unminedBlock.previousHash = "f" * 64  # wrong — doesn't match genesis hash
@@ -88,7 +88,7 @@ def test_receive_block_with_wrong_previous_hash_raises(blockManager: BlockManage
 
 
 def test_receive_duplicate_block_raises(blockManager, unminedBlock):
-    from source.utils.blocks.miner import Miner
+    from utils.blocks.miner import Miner
     import copy
 
     unminedBlock.index = 1
@@ -105,7 +105,7 @@ def test_receive_duplicate_block_raises(blockManager, unminedBlock):
 def test_concurrent_receive_block_does_not_duplicate_same_chid(blockManager, unminedBlock, monkeypatch):
     import copy
     import threading
-    from source.utils.blocks.miner import Miner
+    from utils.blocks.miner import Miner
 
     unminedBlock.index = 1
     unminedBlock.previousHash = blockManager.ledger.blocks[0]["hash"]

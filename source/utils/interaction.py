@@ -3,24 +3,24 @@ from p2pnetwork.node import Node
 from p2pnetwork.nodeconnection import NodeConnection
 from typing import Any
 
-from source.utils.nodeStorageManager import NodeStorageManager
-from source.models.Models import (
+from utils.nodeStorageManager import NodeStorageManager
+from models.Models import (
     Block, Action, Response, DiscoverMessage,
     PeerSyncResponse, NodeMetadata, ChainSyncRequest, ChainSyncResponse,
     Payload, NodeConnectionType
     )
 
-from source.models.events import InteractionContext
+from models.events import InteractionContext
 
-from source.models.Models import Query
-from source.utils.logger import Logger
-from source.utils.blocks.blockManager import BlockManager
-from source.services.verifier import Verifier
-from source.utils.chain.chainSync import ChainSync
+from models.Models import Query
+from utils.logger import Logger
+from utils.blocks.blockManager import BlockManager
+from services.verifier import Verifier
+from utils.chain.chainSync import ChainSync
 
-from source.events.eventTools import EventRegiseration
+from events.eventTools import EventRegiseration
 
-from source.errors import (
+from errors import (
     DuplicateBlockError, InvalidBlockPayloadError, InvalidChainError,
     BlockHashMismatchError, BlockNotMinedError, BlockPreviousHashError)
 

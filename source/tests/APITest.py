@@ -2,11 +2,11 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from source.API.router import buildRouter
-from source.services.ledger import Ledger
-from source.utils.blocks.blockManager import BlockManager
-from source.models.Models import Block, NodeMetadata, NodeConnectionType
-from source.errors import DuplicateBlockError, InvalidChainError
+from API.router import buildRouter
+from services.ledger import Ledger
+from utils.blocks.blockManager import BlockManager
+from models.Models import Block, NodeMetadata, NodeConnectionType
+from errors import DuplicateBlockError, InvalidChainError
 
 
 class FakePeer:

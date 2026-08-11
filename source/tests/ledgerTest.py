@@ -1,10 +1,10 @@
 import json
 import pytest
 
-from source.services.ledger import Ledger
-from source.utils.blocks.miner import Miner
-from source.errors import LedgerCorruptError, InvalidChainError, BlockHashMismatchError
-from source.models.Models import *
+from services.ledger import Ledger
+from utils.blocks.miner import Miner
+from errors import LedgerCorruptError, InvalidChainError, BlockHashMismatchError
+from models.Models import *
 
 
 def test_fresh_ledger_has_genesis(tempLedgerPath):
@@ -18,7 +18,7 @@ def test_fresh_ledger_has_genesis(tempLedgerPath):
 def test_genesis_is_mined_and_hash_valid(tempLedgerPath):
     ledger = Ledger(filePath=tempLedgerPath)
 
-    from source.models.Models import Block
+    from models.Models import Block
     genesis = Block.model_validate(ledger.blocks[0])
 
     assert genesis.isMined() is True

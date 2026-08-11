@@ -1,7 +1,7 @@
 
 import pytest
-from source.utils.blockValidation import BlockValidator
-from source.errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
+from utils.blockValidation import BlockValidator
+from errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
 
 
 def test_unmined_block_raises(unminedBlock):

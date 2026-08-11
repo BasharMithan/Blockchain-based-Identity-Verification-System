@@ -1,14 +1,14 @@
 from p2pnetwork.node import Node
 
-from source.models.Models import Block, Action
-from source.services.ledger import Ledger
-from source.utils.logger import Logger
-from source.utils.blocks.miner import Miner
-from source.utils.chain_validation import ChainValidation
-from source.utils.blockValidation import BlockValidator
-from source.utils.utility_function import LedgerUtilities
+from models.Models import Block, Action
+from services.ledger import Ledger
+from utils.logger import Logger
+from utils.blocks.miner import Miner
+from utils.chain_validation import ChainValidation
+from utils.blockValidation import BlockValidator
+from utils.utility_function import LedgerUtilities
 
-from source.errors import DuplicateBlockError, InvalidChainError, BlockPreviousHashError
+from errors import DuplicateBlockError, InvalidChainError, BlockPreviousHashError
 
 
 class BlockManager:

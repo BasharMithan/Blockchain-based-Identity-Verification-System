@@ -1,6 +1,6 @@
-from source.events.disocver import DiscoverEvent
-from source.events.disocver import PeerSyncRsponseEvent
+from events.disocver import DiscoverEvent
+from events.disocver import PeerSyncRsponseEvent
 
-from source.events.blocks import BlockBroadcastEvent
+from events.blocks import BlockBroadcastEvent
 
-from source.events.chainSharing import ChainSyncResponseEvent, ChainSyncRequestEvent
+from events.chainSharing import ChainSyncResponseEvent, ChainSyncRequestEvent

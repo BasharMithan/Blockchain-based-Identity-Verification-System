@@ -8,10 +8,25 @@ docs/Real-World-Example-(BC IDV).drawio
 docs/Real-World-Example-(BC IDV).pdf
 docs/todo.md
 docs/What is a Blockchain-Based Identity Verification System.pdf
+docs/Current Performance Analysis Report.md
+docs/Performance Report (Ledger Insert and Lookup Speed).md
+docs/BCIV-Docs
+docs/.obsidian
 
 storage/*
+
+source/Blockchain_based_Identity_Verification_System.egg-info
+
+bciv-venv
+.pytest_cache
+dist
+build
 
 blockchain_ver_ident.egg-info
 *__pycache__/
 *.pyc
 *.pyo
+
+todo.todo
+
+

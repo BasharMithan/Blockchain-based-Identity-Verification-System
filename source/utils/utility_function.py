@@ -125,3 +125,23 @@ class LedgerUtilities:
                     continue
         return chid_list
 
+
+
+
+def getProjectVersion() -> str:
+    """Gets the current version of the project by excuting the command `git describe --tags --abbrev=0`
+    to associate it with the performance report.
+    Returns:
+        str: The current version.
+    """
+
+    import subprocess
+    versions = subprocess.run("git describe --tags --abbrev=0", capture_output=True, text=True)
+    return versions.stdout.strip()
+
+
+if __name__ == "__main__":
+    print(getProjectVersion())
+
+
+    
