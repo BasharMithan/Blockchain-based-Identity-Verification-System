@@ -14,7 +14,7 @@ The system will act as a verifier that checks if a specific user owns a specific
 
 ### The Peer
 
-A **peer** is a single computer or "node" that acts as both client and a server at the same time. ![[Pasted image 20260505113838.jpg]] Unlike a traditional setup where a client talks to a big central computer, in a P2P network, every participant has equal status and responsibilities.
+A **peer** is a single computer or "node" that acts as both client and a server at the same time. Unlike a traditional setup where a client talks to a big central computer, in a P2P network, every participant has equal status and responsibilities.
 
 ### The Ledger
 
@@ -28,7 +28,7 @@ During the "Verifying" path, the ledger acts as the reference point for the syst
 
 - **Querying**: When a user requests verification, the system searches the ledger for a matching `CHID` hash.
     
-- **Ownership Check**: The ledger provides the "proof" (the stored hash) that the system needs to preform the `DECOwnershipCheck` against the user's `HID`.
+- **Ownership Check**: The ledger provides the "proof" (the stored hash) that the system needs to perform the `DECOwnershipCheck` against the user's `HID`.
     
 
 ## Initialization & Connection
@@ -41,7 +41,7 @@ During the "Verifying" path, the ledger acts as the reference point for the syst
 
 ### Communication
 
-The networking functionalities is done by the `Network` class which inherits the `Node` class to act as a peer.  
+The networking functionality is done by the `Network` class which inherits the `Node` class to act as a peer.  
 
 - `broadcast(data)`: Sends a dictionary to all connected peers.
     - Used to broadcast a `newBlock` after a successful registration.
@@ -59,7 +59,7 @@ The library is **event-driven**. You don't pull data; you "react" to it by over
     - `connected_node`: The node object that sent the message.
     - `data`: The dictionary containing the custom protocol (e.g., `action`, `childHash` ). This is where the `if/elif` statements to handle **Registration**, **Querying**, or **Verification Responses**.
 
-`outbound_node_connected(self, connected_node`): Gets triggered when an out bounded node is connected to the network.
+`outbound_node_connected(self, connected_node)`: Gets triggered when an outbound node is connected to the network.
 
 `inbound_node_connected(self, connected_node)`: Runs when a node is connected to the network.
 
@@ -108,48 +108,33 @@ pip install -e .
 Example Python usage (illustrative):
 
 ```python
-# Create the identites: User, Authority and the Identity.
-    fake_user = User(name="", nationalNumber=0, phone=0, age=0, email="", birth="")
+# Create the identities: User, Authority and the Identity.
+fake_user = User(name="", nationalNumber=0, phone=0, age=0, email="", birth="")
 
-    user = User(name="Testing the Chain Validation - 2", nationalNumber=2312311,
-                phone=444, age=24, email="", birth="")
+user = User(name="Testing the Chain Validation - 2", nationalNumber=2312311,
+            phone=444, age=24, email="", birth="")
+
+issuer = Authority(name="JPUF", businessID=3423)
+
+doc = Identity(user=user, issuer=issuer, image="", credentialID=333)
+
+chid = CHID(user=user, credential=doc, issuer=issuer)
+
+block = Block(data=chid)
+
+Blockchain = Peer("blockchain", "localhost", 8281)
 
 
-    issuer = Authority(name="JPUF", businessID=3423)
+Blockchain.start()
 
-    doc = Identity(user=user, issuer=issuer, image="", credentialID=333)
+Blockchain.registerBlock(block=block)
 
-    chid = CHID(user=user, credential=doc, issuer=issuer)
+ownershipQwery = Qwery(user=user, credential=doc)
 
-    block = Block(data=chid)
+# Running the query
+Blockchain.verifier.processQwery(ownershipQwery)
 
-
-    Blockchain = Peer("blockchain", "localhost", 8281)
-    client = Peer("client", "localhost", 8282)
-
-    Blockchain.start()
-    client.start()
-
-    time.sleep(0.5)
-
-    client.connect("localhost", 8281)
-
-    time.sleep(0.5)
-
-    # Registering the block defined above
-    client.blockmanager.registerBlock(block=block)
-
-    # Generating a query; To check if the credential doc belongs to the user.
-    ownershipQwery = Qwery(user=user, credential=doc)
-
-    # Running the query
-    client.verifier.processQwery(ownershipQwery)
-
-    time.sleep(2)
-
-    Blockchain.stop()
-
-    client.stop()
+Blockchain.stop()
 
 ```
 

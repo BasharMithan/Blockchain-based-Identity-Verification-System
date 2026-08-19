@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from services.peer import Peer
 from models.APIModels import APIRegisterationRequest, VerificationRequest
+from models.Models import Response
 from API.APIServices import APICommunication
 from errors.APIErrors import APIError
 
@@ -14,7 +15,7 @@ def buildRouter(peer: Peer) -> APIRouter:
     def register(payload: APIRegisterationRequest):
 
         result = communication.processBlockRegisterationRequest(payload)
-        
+
         if isinstance(result, APIError):
             raise HTTPException(status_code=409, detail=result.message)
         
@@ -22,7 +23,14 @@ def buildRouter(peer: Peer) -> APIRouter:
 
     @router.post("/check")
     def check(payload: VerificationRequest):
-        return communication.processVerificationRequest(payload)
+
+        result: Response | APIError = communication.processVerificationRequest(payload)
+
+        if isinstance(result, APIError):
+            return HTTPException(status_code=409, detail=result.message)
+
+        return result
+        
 
     @router.get("/chain")
     def chain():

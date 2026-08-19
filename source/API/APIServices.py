@@ -25,7 +25,7 @@ class APICommunication:
 
 
     
-    def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | APIError | None:
+    def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | APIError:
 
         # Looping over the local chain to locate the block that contains all the information.
         user = self.peer.ledger.findUser(verificationRequest.UserID, verificationRequest.user)
