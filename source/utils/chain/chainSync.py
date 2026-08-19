@@ -1,7 +1,7 @@
 from p2pnetwork.node import Node
 
 from services.ledger import Ledger
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from utils.blockValidation import BlockValidator
 from utils.nodeStorageManager import NodeStorageManager
 from models.Models import (ChainSyncResponse, ChainSyncRequest, Action, NodeMetadata

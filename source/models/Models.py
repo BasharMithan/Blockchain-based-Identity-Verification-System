@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 from enum import Enum
 from datetime import datetime, timezone
-from pydantic import BaseModel, model_validator, Field, ConfigDict
+from pydantic import BaseModel, model_validator, Field, EmailStr
 from p2pnetwork.nodeconnection import NodeConnection
 from typing import Any
 
@@ -17,7 +17,7 @@ class User(BaseModel):
     nationalNumber: int
     phone: int
     age: int
-    email: str
+    email: EmailStr
     birth: str
     HID: str = ""
 

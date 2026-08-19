@@ -1,10 +1,11 @@
-
+import time
 from services.peer import Peer
-
+from models import User
 
 def main() -> None:
-    mainPeer: Peer = Peer(title="Self", bootstrap=True, host="localhost", port=8888)
-    mainPeer.startNetwork()
+    Blockchain = Peer("Blockchain", "localhost", 8000)
+
+    Blockchain.startNetwork()
 
 
 if __name__ == "__main__":

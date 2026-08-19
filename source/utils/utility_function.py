@@ -140,8 +140,6 @@ def getProjectVersion() -> str:
     return versions.stdout.strip()
 
 
-if __name__ == "__main__":
-    print(getProjectVersion())
 
 
     

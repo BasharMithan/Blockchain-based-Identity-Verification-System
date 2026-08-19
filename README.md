@@ -1,5 +1,9 @@
 # Blockchain-Based Identity Verification System
 
+Check the last [release (v0.2.0)](docs/v0.2.0-release.md)
+
+---
+
 This project is a _Blockchain-Based Identity Verification System_, and it's main objective to enhance the security and privacy when it comes to digital credentials. By using the **Blockchain** technology we assure that the data won't be changed (immutable), decentralized and hashed in the blockchain so it won't be reviled to anyone.
 
 ## System Objective
@@ -168,5 +172,5 @@ Maintainer: Bashar Mithan Repository: [https://github.com/BasharMithan/Blockcha
 
 ## To be added
 
-- System API.
-
+- System CLI.
+- Image input handling

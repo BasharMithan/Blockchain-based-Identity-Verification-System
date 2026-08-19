@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import Any 
 
 from utils.logger import Logger
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from utils.blocks.miner import Miner
 from models.Models import Block, CHID, Authority, User, Identity
-from models.APIModels import UserAPIModel, IdentityAPIModel
 
 from errors import (
     LedgerNotFoundError,
@@ -25,6 +24,15 @@ class Ledger():
         self.filePath: Path = filePath
         self._lock = threading.RLock() # A lock to prevent concurrent insert/write race in the same ledger instance.
 
+        self.users: dict[int, User] = {}
+        self.usersByNationalNumber: dict[int, User] = {}
+        self.usersByUsername: dict[str, User] = {}
+
+        self.credentials: dict[int, Identity] = {}
+        self.issuers: dict[int, Authority] = {}
+
+        self.loadFromLedger()
+
         self.miner = Miner()
 
         self.shouldRequestChain = False
@@ -32,6 +40,8 @@ class Ledger():
         self.__initLedger()
         self.__loadLedger()
         self.__ensureGenesis()
+
+        self.loadFromLedger()
 
 
     def __initLedger(self) -> None:
@@ -96,6 +106,11 @@ class Ledger():
                 raise DuplicateBlockError(blockChid)
 
             self.blocks.append(blockAsDict)
+
+            self.users[block.data.user.nationalNumber] = block.data.user
+            self.credentials[block.data.credential.credentialID] = block.data.credential
+            self.issuers[block.data.issuer.businessID] = block.data.issuer
+
             self.__writeBlockToLedger(blockAsDict)
 
             return block
@@ -109,37 +124,8 @@ class Ledger():
 
     def allBlocks(self) -> list:
         return self.blocks
+      
 
-
-    def findUser(self, nationalNumber: int, username: str) -> User | None:
-        "Takes the user from the API block registeration request, returns the actual User (with HID)"
-        for blockDict in self.blocks:
-            block = Block.model_validate(blockDict)
-
-            if nationalNumber == block.data.user.nationalNumber and username == block.data.user.name:
-                return block.data.user
-        return None
-
-
-    def findCredential(self, credentialID: int) -> Identity | None:
-        "Finds the in-chain credential and returns it."
-
-        for blockDict in self.blocks:
-            block = Block.model_validate(blockDict)
-
-            if credentialID == block.data.credential.credentialID:
-                return block.data.credential
-        return None        
-
-
-    def findIssuer(self, issuerID: int, issuerName: str) -> Authority | None:
-        "Finds the on-chain issuer"
-
-        for blockDict in self.blocks:
-            block = Block.model_validate(blockDict)
-
-            if issuerID == block.data.issuer.businessID and issuerName == block.data.issuer.name:
-                return block.data.issuer
 
 
     def getLatestHash(self) -> str:
@@ -147,12 +133,9 @@ class Ledger():
         return self.blocks[-1]["hash"]
             
 
-        
-
-
     
     def __generateGensisBlock(self) -> None:
-        user=User(name="Gensis-Block", nationalNumber=0, phone=0, age=0, email="", birth="")
+        user=User(name="Gensis-Block", nationalNumber=0, phone=0, age=0, email="gensis@blockchain.io", birth="")
         auth = Authority(name="", businessID=0)
         doc = Identity(image="", credentialID=0)
         chid = CHID(user=user, credential=doc, issuer=auth)
@@ -171,6 +154,20 @@ class Ledger():
             raise GenesisBlockError(str(error)) from error
 
 
+    def loadFromLedger(self) -> None:
+        """Reads the local ledger and stores the user, credentials, and issuers' indecies
+        to build the index tables."""
+
+        for block in self.blocks:
+
+
+
+            self.users[block["data"]["user"]["nationalNumber"]] = User.model_validate(block["data"]["user"])
+            self.usersByNationalNumber[block["data"]["user"]["nationalNumber"]] = User.model_validate(block["data"]["user"])
+
+            self.credentials[block["data"]["credential"]["credentialID"]] = Identity.model_validate(block["data"]["credential"])
+            self.issuers[block["data"]["issuer"]["businessID"]] = Authority.model_validate(block["data"]["issuer"])
+
     def updateLedger(self, newLedger: list) -> None:
         """Defined to meet the requirements of the `ChainSync` class, where it replaces
         the current ledger, with a ledger that has been choosen by the `ChainSync` class.
@@ -181,5 +178,40 @@ class Ledger():
             json.dump(newLedger, ledgerFile, indent=4)
 
         self.shouldRequestChain = False
+        
+        self.users: dict[int, User] = {}
+        self.credentials: dict[int, Identity] = {}
+        self.issuers: dict[int, Authority] = {}
+
+        self.loadFromLedger()
+
+
+
+
+    def findUser(self, nationalNumber: int, username: str) -> User | None:
+        userByNA =  self.users.get(nationalNumber, None)
+
+        if userByNA:
+            if userByNA.name == username:
+                return userByNA
+        return None
+
+
+    def findCredential(self, credentialID: int) -> Identity | None:
+        return self.credentials.get(credentialID, None)
+
+    def findIssuer(self, issuerID: int, issuerName: str) -> Authority | None:
+        issuer = self.issuers.get(issuerID, None)
+
+        if issuer is None:
+            return None
+
+        if issuer.name == issuerName:
+            return issuer
+        
+        else: return None
+
+
+
 
 

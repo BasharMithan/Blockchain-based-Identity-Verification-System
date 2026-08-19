@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from services.ledger import Ledger
 from utils.blocks.miner import Miner
 from models.Models import Block

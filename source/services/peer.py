@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic_core import ValidationError
 
 from errors.blockErrors import DuplicateBlockError
 
@@ -12,6 +13,7 @@ from models.Models import (Action, Block, NodeMetadata,Payload)
 
 from utils.nodeStorageManager import NodeStorageManager
 from utils.blocks.blockManager import BlockManager
+from errors.holderValidationErrors import ConflictingIdentityError
 from services.ledger import Ledger
 from services.network import Network
 from models.network import NetworkContext
@@ -162,6 +164,16 @@ class Peer:
         except DuplicateBlockError:
             return DuplicateBlockError(block.data.chid)
 
+        except ConflictingIdentityError:
+            return ConflictingIdentityError(
+                nationalNumber=block.data.user.nationalNumber,
+                existingName="",
+                incomingName=""
+            )
+
+        except ValidationError:
+            return ValidationError()
+
         if self.blockManager.shouldBoradcast(block):
             # Broadcasting a block to all connecting nodes.
             self.network.broadcast(Payload(action=Action.BlockBroadcast.value, data=block), [])
@@ -183,13 +195,11 @@ if __name__ == "__main__":
     block1 = Block(data=CHID(user=user1, credential=doc1, issuer=issuer))
 
 
-    Blockchain = Peer("Blockchain", "localhost", 8000)
     time.sleep(0.1)
     bashar     = Peer("Bashar",     "localhost", 5001)
     bilal      = Peer("Bilal",      "localhost", 5005)
    
 
-    Blockchain.startNetwork()
     time.sleep(0.3)
 
     bashar.startNetwork()        

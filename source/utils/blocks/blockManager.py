@@ -4,11 +4,12 @@ from models.Models import Block, Action
 from services.ledger import Ledger
 from utils.logger import Logger
 from utils.blocks.miner import Miner
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from utils.blockValidation import BlockValidator
-from utils.utility_function import LedgerUtilities
+from validation.inputValidation import InputValidation
+from errors.holderValidationErrors import ConflictingIdentityError
 
-from errors import DuplicateBlockError, InvalidChainError, BlockPreviousHashError
+from errors import DuplicateBlockError, BlockPreviousHashError
 
 
 class BlockManager:
@@ -21,6 +22,7 @@ class BlockManager:
         self.ledger = ledgerInstance
         self.miner = Miner()
         self.seenBlocks = seenBlocks
+        self.inputValidation = InputValidation(ledger=self.ledger)
         
 
     def registerBlock(self, block: Block) -> Block:
@@ -28,17 +30,15 @@ class BlockManager:
         with self.ledger._lock:
             block.index = len(self.ledger.blocks)
             block.previousHash = self.ledger.getLatestHash()
-        
+
+            if not self.inputValidation.holderValidation(user=block.data.user):
+                raise ConflictingIdentityError(nationalNumber=block.data.user.nationalNumber, existingName="", incomingName="")
 
             if self.checkIfBlockExists(block.data.chid, self.ledger.blocks):
                 Logger.warning(f"[Block validation] The block {block.index} already in the ledger!")
                 raise DuplicateBlockError(block.data.chid)
 
             minedBlock = self.miner.mine(block)
-
-            if not self.__validChain():
-                raise InvalidChainError("Chain failed integrity check before insert.")
-
 
             self.ledger.insertBlock(minedBlock)
 

@@ -8,7 +8,7 @@ from models.Models import Block, CHID, User, Authority, Identity, Query, Respons
 
 
 def _makeChid(nationalNumber: int, credentialID: int, businessID: int, tag: str = "") -> CHID:
-    user = User(name=f"User{tag}", nationalNumber=nationalNumber, phone=1, age=20, email="", birth="")
+    user = User(name=f"User{tag}", nationalNumber=nationalNumber, phone=1, age=20, email="test@bc.io", birth="")
     auth = Authority(name=f"Auth{tag}", businessID=businessID)
     doc = Identity(image="", credentialID=credentialID)
     return CHID(user=user, credential=doc, issuer=auth)

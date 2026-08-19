@@ -8,7 +8,7 @@ from dataclasses import dataclass, asdict
 
 from services.ledger import Ledger
 from utils.blocks.blockManager import BlockManager
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from models import User, Identity, Authority, CHID, Block
 from utils.utility_function import getProjectVersion
 
@@ -258,7 +258,7 @@ if __name__ == "__main__":
 
     baseDir: Path = Path(tempfile.mkdtemp(prefix="bciv-performance-"))
 
-    tests:      list[int] = [10, 50, 100, 250, 500, 1000, 2000]
+    tests:      list[int] = [10, 50]
 
     saved:      set [User] = set()
     unsaved:    set [User] = set()

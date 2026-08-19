@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from API.router import buildRouter
 from services.ledger import Ledger
 from utils.blocks.blockManager import BlockManager
-from models.Models import Block, NodeMetadata, NodeConnectionType
+from models.Models import Block, NodeMetadata, NodeConnectionType, User
 from errors import DuplicateBlockError, InvalidChainError
 
 
@@ -80,13 +80,15 @@ def test_register_missing_field_returns_422(apiClient):
 # ---------------- /check ----------------
 
 def test_check_approves_registered_identity(apiClient):
-    client, _ = apiClient
+    client, peer = apiClient
     client.post("/register", json=_registerPayload(2002, 2, 20, name="Carol", issuerName="GovAuth"))
 
     res = client.post("/check", json={
         "user": "Carol", "UserID": 2002, "credentialID": 2,
         "issuer": "GovAuth", "issuerID": 20,
     })
+
+
     assert res.status_code == 200
     assert res.json() == "APPROVED"
 
@@ -105,14 +107,14 @@ def test_check_declines_for_mismatched_combination(apiClient):
     assert res.json() == "DECLINED"
 
 
-def test_check_returns_null_when_identifiers_unknown(apiClient):
+def test_check_returns_error_when_identifiers_unknown(apiClient):
     client, _ = apiClient
     res = client.post("/check", json={
         "user": "Nobody", "UserID": 999999, "credentialID": 999999,
         "issuer": "Nobody", "issuerID": 999999,
     })
     assert res.status_code == 200
-    assert res.json() is None
+    assert res.json()["error"] == "User-not-found"
 
 
 # ---------------- /chain ----------------

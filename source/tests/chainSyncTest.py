@@ -144,7 +144,7 @@ def ledger_with_one_block(tmp_path):
     ledger_path = tmp_path / ".ledger-sync-test.json"
     ledger = Ledger(filePath=ledger_path)
 
-    user = User(name="SyncUser1", nationalNumber=111, phone=1, age=20, email="", birth="")
+    user = User(name="SyncUser1", nationalNumber=111, phone=1, age=20, email="test@bc.io", birth="")
     auth = Authority(name="SyncAuthority", businessID=1)
     identity = Identity(image="", credentialID=1)
     chid = CHID(user=user, credential=identity, issuer=auth)
@@ -288,7 +288,7 @@ def test_receive_updates_ledger_with_longer_valid_chain(tmp_path):
     remote = Ledger(filePath=tmp_path / ".ledger-remote.json")
 
     for idx in range(2):
-        user = User(name=f"RemoteUser_{idx}", nationalNumber=300 + idx, phone=idx, age=25, email="", birth="")
+        user = User(name=f"RemoteUser_{idx}", nationalNumber=300 + idx, phone=idx, age=25, email="test@bc.io", birth="")
         auth = Authority(name="RemoteAuth", businessID=10 + idx)
         identity = Identity(credentialID=idx, image="", CID="")
         chid = CHID(user=user, credential=identity, issuer=auth)
@@ -328,7 +328,7 @@ def test_receive_updates_ledger_with_longer_valid_chain(tmp_path):
 def test_receive_does_not_replace_with_shorter_chain(tmp_path):
     local = Ledger(filePath=tmp_path / ".ledger-local-short.json")
     for idx in range(2):
-        user = User(name=f"LocalUser_{idx}", nationalNumber=400 + idx, phone=idx, age=25, email="", birth="")
+        user = User(name=f"LocalUser_{idx}", nationalNumber=400 + idx, phone=idx, age=25, email="test@bc.io", birth="")
         auth = Authority(name="LocalAuth", businessID=20 + idx)
         identity = Identity(image="", credentialID=idx)
         chid = CHID(user=user, credential=identity, issuer=auth)

@@ -1,11 +1,17 @@
 from models.APIModels import (VerificationRequest, NodeStatus,
                                      ChainModel, APIRegisterationRequest)
+
+from pydantic_core import ValidationError
+
 from services.peer import Peer
 from models.Models import NodeMetadata, Identity, Authority, Block, CHID, Query, Response, User
 from services.verifier import Verifier
 from utils.blocks.blockManager import BlockManager
-from utils.chain_validation import ChainValidation
+from validation.chain_validation import ChainValidation
 from errors import DuplicateBlockError, InvalidChainError
+from errors.holderValidationErrors import ConflictingIdentityError
+from errors.APIErrors import APIError
+from validation.inputValidation import InputValidation
 
 
 
@@ -14,51 +20,78 @@ class APICommunication:
     def __init__(self, peer: Peer) -> None:
         self.peer = peer
         self.verifier = Verifier()
+        self.inputValidation = InputValidation(self.peer.ledger)
         pass
 
 
     
-    def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | None:
+    def processVerificationRequest(self, verificationRequest: VerificationRequest) -> Response | APIError | None:
 
         # Looping over the local chain to locate the block that contains all the information.
         user = self.peer.ledger.findUser(verificationRequest.UserID, verificationRequest.user)
         credential = self.peer.ledger.findCredential(verificationRequest.credentialID)
         issuer = self.peer.ledger.findIssuer(verificationRequest.issuerID, verificationRequest.issuer)
 
+
+        if not user:
+            return APIError(error="User-not-found", message="The input user is not registered.")
+
+        if not credential:
+            
+            return APIError(error="Credential-not-found", message="The input credential is not registered.")
+
+        if not issuer:
+            return APIError(error="Issuer-not-found", message="The input issuer is not registered.")
+
+        
+
         # Excute only if the User, Identity, and the Authority are stored on-chain.
-        if user and credential and issuer:
-            query = Query(user=user, credential=credential, issuer=issuer)
-            print(query)
-            return self.verifier.check(query, self.peer.ledger.blocks)
+        query = Query(user=user, credential=credential, issuer=issuer)
+        return self.verifier.check(query, self.peer.ledger.blocks)
+        
 
 
 
-    def processBlockRegisterationRequest(self, registerationRequest: APIRegisterationRequest) -> Block | dict | None:
+    def processBlockRegisterationRequest(self, registerationRequest: APIRegisterationRequest) -> Block | APIError:
         "Takes the `RegisterationRequest` received from the API, builds the block and registers it on the chain."
 
 
         # Converting the data models from API models to the data models that are recognized by the network.
-        user = User(
-            name=registerationRequest.user.name,
-            age=registerationRequest.user.age,
-            nationalNumber=registerationRequest.user.nationalNumber,
-            phone=registerationRequest.user.phone,
-            email=registerationRequest.user.email,
-            birth=registerationRequest.user.birth,
-            HID=""
+        try:
+            user = User(
+                name=registerationRequest.user.name,
+                age=registerationRequest.user.age,
+                nationalNumber=registerationRequest.user.nationalNumber,
+                phone=registerationRequest.user.phone,
+                email=registerationRequest.user.email,
+                birth=registerationRequest.user.birth,
+                HID=""
+                )
+
+            issuer = Authority(
+                name=registerationRequest.issuer.name,
+                businessID=registerationRequest.issuer.issuerID,
+                AUTHID=""
             )
 
-        issuer = Authority(
-            name=registerationRequest.issuer.name,
-            businessID=registerationRequest.issuer.issuerID,
-            AUTHID=""
-        )
+            doc = Identity(
+                image=registerationRequest.credential.image,
+                credentialID=registerationRequest.credential.identityID,
+                CID=""
+            )
 
-        doc = Identity(
-            image=registerationRequest.credential.image,
-            credentialID=registerationRequest.credential.identityID,
-            CID=""
-        )
+        except ValidationError as ve:
+            return APIError(error = "Validation-error", message = "Input data is not valid.")
+
+        if not self.inputValidation.holderValidation(user=user):
+            return APIError(error = "Validation-Error", message = "User input is invalid")
+
+        if not self.inputValidation.credentialValidation(credential=doc):
+            return APIError(error = "Validation-Error", message = "Credential input is invalid")
+
+        if not self.inputValidation.issuerValidation(issuer=issuer):
+            return APIError(error = "Validation-Error", message = "Issuer input is invalid")
+        
 
         block = Block(
             data=CHID(
@@ -71,14 +104,26 @@ class APICommunication:
 
         
         result: Block | Exception | None = self.peer.registerBlock(block)
+        if result is None:
+            return APIError(error = "Block-building-fail", message = "Cannor build the block.")
+        
         if isinstance(result, DuplicateBlockError):
-            return {"Error": "Duplicated-Block", "Message": "Block already exists."}
+            return APIError(error="Block-duplication-error", message="Block already exists.")
+
         elif isinstance(result, InvalidChainError):
-            return {"Error": "Invalid-Chain", "Message": "Chain integrity failed; chain sync requested."}
+            return APIError(error = "Invalid-Chain", message = "Chain integrity failed; chain sync requested.")
+
+        elif isinstance(result, ConflictingIdentityError):
+            return APIError(error = "Conflict-Identity", message = "Check if the input is valid.")
+
+        elif isinstance(result, ValidationError):
+            return APIError(error = "Validation-error", message =  "Input is invalid")
+        
         elif isinstance(result, Block):
             return result
+        
         elif isinstance(result, Exception):
-            return {"Error": "Internal-Error", "Message": str(result)}
+            return APIError(error =  "Internal-Error", message = "Internal node error. Try again.")
 
 
 

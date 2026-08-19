@@ -2,7 +2,8 @@ import pytest
 
 from utils.blocks.blockManager import BlockManager
 from services.ledger import Ledger
-from errors import DuplicateBlockError, BlockPreviousHashError
+from errors import DuplicateBlockError
+from errors.holderValidationErrors import ConflictingIdentityError
 
 
 @pytest.fixture
@@ -47,7 +48,7 @@ def test_register_duplicate_raises(blockManager: BlockManager, unminedBlock):
     duplicate.nonce = 0
     duplicate.hash = ""
 
-    with pytest.raises(DuplicateBlockError):
+    with pytest.raises(ConflictingIdentityError):
         blockManager.registerBlock(duplicate)
 
     # Ledger should still only have genesis + the first block
@@ -80,8 +81,6 @@ def test_receive_block_with_wrong_previous_hash_raises(blockManager: BlockManage
     badBlock = Miner.mine(unminedBlock)
 
     blockManager.receiveBlock(badBlock)
-
-    print(blockManager.ledger.blocks)
 
     # Ledger should remain at genesis only
     assert len(blockManager.ledger.blocks) == 1

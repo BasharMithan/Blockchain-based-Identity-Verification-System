@@ -54,7 +54,7 @@ def _connect(a: Peer, b: Peer, settle: float = 1.0) -> None:
 
 
 def _makeBlock(tag: str, nationalNumber: int, credentialID: int, businessID: int) -> Block:
-    user = User(name=f"User-{tag}", nationalNumber=nationalNumber, phone=1, age=25, email="", birth="")
+    user = User(name=f"User-{tag}", nationalNumber=nationalNumber, phone=1, age=25, email="test@bc.io", birth="")
     auth = Authority(name=f"Auth-{tag}", businessID=businessID)
     doc = Identity(image="", credentialID=credentialID)
     chid = CHID(user=user, credential=doc, issuer=auth)
@@ -108,7 +108,7 @@ def test_verification_succeeds_on_peer_that_did_not_originate_block(spawnPeer):
     _connect(peerA, peerB)
 
     chid = CHID(
-        user=User(name="Remote", nationalNumber=3003, phone=1, age=40, email="", birth=""),
+        user=User(name="Remote", nationalNumber=3003, phone=1, age=40, email="test@bc.io", birth=""),
         credential=Identity(image="", credentialID=3),
         issuer=Authority(name="RemoteAuth", businessID=30),
     )

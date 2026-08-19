@@ -8,7 +8,7 @@ from services.peer import Peer
 @pytest.fixture
 def unminedBlock():
     """A Block with nonce=0, hash='' — not yet mined."""
-    user = User(name="Test", nationalNumber=1, phone=1, age=20, email="", birth="")
+    user = User(name="Test", nationalNumber=1, phone=1, age=20, email="test@bc.io", birth="")
     auth = Authority(name="TestAuth", businessID=1)
     doc = Identity(image="", credentialID=1)
     chid = CHID(user=user, credential=doc, issuer=auth)

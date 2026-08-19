@@ -70,7 +70,7 @@ def test_insert_on_invalid_chain_raises(ledgerWithTwoBlocks):
     ledgerWithTwoBlocks.blocks = blocks  # sync in-memory state
 
     # Different user — different CHID
-    user = User(name="Unique", nationalNumber=9999, phone=9, age=40, email="", birth="")
+    user = User(name="Unique", nationalNumber=9999, phone=9, age=40, email="test@bc.io", birth="")
     auth = Authority(name="B", businessID=2)
     doc  = Identity(image="", credentialID=9)
     chid = CHID(user=user, credential=doc, issuer=auth)
