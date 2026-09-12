@@ -1,19 +1,19 @@
 # source/events/blocks.py
-from events.eventTools import EventRegiseration, Event
+from events.eventTools import EventRegistration, Event
 from models import Action, NodeMetadata, Payload, Block
 from models.events import InteractionContext
 
 from errors import DuplicateBlockError
 
 
-@EventRegiseration.register
+@EventRegistration.register
 class BlockRegisteractionEvent(Event):
 
     @classmethod
     def eventAction(cls) -> str:
         return Action.registeration.value
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
         block: Block = Block.model_validate(payload.data)
         context.blockManager.registerBlock(block=block)
         self.broadcastBlock(block, context)
@@ -27,14 +27,14 @@ class BlockRegisteractionEvent(Event):
                 )
 
 
-@EventRegiseration.register
+@EventRegistration.register
 class BlockBroadcastEvent(Event):
 
     @classmethod
     def eventAction(cls) -> str:
         return Action.BlockBroadcast.value
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
         block = Block.model_validate(payload.data)
 
         try:

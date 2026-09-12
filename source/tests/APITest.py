@@ -47,7 +47,6 @@ def _registerPayload(nationalNumber, identityID, issuerID, name="Alice", issuerN
     }
 
 
-# ---------------- /register ----------------
 
 def test_register_success_returns_201_and_mined_block(apiClient):
     client, _ = apiClient
@@ -77,7 +76,6 @@ def test_register_missing_field_returns_422(apiClient):
     assert res.status_code == 422
 
 
-# ---------------- /check ----------------
 
 def test_check_approves_registered_identity(apiClient):
     client, peer = apiClient
@@ -117,7 +115,6 @@ def test_check_returns_error_when_identifiers_unknown(apiClient):
     assert res.json()["error"] == "User-not-found"
 
 
-# ---------------- /chain ----------------
 
 def test_chain_returns_full_ledger_including_genesis(apiClient):
     client, fakePeer = apiClient

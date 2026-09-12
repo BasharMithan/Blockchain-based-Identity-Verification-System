@@ -4,6 +4,7 @@ import pytest
 from services.ledger import Ledger
 from utils.blocks.miner import Miner
 from errors import LedgerCorruptError, InvalidChainError, BlockHashMismatchError
+from errors.blockErrors import BlockIntegrationError
 from models.Models import *
 
 
@@ -79,5 +80,6 @@ def test_insert_on_invalid_chain_raises(ledgerWithTwoBlocks):
     block.previousHash = blocks[-1]["hash"]
     mined = Miner.mine(block)
 
-    with pytest.raises(BlockHashMismatchError):
+    with pytest.raises(BlockIntegrationError):
+        print(ledgerWithTwoBlocks.blocks)
         ledgerWithTwoBlocks.insertBlock(mined)

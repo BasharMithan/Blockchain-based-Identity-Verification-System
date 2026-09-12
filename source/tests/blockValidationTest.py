@@ -1,6 +1,6 @@
 
 import pytest
-from utils.blockValidation import BlockValidator
+from validation.blockValidation import BlockValidator
 from errors import BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError
 
 

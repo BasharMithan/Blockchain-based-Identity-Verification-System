@@ -5,7 +5,7 @@ from services.ledger import Ledger
 from utils.logger import Logger
 from utils.blocks.miner import Miner
 from validation.chain_validation import ChainValidation
-from utils.blockValidation import BlockValidator
+from validation.blockValidation import BlockValidator
 from validation.inputValidation import InputValidation
 from errors.holderValidationErrors import ConflictingIdentityError
 
@@ -66,9 +66,6 @@ class BlockManager:
 
 
 
-
-    def __validChain(self) -> bool:
-        return ChainValidation(self.ledger.blocks).validate()
 
     @classmethod  
     def checkIfBlockExists(cls, targetCHID: str, blocks: list) -> bool:

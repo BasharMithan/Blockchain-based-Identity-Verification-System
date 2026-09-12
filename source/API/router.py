@@ -27,7 +27,7 @@ def buildRouter(peer: Peer) -> APIRouter:
         result: Response | APIError = communication.processVerificationRequest(payload)
 
         if isinstance(result, APIError):
-            return HTTPException(status_code=409, detail=result.message)
+            return result
 
         return result
         

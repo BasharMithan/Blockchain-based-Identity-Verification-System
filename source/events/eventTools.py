@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from typing import Type
 
 from models.events import InteractionContext
 from models.Models import Payload, NodeMetadata
+
 
 
 class Event(BaseModel, ABC):
@@ -16,14 +17,13 @@ class Event(BaseModel, ABC):
         ...
 
     @abstractmethod
-    def excute(cls, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(cls, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
         "Contains the handling logic for this action."
         ...
 
 
-    
 
-class EventRegiseration:
+class EventRegistration:
     """Maps action enums to event classes.
     Every event command register itself here at import time."""
 
@@ -50,4 +50,9 @@ class EventRegiseration:
         if eventClass is None:
             return None
 
-        return eventClass.model_validate(data)
+        try:
+            event = eventClass.model_validate(data)
+        except ValidationError:
+            return None
+
+        return event

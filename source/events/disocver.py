@@ -1,19 +1,19 @@
 import time
 
-from events.eventTools import Event, EventRegiseration
+from events.eventTools import Event, EventRegistration
 from models.Models import Action
 from models.Models import PeerSyncResponse, Payload, NodeMetadata
 from models.events import InteractionContext
 from utils.nodeStorageManager import NodeStorageManager
 
-@EventRegiseration.register
+@EventRegistration.register
 class DiscoverEvent(Event):
 
     @classmethod
     def eventAction(cls) -> str:
         return Action.discover.value
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
 
 
 
@@ -27,14 +27,14 @@ class DiscoverEvent(Event):
 
 
 
-@EventRegiseration.register
+@EventRegistration.register
 class PeerSyncRsponseEvent(Event):
 
     @classmethod
     def eventAction(cls) -> str:
         return Action.syncPeer.value
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
         "Responding to the DISCOVER message."
 
         response = PeerSyncResponse.model_validate(payload.data)

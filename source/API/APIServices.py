@@ -45,7 +45,7 @@ class APICommunication:
 
         
 
-        # Excute only if the User, Identity, and the Authority are stored on-chain.
+        # execute only if the User, Identity, and the Authority are stored on-chain.
         query = Query(user=user, credential=credential, issuer=issuer)
         return self.verifier.check(query, self.peer.ledger.blocks)
         

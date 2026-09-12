@@ -6,7 +6,7 @@ from models.Models import NodeMetadata, Payload
 
 from utils.nodeStorageManager import NodeStorageManager
 from utils.networkUtils import NetworkCallbacks, buildNodeInformation
-from events.eventTools import EventRegiseration
+from events.eventTools import EventRegistration
 from utils.interaction import Interaction
 from models.events import InteractionContext
 from utils.blocks.blockManager import BlockManager

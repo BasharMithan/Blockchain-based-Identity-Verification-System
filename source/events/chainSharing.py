@@ -1,16 +1,16 @@
-from events.eventTools import Event, EventRegiseration
+from events.eventTools import Event, EventRegistration
 from models.Models import Action, NodeMetadata, Payload, ChainSyncRequest, ChainSyncResponse
 from models.events import InteractionContext
 
 
-@EventRegiseration.register
+@EventRegistration.register
 class ChainSyncRequestEvent(Event):
 
     @classmethod
     def eventAction(cls) -> str:
         return Action.chainSyncRequest.value
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
 
         request = ChainSyncRequest.model_validate(payload.data)
 
@@ -18,7 +18,7 @@ class ChainSyncRequestEvent(Event):
 
 
 
-@EventRegiseration.register
+@EventRegistration.register
 class ChainSyncResponseEvent(Event):
 
     @classmethod
@@ -26,7 +26,7 @@ class ChainSyncResponseEvent(Event):
         return Action.chainSyncResponse.value
 
 
-    def excute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
+    def execute(self, context: InteractionContext, payload: Payload, sender: NodeMetadata) -> None:
 
         response = ChainSyncResponse.model_validate(payload.data)
 

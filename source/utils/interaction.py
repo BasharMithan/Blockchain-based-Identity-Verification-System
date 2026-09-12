@@ -18,7 +18,7 @@ from utils.blocks.blockManager import BlockManager
 from services.verifier import Verifier
 from utils.chain.chainSync import ChainSync
 
-from events.eventTools import EventRegiseration
+from events.eventTools import EventRegistration
 
 from errors import (
     DuplicateBlockError, InvalidBlockPayloadError, InvalidChainError,
@@ -37,5 +37,5 @@ class Interaction:
 
 
 
-        event = EventRegiseration.resolve(action=str(action), data=data)
-        event.excute(self.context, payload=payload, sender=sender) if event else None
+        event = EventRegistration.resolve(action=str(action), data=data)
+        event.execute(self.context, payload=payload, sender=sender) if event else None

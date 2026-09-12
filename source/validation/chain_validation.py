@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from utils.utility_function import LedgerUtilities
-from utils.blockValidation import BlockValidator
+from validation.blockValidation import BlockValidator
 from utils.logger import Logger
 from models.Models import Block
 

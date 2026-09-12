@@ -1,3 +1,14 @@
+from models import Block
+
+
+
+class BlockIntegrationError(Exception):
+    "Raised when the block is not valid to be added to the ledger."
+    def __init__(self, block: Block, reason: Exception) -> None:
+        super().__init__(
+            f"The integration of the new block '{block.data.chid[:12]}...' failed"
+            f"Reason: {reason}"
+        )
 
 
 class BlockNotMinedError(Exception):

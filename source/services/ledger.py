@@ -4,17 +4,23 @@ from pathlib import Path
 from typing import Any 
 
 from utils.logger import Logger
+from validation.blockValidation import BlockValidator
 from validation.chain_validation import ChainValidation
 from utils.blocks.miner import Miner
 from models.Models import Block, CHID, Authority, User, Identity
 
 from errors import (
+    BlockNotMinedError,
+    BlockHashMismatchError,
+    BlockPreviousHashError,
     LedgerNotFoundError,
     LedgerCorruptError,
     InvalidChainError,
     GenesisBlockError,
     DuplicateBlockError,
     )
+
+from errors.blockErrors import BlockIntegrationError
 
 class Ledger():
 
@@ -23,6 +29,8 @@ class Ledger():
         self.blocks: list[dict[str, Any]] = []
         self.filePath: Path = filePath
         self._lock = threading.RLock() # A lock to prevent concurrent insert/write race in the same ledger instance.
+
+        self.chainValidation = ChainValidation(chain=self.blocks)
 
         self.users: dict[int, User] = {}
         self.usersByNationalNumber: dict[int, User] = {}
@@ -42,6 +50,11 @@ class Ledger():
         self.__ensureGenesis()
 
         self.loadFromLedger()
+
+        if not self.chainValidation.validate():
+            self.shouldRequestChain = True
+            raise InvalidChainError(reason="The local chain is invalid.")
+        
 
 
     def __initLedger(self) -> None:
@@ -71,7 +84,8 @@ class Ledger():
 
             data = json.loads(text)
             if isinstance(data, list):
-                self.blocks = data
+                self.blocks.clear()
+                self.blocks.extend(data)
             else:
                 self.shouldRequestChain = True
                 raise LedgerCorruptError(str(self.filePath))
@@ -93,10 +107,6 @@ class Ledger():
 
     def insertBlock(self, block: Block) -> Block:
         with self._lock:
-            chainValidation = ChainValidation(self.blocks)
-
-            if not chainValidation.validate():
-                raise InvalidChainError("Chain failed integrity check before insert.")
 
             blockAsDict = json.loads(Block.model_dump_json(block))
             blockChid = blockAsDict.get("data", {}).get("chid")
@@ -104,6 +114,14 @@ class Ledger():
             if any(existing.get("data", {}).get("chid") == blockChid for existing in self.blocks):
                 Logger.warning(f"[Ledger] Block with CHID {blockChid} already exists; refusing duplicate insert.")
                 raise DuplicateBlockError(blockChid)
+
+            
+            try:
+                self.chainValidation.chain = self.blocks
+                print(self.chainValidation.validate())
+            except Exception as reason:
+                raise BlockIntegrationError(block=block, reason=reason)
+
 
             self.blocks.append(blockAsDict)
 
@@ -172,7 +190,9 @@ class Ledger():
         """Defined to meet the requirements of the `ChainSync` class, where it replaces
         the current ledger, with a ledger that has been choosen by the `ChainSync` class.
         """
-        self.blocks = newLedger
+        replacement = list(newLedger)
+        self.blocks.clear()
+        self.blocks.extend(replacement)
 
         with open(self.filePath, "w", encoding="utf-8") as ledgerFile:
             json.dump(newLedger, ledgerFile, indent=4)
