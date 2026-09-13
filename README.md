@@ -2,7 +2,7 @@
 
  ![Tests](https://github.com/BasharMithan/Blockchain-based-Identity-Verification-System/actions/workflows/test.yml/badge.svg)
  
-Check the last [release (v0.2.0)](docs/v0.2.0-release.md)
+Check the last [release (v0.3.0)](docs/v0.2.0-release.md)
 
 ---
 
