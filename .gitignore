@@ -13,7 +13,7 @@ docs/Performance Report (Ledger Insert and Lookup Speed).md
 docs/BCIV-Docs
 docs/.obsidian
 
-storage/*
+storage/*.json
 
 source/Blockchain_based_Identity_Verification_System.egg-info
 
