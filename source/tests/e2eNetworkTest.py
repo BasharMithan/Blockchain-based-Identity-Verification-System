@@ -13,7 +13,7 @@ pytestmark = pytest.mark.integration
 
 _portCounter = itertools.count(31000, step=5)
 
-@pytestmark
+@pytest.mark.integration
 def _freePortBlock() -> int:
     """Hands out a fresh, well-spaced port per peer so repeated/parallel test
     runs don't collide on already-bound sockets."""

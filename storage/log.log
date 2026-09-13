@@ -1,0 +1,504 @@
+2026-09-13 19:52:46,677 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:46,704 - INFO - [Miner]Mining block 0...
+2026-09-13 19:52:47,307 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:52:47,310 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:52:47,312 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:52:47,385 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:47,385 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:47,386 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:47,624 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:52:49,734 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:49,739 - INFO - [Miner]Mining block 0...
+2026-09-13 19:52:50,231 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:52:50,231 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:52:50,233 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:52:50,245 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:50,245 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:50,245 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:50,286 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:52:52,458 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:52,459 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:52,460 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:52,460 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:52,462 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:52,464 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:52,464 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:52,464 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:52,465 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:52,466 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:52,467 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:52,467 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:53,454 - INFO - [Miner]Mining block 1...
+2026-09-13 19:52:54,288 - INFO - [Miner] Block 1 mined after 79019 attempts. Nonce: 79019
+2026-09-13 19:52:54,289 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:54,289 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:54,289 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:54,291 - INFO - Block with CHID {'user': {'name': 'User-AB', 'nationalNumber': 1001, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '6e59af53a03f679d6831a00fd7d8b2ea06a108d3c4b1928bf3bc2bd17738b109'}, 'credential': {'image': '', 'credentialID': 1, 'CID': '8f10c4c846ba96d9cda46bc96ff9267bed79795f12bc86b72b3881fbf5b21232'}, 'issuer': {'name': 'Auth-AB', 'businessID': 10, 'AUTHID': '0ef70bf6eef9bb30a6a28bcf5122d2292bfe0036f4fd54ec9469a27808890a0f'}, 'chid': '4e9c1b768db4f34e0468edf7881d7633dd17e81eb81611e19dc5a7bb0f86c23f'} inserted successfully. 
+2026-09-13 19:52:54,293 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:52:54,294 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:52:54,294 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:54,295 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:54,295 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:54,298 - INFO - Block with CHID {'user': {'name': 'User-AB', 'nationalNumber': 1001, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '6e59af53a03f679d6831a00fd7d8b2ea06a108d3c4b1928bf3bc2bd17738b109'}, 'credential': {'image': '', 'credentialID': 1, 'CID': '8f10c4c846ba96d9cda46bc96ff9267bed79795f12bc86b72b3881fbf5b21232'}, 'issuer': {'name': 'Auth-AB', 'businessID': 10, 'AUTHID': '0ef70bf6eef9bb30a6a28bcf5122d2292bfe0036f4fd54ec9469a27808890a0f'}, 'chid': '4e9c1b768db4f34e0468edf7881d7633dd17e81eb81611e19dc5a7bb0f86c23f'} inserted successfully. 
+2026-09-13 19:52:54,299 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:52:55,808 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:55,811 - INFO - [Miner]Mining block 0...
+2026-09-13 19:52:56,402 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:52:56,403 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:52:56,405 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:52:56,433 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:56,434 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:56,434 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:56,445 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:52:58,570 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:52:58,573 - INFO - [Miner]Mining block 0...
+2026-09-13 19:52:59,952 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:52:59,953 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:52:59,954 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:52:59,971 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:52:59,971 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:52:59,971 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:52:59,979 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:02,137 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:02,139 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:02,140 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:02,140 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:02,151 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:02,152 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:02,153 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:02,153 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:02,153 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:02,154 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:02,155 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:02,156 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:03,139 - INFO - [Miner]Mining block 1...
+2026-09-13 19:53:03,310 - INFO - [Miner] Block 1 mined after 13545 attempts. Nonce: 13545
+2026-09-13 19:53:03,311 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:03,312 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:03,312 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:03,316 - INFO - Block with CHID {'user': {'name': 'User-STATUS', 'nationalNumber': 2002, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'fc3cef8d0cc53579d4d23826852f9dc9959d20e4681228d89ecdd9cc6297adfa'}, 'credential': {'image': '', 'credentialID': 2, 'CID': '11707cca1b4b0197544bce35fc24df1e3a3c8c0dd6ef607754374cee8e1c8add'}, 'issuer': {'name': 'Auth-STATUS', 'businessID': 20, 'AUTHID': 'e3e60b1ad8a7f1cad21b2def92a4735f0787b96a8acf719a081eee59265eada6'}, 'chid': 'cd884ea45da622c325094abbb8f31f5b72f1325e64b8792bf3dc5fea4f8de952'} inserted successfully. 
+2026-09-13 19:53:03,318 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:03,318 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:03,319 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:03,319 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:03,320 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:03,321 - INFO - Block with CHID {'user': {'name': 'User-STATUS', 'nationalNumber': 2002, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'fc3cef8d0cc53579d4d23826852f9dc9959d20e4681228d89ecdd9cc6297adfa'}, 'credential': {'image': '', 'credentialID': 2, 'CID': '11707cca1b4b0197544bce35fc24df1e3a3c8c0dd6ef607754374cee8e1c8add'}, 'issuer': {'name': 'Auth-STATUS', 'businessID': 20, 'AUTHID': 'e3e60b1ad8a7f1cad21b2def92a4735f0787b96a8acf719a081eee59265eada6'}, 'chid': 'cd884ea45da622c325094abbb8f31f5b72f1325e64b8792bf3dc5fea4f8de952'} inserted successfully. 
+2026-09-13 19:53:03,322 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:04,829 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:04,840 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:05,394 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:05,394 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:05,396 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:05,423 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:05,423 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:05,423 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:05,439 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:07,567 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:07,570 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:08,176 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:08,177 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:08,179 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:08,212 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:08,212 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:08,212 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:08,227 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:10,353 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:10,354 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:10,355 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:10,355 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:10,366 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:10,367 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:10,368 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:10,368 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:10,368 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:10,369 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:10,369 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:10,369 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:11,354 - INFO - [Miner]Mining block 1...
+2026-09-13 19:53:13,157 - INFO - [Miner] Block 1 mined after 186735 attempts. Nonce: 186735
+2026-09-13 19:53:13,158 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:13,158 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:13,158 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:13,161 - INFO - Block with CHID {'user': {'name': 'Remote', 'nationalNumber': 3003, 'phone': 1, 'age': 40, 'email': 'test@bc.io', 'birth': '', 'HID': '206b59d6f3c865e1bfad656423029511acefbed5af6b9cbeccffc9f554cfccdb'}, 'credential': {'image': '', 'credentialID': 3, 'CID': '4523c34f7676c464b16498ca435a429e0f82173f887f5a11561c62390fb74081'}, 'issuer': {'name': 'RemoteAuth', 'businessID': 30, 'AUTHID': '3332b3f951ad8c1aa8de428a4f257f99b5d5e4827aa23ec7410625b4861df3e0'}, 'chid': 'ac611f8988af581f5ea88244b2b136c0e28ccd6a9f08429983a6fca0a9b93e31'} inserted successfully. 
+2026-09-13 19:53:13,162 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:13,163 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:13,163 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:13,164 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:13,164 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:13,166 - INFO - Block with CHID {'user': {'name': 'Remote', 'nationalNumber': 3003, 'phone': 1, 'age': 40, 'email': 'test@bc.io', 'birth': '', 'HID': '206b59d6f3c865e1bfad656423029511acefbed5af6b9cbeccffc9f554cfccdb'}, 'credential': {'image': '', 'credentialID': 3, 'CID': '4523c34f7676c464b16498ca435a429e0f82173f887f5a11561c62390fb74081'}, 'issuer': {'name': 'RemoteAuth', 'businessID': 30, 'AUTHID': '3332b3f951ad8c1aa8de428a4f257f99b5d5e4827aa23ec7410625b4861df3e0'}, 'chid': 'ac611f8988af581f5ea88244b2b136c0e28ccd6a9f08429983a6fca0a9b93e31'} inserted successfully. 
+2026-09-13 19:53:13,166 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:14,687 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:14,692 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:15,319 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:15,320 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:15,322 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:15,345 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:15,345 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:15,345 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:15,360 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:17,471 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:17,474 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:18,061 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:18,062 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:18,064 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:18,107 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:18,107 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:18,107 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:18,121 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:20,245 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:20,248 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:20,843 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:20,843 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:20,848 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:20,876 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:20,877 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:20,877 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:20,891 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:23,018 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:23,019 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:23,020 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:23,020 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:23,029 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:23,030 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:23,031 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:23,032 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:23,032 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:23,034 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:23,034 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:23,035 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,034 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,035 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,035 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,036 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,037 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,039 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,040 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,040 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,039 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,042 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,042 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,042 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,041 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,043 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,044 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,044 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,044 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,045 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,045 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,045 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:24,045 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:24,046 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:24,046 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:24,046 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:25,039 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:25,040 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:25,041 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:25,041 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:25,042 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:25,043 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:25,043 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:25,043 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:25,546 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:25,547 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:25,547 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:25,547 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:26,036 - INFO - [Miner]Mining block 1...
+2026-09-13 19:53:26,314 - INFO - [Miner] Block 1 mined after 26239 attempts. Nonce: 26239
+2026-09-13 19:53:26,318 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:26,318 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:26,319 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:26,321 - INFO - Block with CHID {'user': {'name': 'User-MESH', 'nationalNumber': 4004, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '50e25ac7f13701380fb7f1ad42318233cd67e1c94817195eb9ee8e83bb6fa530'}, 'credential': {'image': '', 'credentialID': 4, 'CID': 'ef310e5059153a566e36ad0060def510e250ef4b7f3c912a831b02fab156d1c2'}, 'issuer': {'name': 'Auth-MESH', 'businessID': 40, 'AUTHID': '858823c8b244576782d3fd3aea818770e024263aa46148d1c5c6c29102f5cb53'}, 'chid': '4f77f6ddd737beee2396bdbc52caf3d8bb40ddf45f2564bc1e5353f998a879a6'} inserted successfully. 
+2026-09-13 19:53:26,322 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:26,323 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:26,324 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:26,325 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:26,325 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:26,325 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:26,326 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:26,327 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:26,327 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:26,327 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:26,328 - INFO - Block with CHID {'user': {'name': 'User-MESH', 'nationalNumber': 4004, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '50e25ac7f13701380fb7f1ad42318233cd67e1c94817195eb9ee8e83bb6fa530'}, 'credential': {'image': '', 'credentialID': 4, 'CID': 'ef310e5059153a566e36ad0060def510e250ef4b7f3c912a831b02fab156d1c2'}, 'issuer': {'name': 'Auth-MESH', 'businessID': 40, 'AUTHID': '858823c8b244576782d3fd3aea818770e024263aa46148d1c5c6c29102f5cb53'}, 'chid': '4f77f6ddd737beee2396bdbc52caf3d8bb40ddf45f2564bc1e5353f998a879a6'} inserted successfully. 
+2026-09-13 19:53:26,329 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:26,330 - INFO - Block with CHID {'user': {'name': 'User-MESH', 'nationalNumber': 4004, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '50e25ac7f13701380fb7f1ad42318233cd67e1c94817195eb9ee8e83bb6fa530'}, 'credential': {'image': '', 'credentialID': 4, 'CID': 'ef310e5059153a566e36ad0060def510e250ef4b7f3c912a831b02fab156d1c2'}, 'issuer': {'name': 'Auth-MESH', 'businessID': 40, 'AUTHID': '858823c8b244576782d3fd3aea818770e024263aa46148d1c5c6c29102f5cb53'}, 'chid': '4f77f6ddd737beee2396bdbc52caf3d8bb40ddf45f2564bc1e5353f998a879a6'} inserted successfully. 
+2026-09-13 19:53:26,330 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:28,342 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:28,352 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:28,984 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:28,985 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:28,987 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:29,025 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:29,026 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:29,027 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:29,043 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:31,175 - INFO - [Miner]Mining block 1...
+2026-09-13 19:53:31,777 - INFO - [Miner] Block 1 mined after 51901 attempts. Nonce: 51901
+2026-09-13 19:53:31,778 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:31,778 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:31,778 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:31,779 - INFO - Block with CHID {'user': {'name': 'User-PRE0', 'nationalNumber': 5000, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '6daaed6cfb25e8fa22f150ee571f44c0f00af9f57bbcd0f1a6bde75d82c76ecd'}, 'credential': {'image': '', 'credentialID': 5, 'CID': '2225973d557630b1e0180d693ae4a505b6b46bae3062df7a61f4d9df2e4fea80'}, 'issuer': {'name': 'Auth-PRE0', 'businessID': 50, 'AUTHID': 'aea3df5444b4c53370ee3c42a86b662ce000ca2b98dc957f017e83733d2e81a4'}, 'chid': '702bbce377e68d62fd12b2c1f12a9ed868b48757d8e437f9751c88b4c0f5f351'} inserted successfully. 
+2026-09-13 19:53:31,779 - INFO - [Miner]Mining block 2...
+2026-09-13 19:53:32,447 - INFO - [Miner] Block 2 mined after 82288 attempts. Nonce: 82288
+2026-09-13 19:53:32,450 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:32,450 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:32,452 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:32,452 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:32,453 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:32,455 - INFO - Block with CHID {'user': {'name': 'User-PRE1', 'nationalNumber': 5001, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '767ae0b959f8cce994f3040b06c94947df5298ff4233a2d1c7618b0b1c3ee31b'}, 'credential': {'image': '', 'credentialID': 6, 'CID': '878d01dfed346683fe4733678e149a55bb28252943b544c3e6186302d4240c96'}, 'issuer': {'name': 'Auth-PRE1', 'businessID': 51, 'AUTHID': '7a53d46d8d59332115008d7ca8e2045986387bbf8dbfcc352a67a3ae39b18f3e'}, 'chid': 'f63baf3298afb94f5f61fe813e3178497f6a34010e238ae7fdb98025006d119d'} inserted successfully. 
+2026-09-13 19:53:32,455 - INFO - [Miner]Mining block 3...
+2026-09-13 19:53:32,839 - INFO - [Miner] Block 3 mined after 49677 attempts. Nonce: 49677
+2026-09-13 19:53:32,839 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:32,840 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:32,840 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:32,840 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:32,840 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:32,840 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:32,840 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:32,842 - INFO - Block with CHID {'user': {'name': 'User-PRE2', 'nationalNumber': 5002, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'a36edd91731c8d3d54896294bad56def9011724e37067ce7fd897e0b6735944b'}, 'credential': {'image': '', 'credentialID': 7, 'CID': '34dc53320592b8d181b339442a6f6fc5be1396330f57119ecd33f3517d75cd6e'}, 'issuer': {'name': 'Auth-PRE2', 'businessID': 52, 'AUTHID': '772d33b8aab6dea9ddeb36149b64b45c5d7f602e78159bdae206624e127c29e8'}, 'chid': '72da34d379a5562e171bf0c188078b5457bed5eb8ff449feaa4405a87f8d6d53'} inserted successfully. 
+2026-09-13 19:53:32,842 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:32,844 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:33,379 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:33,379 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:33,387 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:33,421 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:33,422 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:33,422 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:33,435 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:35,573 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:35,574 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:35,574 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:35,575 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:35,575 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:35,575 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:35,576 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:35,576 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:35,576 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:35,577 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:35,578 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:35,579 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:35,579 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:35,580 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:35,580 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:35,581 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:35,581 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:35,582 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:35,583 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:35,583 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:35,584 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:35,584 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:35,585 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:35,585 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:35,586 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:35,586 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:35,586 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:35,587 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:35,587 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:35,587 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:36,564 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:36,566 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:36,567 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:36,568 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:36,568 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:36,569 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:36,570 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:36,571 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:36,572 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:36,572 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:36,573 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:36,574 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:36,575 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:36,575 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:36,575 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:36,576 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:36,576 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:36,577 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:36,577 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:36,577 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:36,577 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:36,578 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:36,578 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:36,579 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:36,579 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:36,580 - INFO - [Block Validation] Validatiing the block 2.
+2026-09-13 19:53:36,580 - INFO - [Block Validation] The block 2 is valid.
+2026-09-13 19:53:36,580 - INFO - [Block Validation] Validatiing the block 3.
+2026-09-13 19:53:36,582 - INFO - [Block Validation] The block 3 is valid.
+2026-09-13 19:53:36,582 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:38,579 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:38,584 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:39,243 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:39,244 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:39,246 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:39,270 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:39,271 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:39,271 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:39,282 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:41,414 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:41,418 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:41,992 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:41,993 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:41,994 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:42,019 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:42,019 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:42,019 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:42,034 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:44,163 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:44,167 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:44,754 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:44,755 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:44,758 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:44,790 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:44,790 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:44,790 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:44,804 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:46,948 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:46,951 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:46,951 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:46,951 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:46,953 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:46,954 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:46,954 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:46,955 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:46,955 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:46,956 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:46,956 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:46,956 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,964 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,965 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,965 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,965 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,965 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,966 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,967 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,967 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,968 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,968 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,969 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,969 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,970 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,971 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,971 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,971 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,971 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,972 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,972 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,972 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:47,972 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:47,972 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:47,973 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:47,973 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:48,955 - INFO - [Miner]Mining block 1...
+2026-09-13 19:53:48,998 - INFO - [Miner] Block 1 mined after 7546 attempts. Nonce: 7546
+2026-09-13 19:53:49,020 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:49,021 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:49,022 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:49,023 - INFO - Block with CHID {'user': {'name': 'User-LINE', 'nationalNumber': 6006, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'd574603b39726843bd4abb3ecc76458f81a95aeabe9a564b79119f1c786761ac'}, 'credential': {'image': '', 'credentialID': 6, 'CID': '878d01dfed346683fe4733678e149a55bb28252943b544c3e6186302d4240c96'}, 'issuer': {'name': 'Auth-LINE', 'businessID': 60, 'AUTHID': '02d484ebee985d3af80a678566e72309fb45eefd0bf3b57d725d8d3257ee38a0'}, 'chid': '3ef76f11d53bc44da3d9e7a51889782c6c1734cd12f2d07d305badb1a7e2ce0e'} inserted successfully. 
+2026-09-13 19:53:49,024 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:49,024 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:49,025 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:49,025 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:49,026 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:49,027 - INFO - Block with CHID {'user': {'name': 'User-LINE', 'nationalNumber': 6006, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'd574603b39726843bd4abb3ecc76458f81a95aeabe9a564b79119f1c786761ac'}, 'credential': {'image': '', 'credentialID': 6, 'CID': '878d01dfed346683fe4733678e149a55bb28252943b544c3e6186302d4240c96'}, 'issuer': {'name': 'Auth-LINE', 'businessID': 60, 'AUTHID': '02d484ebee985d3af80a678566e72309fb45eefd0bf3b57d725d8d3257ee38a0'}, 'chid': '3ef76f11d53bc44da3d9e7a51889782c6c1734cd12f2d07d305badb1a7e2ce0e'} inserted successfully. 
+2026-09-13 19:53:49,027 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:49,028 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:53:49,029 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:53:49,029 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:49,029 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:49,029 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:49,030 - INFO - Block with CHID {'user': {'name': 'User-LINE', 'nationalNumber': 6006, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': 'd574603b39726843bd4abb3ecc76458f81a95aeabe9a564b79119f1c786761ac'}, 'credential': {'image': '', 'credentialID': 6, 'CID': '878d01dfed346683fe4733678e149a55bb28252943b544c3e6186302d4240c96'}, 'issuer': {'name': 'Auth-LINE', 'businessID': 60, 'AUTHID': '02d484ebee985d3af80a678566e72309fb45eefd0bf3b57d725d8d3257ee38a0'}, 'chid': '3ef76f11d53bc44da3d9e7a51889782c6c1734cd12f2d07d305badb1a7e2ce0e'} inserted successfully. 
+2026-09-13 19:53:49,031 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:53:51,539 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:51,543 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:52,165 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:52,166 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:52,169 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:52,198 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:52,198 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:52,199 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:52,215 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:54,358 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:54,361 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:54,938 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:54,939 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:54,941 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:54,975 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:54,975 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:54,975 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:54,991 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:57,121 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:57,124 - INFO - [Miner]Mining block 0...
+2026-09-13 19:53:57,673 - INFO - [Miner] Block 0 mined after 58226 attempts. Nonce: 58226
+2026-09-13 19:53:57,673 - WARNING - [Chain Validation] Cannot validate. The ledger is empty.
+2026-09-13 19:53:57,677 - INFO - Block with CHID {'user': {'name': 'Gensis-Block', 'nationalNumber': 0, 'phone': 0, 'age': 0, 'email': 'gensis@blockchain.io', 'birth': '', 'HID': '86b9cfefa3624e99ed49d4b95a65292e3ae59d1acc02e31aa391003979282fe0'}, 'credential': {'image': '', 'credentialID': 0, 'CID': '45a3b86f2add47c3fdcba61b8bad88d4b64678a4b7eab74d63a24ba8fda9ff2c'}, 'issuer': {'name': '', 'businessID': 0, 'AUTHID': '4930fe69eb193324e64c25a851e6c18f3b53657dfcda11c817fc34c450ff953d'}, 'chid': '5ca47ca13e78d133426440a738d404d962e0ffa5acdb24cce89563c1888f4e94'} inserted successfully. 
+2026-09-13 19:53:57,709 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:57,710 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:57,710 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:57,722 - DEBUG - Using proactor: IocpProactor
+2026-09-13 19:53:59,844 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:59,845 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:59,846 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:59,846 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:59,856 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:59,857 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:59,858 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:59,858 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:53:59,858 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:53:59,859 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:53:59,859 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:53:59,859 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,859 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,860 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,860 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,860 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,861 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,862 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,862 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,863 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,864 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,865 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,865 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,865 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,866 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,868 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,868 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,869 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,869 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,870 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,870 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,870 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:00,871 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:00,871 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:00,872 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:00,872 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:01,869 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:01,871 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:01,871 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:01,872 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:01,873 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:01,874 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:01,874 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:01,874 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:02,372 - INFO - [Chain Validation] Initializing the chain validator.
+2026-09-13 19:54:02,373 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:02,374 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:02,374 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:02,861 - INFO - [Miner]Mining block 1...
+2026-09-13 19:54:04,205 - INFO - [Miner] Block 1 mined after 159910 attempts. Nonce: 159910
+2026-09-13 19:54:04,206 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:04,207 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:04,207 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:04,209 - INFO - Block with CHID {'user': {'name': 'User-NOLOOP', 'nationalNumber': 7007, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '9204bb0f3d33e62f3212261b7abf027426a6b20fa8ccd1f2c4a7538ed28c8b04'}, 'credential': {'image': '', 'credentialID': 7, 'CID': '34dc53320592b8d181b339442a6f6fc5be1396330f57119ecd33f3517d75cd6e'}, 'issuer': {'name': 'Auth-NOLOOP', 'businessID': 70, 'AUTHID': 'f7e5f182cca39dd55720473fcc4dc4814d6de1e09319cd582e5e8ebcb3a39af9'}, 'chid': '068bb5a30173e4793dd4e2fc8f9d6a06e7bcd2d90395480b9fdfb5a5b77f96d7'} inserted successfully. 
+2026-09-13 19:54:04,211 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:54:04,211 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:54:04,212 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:04,212 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:04,212 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:04,213 - INFO - [Block Validation] Validatiing the block 1.
+2026-09-13 19:54:04,213 - INFO - [Block Validation] The block 1 is valid.
+2026-09-13 19:54:04,214 - INFO - [Block Validation] Validatiing the block 0.
+2026-09-13 19:54:04,214 - INFO - [Block Validation] The block 0 is valid.
+2026-09-13 19:54:04,215 - INFO - [Chain Validation] Chain is valid.
+2026-09-13 19:54:04,216 - INFO - Block with CHID {'user': {'name': 'User-NOLOOP', 'nationalNumber': 7007, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '9204bb0f3d33e62f3212261b7abf027426a6b20fa8ccd1f2c4a7538ed28c8b04'}, 'credential': {'image': '', 'credentialID': 7, 'CID': '34dc53320592b8d181b339442a6f6fc5be1396330f57119ecd33f3517d75cd6e'}, 'issuer': {'name': 'Auth-NOLOOP', 'businessID': 70, 'AUTHID': 'f7e5f182cca39dd55720473fcc4dc4814d6de1e09319cd582e5e8ebcb3a39af9'}, 'chid': '068bb5a30173e4793dd4e2fc8f9d6a06e7bcd2d90395480b9fdfb5a5b77f96d7'} inserted successfully. 
+2026-09-13 19:54:04,218 - INFO - [Block Validation] Received block 1 inserted.
+2026-09-13 19:54:04,222 - INFO - Block with CHID {'user': {'name': 'User-NOLOOP', 'nationalNumber': 7007, 'phone': 1, 'age': 25, 'email': 'test@bc.io', 'birth': '', 'HID': '9204bb0f3d33e62f3212261b7abf027426a6b20fa8ccd1f2c4a7538ed28c8b04'}, 'credential': {'image': '', 'credentialID': 7, 'CID': '34dc53320592b8d181b339442a6f6fc5be1396330f57119ecd33f3517d75cd6e'}, 'issuer': {'name': 'Auth-NOLOOP', 'businessID': 70, 'AUTHID': 'f7e5f182cca39dd55720473fcc4dc4814d6de1e09319cd582e5e8ebcb3a39af9'}, 'chid': '068bb5a30173e4793dd4e2fc8f9d6a06e7bcd2d90395480b9fdfb5a5b77f96d7'} inserted successfully. 
+2026-09-13 19:54:04,223 - INFO - [Block Validation] Received block 1 inserted.
