@@ -22,6 +22,10 @@ from errors import (
 
 from errors.blockErrors import BlockIntegrationError
 
+from configs import Settings, Performance
+
+
+
 class Ledger():
 
     def __init__(self, filePath: Path) -> None:
@@ -115,12 +119,15 @@ class Ledger():
                 Logger.warning(f"[Ledger] Block with CHID {blockChid} already exists; refusing duplicate insert.")
                 raise DuplicateBlockError(blockChid)
 
+
+            if (Settings.Ledger.performance == Performance.safe):
+                try:
+                    self.chainValidation.chain = self.blocks
+                    self.chainValidation.validate()
+                except (BlockNotMinedError, BlockHashMismatchError, BlockPreviousHashError) as reason:
+                    raise BlockIntegrationError(block=block, reason=reason) from reason
+
             
-            try:
-                self.chainValidation.chain = self.blocks
-                print(self.chainValidation.validate())
-            except Exception as reason:
-                raise BlockIntegrationError(block=block, reason=reason)
 
 
             self.blocks.append(blockAsDict)
