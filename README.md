@@ -1,7 +1,7 @@
 # VerChain
 
 [![GitHub release](https://img.shields.io/github/v/release/BasharMithan/Verchain)](https://github.com/BasharMithan/Verchain/releases)
-[![Tests](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml)
+[![Tests](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml)
 [![License](https://img.shields.io/github/license/BasharMithan/Verchain)](LICENSE)
 [![Python](https://img.shields.io/badge/python-%3E%3D3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Last commit](https://img.shields.io/github/last-commit/BasharMithan/Verchain)](https://github.com/BasharMithan/Verchain/commits/main)
