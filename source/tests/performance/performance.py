@@ -256,7 +256,7 @@ class Performance:
 
 if __name__ == "__main__":
 
-    baseDir: Path = Path(tempfile.mkdtemp(prefix="bciv-performance-"))
+    baseDir: Path = Path(tempfile.mkdtemp(prefix="VerChain-performance-"))
 
     tests:      list[int] = [10, 50, 100, 250, 500, 100, 2000]
 

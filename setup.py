@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="Blockchain-based-Identity-Verification-System",
+    name="VerChain",
     author="Bashar Mithan",
     author_email="basharmithan@gmail.com",
     use_scm_version=True,

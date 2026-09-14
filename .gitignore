@@ -1,7 +1,7 @@
 venv/
 .vscode/
 
-docs/BCIVS.pdf
+docs/VerChainS.pdf
 docs/Details.md
 docs/P2pnetwork-Documentation.pdf
 docs/Real-World-Example-(BC IDV).drawio
@@ -10,14 +10,14 @@ docs/todo.md
 docs/What is a Blockchain-Based Identity Verification System.pdf
 docs/Current Performance Analysis Report.md
 docs/Performance Report (Ledger Insert and Lookup Speed).md
-docs/BCIV-Docs
+docs/VerChain-Docs
 docs/.obsidian
 
 storage/*.json
 
 source/Blockchain_based_Identity_Verification_System.egg-info
 
-bciv-venv
+VerChain-venv
 .pytest_cache
 dist
 build

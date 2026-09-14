@@ -1,4 +1,4 @@
-# Blockchain-Based Identity Verification System
+# VerChain
 
  ![Tests](https://github.com/BasharMithan/Blockchain-based-Identity-Verification-System/actions/workflows/tests.yml/badge.svg)
  
