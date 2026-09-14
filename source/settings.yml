@@ -1,0 +1,5 @@
+settings:
+  difficulity: 4
+  performance: SAFE
+  ledger: {}
+  connection: {}

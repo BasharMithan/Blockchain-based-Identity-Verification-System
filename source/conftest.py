@@ -1,5 +1,5 @@
 import pytest
-from models.Models import Block, CHID, User, Authority, Identity
+from source.models.Models import Block, CHID, User, Authority, Identity
 from utils.blocks.miner import Miner
 from services.ledger import Ledger
 from services.peer import Peer

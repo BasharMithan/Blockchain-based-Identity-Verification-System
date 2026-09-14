@@ -139,7 +139,3 @@ def getProjectVersion() -> str:
     versions = subprocess.run("git describe --tags --abbrev=0", capture_output=True, text=True)
     return versions.stdout.strip()
 
-
-
-
-    

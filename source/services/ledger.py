@@ -22,7 +22,7 @@ from errors import (
 
 from errors.blockErrors import BlockIntegrationError
 
-from configs import Settings, Performance
+from configs import settings, Performance
 
 
 
@@ -120,7 +120,7 @@ class Ledger():
                 raise DuplicateBlockError(blockChid)
 
 
-            if (Settings.Ledger.performance == Performance.safe):
+            if (settings.performance == Performance.safe):
                 try:
                     self.chainValidation.chain = self.blocks
                     self.chainValidation.validate()
