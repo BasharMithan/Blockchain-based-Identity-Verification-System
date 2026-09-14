@@ -16,6 +16,7 @@ docs/.obsidian
 storage/*.json
 
 source/Blockchain_based_Identity_Verification_System.egg-info
+source/*.egg-info/
 
 VerChain-venv
 .pytest_cache

@@ -8,4 +8,4 @@ BOOTSTRAP_NODES = [
 ]
 
 
-CONFIGURATION_FILE_PATH = Path.resolve(Path("source/settings.yml"))
+CONFIGURATION_FILE_PATH = Path(__file__).resolve().parents[1] / "settings.yml"
