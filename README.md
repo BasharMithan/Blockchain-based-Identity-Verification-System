@@ -1,8 +1,10 @@
 # VerChain
 
- ![Tests](https://github.com/Verchain/actions/workflows/tests.yml/badge.svg)
-
- [![GitHub version](https://badge.fury.io/gh/BasharMithan%2Verchain.svg)](https://github.com/BasharMithan/VerChain)
+[![GitHub release](https://img.shields.io/github/v/release/BasharMithan/Verchain)](https://github.com/BasharMithan/Verchain/releases)
+[![Tests](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BasharMithan/Verchain/actions/workflows/tests.yml)
+[![License](https://img.shields.io/github/license/BasharMithan/Verchain)](LICENSE)
+[![Python](https://img.shields.io/badge/python-%3E%3D3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Last commit](https://img.shields.io/github/last-commit/BasharMithan/Verchain)](https://github.com/BasharMithan/Verchain/commits/main)
  
 Check the last [release (v0.3.0)](docs/v0.3.0-release.md)
 
