@@ -1,6 +1,8 @@
 # VerChain
 
  ![Tests](https://github.com/BasharMithan/Blockchain-based-Identity-Verification-System/actions/workflows/tests.yml/badge.svg)
+
+ [![GitHub version](https://badge.fury.io/gh/OWNER%2FREPO.svg)](https://github.com/BasharMithan/VerChain)
  
 Check the last [release (v0.3.0)](docs/v0.3.0-release.md)
 
